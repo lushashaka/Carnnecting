@@ -8,4 +8,10 @@
     <string name="title_activity_home">News Feed</string>
     <string name="title_activity_event_detail">Event Detail</string>
     
+    <!-- Action Bar -->
+    <string name="categories">Categories</string>
+    <string name="my_events">My Events</string>
+    <string name="news_feed">News Feed</string>
+    <string name="settings">Settings</string>
+    
 </resources>

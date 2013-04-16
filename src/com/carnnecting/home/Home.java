@@ -2,10 +2,12 @@ package com.carnnecting.home;
 
 
 import android.os.Bundle;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.widget.Button;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -32,7 +34,9 @@ public class Home extends Activity {
 		setContentView(R.layout.activity_home);
 		
 		homeScrollLinearLayout = (LinearLayout) findViewById(R.id.homeScrollLinearLayout);
-		
+		ActionBar actionBar = getActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
+		//actionBar.hide();
 		// Initialize feeds. This will be done by loading them from the database.
 		// Hardcode here for demo purpose only
 		for (int i = 0; i < 300; i++) {
@@ -54,6 +58,13 @@ public class Home extends Activity {
 			homeScrollLinearLayout.addView(feed);
 		}
 
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.carnnecting_main, menu);
+	    return true;
 	}
 
 }

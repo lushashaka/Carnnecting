@@ -16,5 +16,15 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
+    
+    <style name="CustomActivityTheme" parent="@android:style/Theme.Holo">
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+    </style>
+    
+    <style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+    <item name="android:background">#610B0B</item>
+    <item name="android:windowActionBarOverlay">true</item>
+    <item name="android:textColor">#FAFAFA</item>
+	</style>
 
 </resources>
