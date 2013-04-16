@@ -36,7 +36,6 @@ public class Home extends Activity {
 		homeScrollLinearLayout = (LinearLayout) findViewById(R.id.homeScrollLinearLayout);
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
-		//actionBar.hide();
 		// Initialize feeds. This will be done by loading them from the database.
 		// Hardcode here for demo purpose only
 		for (int i = 0; i < 300; i++) {
