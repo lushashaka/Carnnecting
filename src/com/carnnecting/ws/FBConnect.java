@@ -10,9 +10,12 @@ import android.view.ViewGroup;
 
 import com.carnnecting.home.Home;
 import com.cmu.carnnecting.R;
+import com.facebook.Request;
+import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
+import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 
 public class FBConnect extends Fragment {
@@ -32,11 +35,23 @@ public class FBConnect extends Fragment {
 	
 	private void onSessionStateChange(Session session, SessionState state, Exception exception) {
 	    if (state.isOpened()) {
-	        Log.i(TAG, "Logged in...");
+	        Log.i(TAG, "Success: Logged in...");
+	        // Request user data and show the results
+	        
+	        Request.executeMeRequestAsync(session, new Request.GraphUserCallback() {
+
+				@Override
+				public void onCompleted(GraphUser user, Response response) {
+					Log.i(TAG, String.format("Name: %s\n\n", 
+					        user.getName()));
+					Log.i(TAG, String.format("Username: %s\n\n", 
+					        user.getUsername()));
+				}
+	        });
 	        Intent intent = new Intent(this.getActivity().getApplicationContext(), Home.class);
 			startActivity(intent);
 	    } else if (state.isClosed()) {
-	        Log.i(TAG, "Logged out...");
+	        Log.i(TAG, "Success: Logged out...");
 	    }
 	}
 	

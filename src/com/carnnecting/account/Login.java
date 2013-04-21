@@ -2,6 +2,7 @@ package com.carnnecting.account;
 
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.support.v4.app.FragmentActivity;
 import com.carnnecting.ws.FBConnect;
@@ -10,11 +11,12 @@ import com.cmu.carnnecting.R;
 public class Login extends FragmentActivity {
 
 	private FBConnect mainFragment;
+	private static final String TAG = "Login";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		System.out.println("Login: Debug Message");
+		Log.i(TAG, "Login Screen");
 		
 		if (savedInstanceState == null) {
 	        // Add the fragment on initial activity setup
