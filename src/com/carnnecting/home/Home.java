@@ -4,6 +4,17 @@ package com.carnnecting.home;
 
 import android.app.ListActivity;
 import android.os.Bundle;
+import android.app.ActionBar;
+import android.app.Activity;
+import android.content.Intent;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.widget.Button;
+import android.text.Editable;
+import android.text.TextWatcher;
+
+
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -49,6 +60,9 @@ public class Home extends ListActivity {
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		ActionBar actionBar = getActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
 		
 		eventDao = new EventDataSource(this);
 		eventDao.open();
@@ -273,4 +287,13 @@ public class Home extends ListActivity {
 		}
 		
 	}
+
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.carnnecting_main, menu);
+	    return true;
+	}
+
 }

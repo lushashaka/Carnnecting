@@ -1,8 +1,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"/>
+    <item android:id="@+id/categories"
+          android:title="@string/categories"
+          android:showAsAction="ifRoom|withText" />
+    
+    <item android:id="@+id/my_events"
+          android:title="@string/my_events"
+          android:showAsAction="ifRoom|withText" />
+    
+    <item android:id="@+id/news_feed"
+          android:title="@string/news_feed"
+          android:showAsAction="ifRoom|withText" />
+    
+    <item android:id="@+id/settings"
+          android:title="@string/settings"
+          android:showAsAction="ifRoom|withText" />
 
 </menu>
