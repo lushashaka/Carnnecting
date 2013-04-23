@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -28,6 +29,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.carnnecting.category.CategoryMenu;
 import com.carnnecting.entities.CarnnectingContract;
 import com.carnnecting.entities.Category;
 import com.carnnecting.entities.CategoryDataSource;
@@ -294,6 +296,26 @@ public class Home extends ListActivity {
 	    MenuInflater inflater = getMenuInflater();
 	    inflater.inflate(R.menu.carnnecting_main, menu);
 	    return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent intent;
+	    switch (item.getItemId()) {
+	        case R.id.news_feed:
+	            // app icon in action bar clicked; go home
+	            intent = new Intent(this, Home.class);
+	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	            startActivity(intent);
+	            return true;
+	        case R.id.categories:
+	        	intent = new Intent(this, CategoryMenu.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        	startActivity(intent);
+	        	return true;	
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
 	}
 
 }

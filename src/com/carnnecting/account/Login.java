@@ -37,8 +37,8 @@ public class Login extends Activity {
 	private Button demoButton;
 	
 	// FIXME: To-Be-Removed. These are just to create the db and do bulk-populate in the first time. Using ADB shell is also feasible
-	// private SQLiteDatabase db;
-	// private CarnnectingSQLiteOpenHelper dbHelper;
+	 //private SQLiteDatabase db;
+	 //private CarnnectingSQLiteOpenHelper dbHelper;
 	
 	// FIXME: To-Be-Removed. These are to demo how to use DataSoruce classes
 	private SubscribeDataSource subscribeDAO;

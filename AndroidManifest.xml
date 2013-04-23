@@ -33,6 +33,11 @@
             android:label="@string/title_activity_event_detail">
         </activity>
         
+        <activity
+            android:name="com.carnnecting.category.CategoryMenu"
+            android:label="@string/title_activity_category_menu">
+        </activity>
+        
     </application>
 
 </manifest>
