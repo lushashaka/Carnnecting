@@ -54,6 +54,17 @@ public class FavoriteDataSource {
 		return ret;
 	}
 	
+	public Favorite getAnFavoriteByUserIdAndEventId(int userId, int eventId) {
+		Cursor cursor = db.rawQuery("SELECT * FROM "+CarnnectingContract.Favorite.TABLE_NAME + " WHERE " + 
+					CarnnectingContract.Favorite.COLUMN_NAME_USER_ID+" = "+userId+" AND "+ 
+					CarnnectingContract.Favorite.COLUMN_NAME_EVENT_ID+" = "+eventId, null);
+		if (cursor!= null && cursor.getCount() > 0) {
+			// return cursorToRSVP(); FIXME: lets implement this method later
+			return new Favorite(userId, eventId);
+		} else 
+			return null;
+	}
+	
 	public ArrayList<Integer> getFavoriteEventIdsByUserId(int userId) {
 		ArrayList<Integer> favoriteEventIds = new ArrayList<Integer>();
 		Cursor cursor = db.rawQuery(

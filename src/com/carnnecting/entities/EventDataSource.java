@@ -61,6 +61,14 @@ public class EventDataSource {
 		  return events;
 	  }
 	  
+	  public Event getAnEventByEventId(int eventId) {
+		  Cursor cursor = db.rawQuery(" SELECT * FROM "+CarnnectingContract.Event.TABLE_NAME+" WHERE "+
+				  			CarnnectingContract.Event.COLUMN_NAME_ID+" = "+eventId, null);
+
+		  cursor.moveToFirst();
+		  // We should have just one record returned
+		  return cursorToEvent(cursor);
+	  }
 	  
 	  public void getHomeItemModelsByCategoryIds(ArrayList<Integer> categoryIds, ArrayList<HomeItemModel> homeItems) 
 			  throws SQLException 

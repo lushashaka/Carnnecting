@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -134,9 +135,11 @@ public class Home extends ListActivity {
 				}
 			}
 			
+			/*
 			for (int i = 0; i < homeItems.size(); i++) {
 				Log.e("INFO", homeItems.get(i).toString());
 			}
+			*/
 			
 			// Sort the Events by their startDates
 			Collections.sort(homeItems, new Comparator<HomeItemModel>(){
@@ -159,6 +162,8 @@ public class Home extends ListActivity {
 	@Override
 	public void onPause() {
 		super.onPause();
+		
+		// FIXME: Maybe we could move the db commit code to onStop()? 
 		Log.e("INFO", "in onPause");
 		Log.e("INFO", "favChanged size = "+changedFavoriteEventIds.size());
 		Log.e("INFO", "RSVPChanged size = "+changedRSVPEventIds.size());
@@ -201,7 +206,13 @@ public class Home extends ListActivity {
 	}
 	
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		Toast.makeText(Home.this, homeItems.get(position).getSubject(), Toast.LENGTH_SHORT).show();
+		// Toast.makeText(Home.this, homeItems.get(position).getSubject(), Toast.LENGTH_SHORT).show();
+		Intent eventDetailIntent = new Intent(v.getContext(), EventDetail.class);
+		// FIXME: the userId variable is now hardcoded
+		eventDetailIntent.putExtra("userId", userId);
+		eventDetailIntent.putExtra("eventId", homeItems.get(position).getEventId());
+		
+		startActivity(eventDetailIntent);
 	}
 	
 	private static class HomeItemHolder {
@@ -263,6 +274,7 @@ public class Home extends ListActivity {
 			});
 			
 			holder.subjectTextView.setText(homeItems.get(position).getSubject());
+			holder.subjectTextView.setTypeface(Typeface.DEFAULT_BOLD, 0);
 			
 			holder.RSVPCheckBox.setOnCheckedChangeListener(null);
 			holder.RSVPCheckBox.setChecked(homeItems.get(position).isRSVP());

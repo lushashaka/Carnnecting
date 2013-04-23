@@ -55,6 +55,17 @@ public class RSVPDataSource {
 		return ret;
 	}
 	
+	public RSVP getAnRSVPByUserIdAndEventId(int userId, int eventId) {
+		Cursor cursor = db.rawQuery("SELECT * FROM "+CarnnectingContract.RSVP.TABLE_NAME + " WHERE " + 
+					CarnnectingContract.RSVP.COLUMN_NAME_USER_ID+" = "+userId+" AND "+ 
+					CarnnectingContract.RSVP.COLUMN_NAME_EVENT_ID+" = "+eventId, null);
+		if (cursor!= null && cursor.getCount() > 0) {
+			// return cursorToRSVP(); FIXME: lets implement this method later
+			return new RSVP(userId, eventId);
+		} else 
+			return null;
+	}
+	
 	public ArrayList<Integer> getRSVPEventIdsByUserId(int userId) {
 		ArrayList<Integer> RSVPEventIds = new ArrayList<Integer>();
 		Cursor cursor = db.rawQuery(
