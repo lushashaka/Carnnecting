@@ -21,13 +21,27 @@ public final class R {
         public static final int activity_vertical_margin=0x7f040001;
     }
     public static final class drawable {
-        public static final int ic_launcher=0x7f020000;
+        public static final int btn_check=0x7f020000;
+        public static final int btn_check_off=0x7f020001;
+        public static final int btn_check_off_disable=0x7f020002;
+        public static final int btn_check_off_disable_focused=0x7f020003;
+        public static final int btn_check_off_pressed=0x7f020004;
+        public static final int btn_check_off_selected=0x7f020005;
+        public static final int btn_check_on=0x7f020006;
+        public static final int btn_check_on_disable=0x7f020007;
+        public static final int btn_check_on_disable_focused=0x7f020008;
+        public static final int btn_check_on_pressed=0x7f020009;
+        public static final int btn_check_on_selected=0x7f02000a;
+        public static final int ic_launcher=0x7f02000b;
     }
     public static final class id {
-        public static final int action_settings=0x7f080005;
+        public static final int action_settings=0x7f080008;
         public static final int demoOnlyButton=0x7f080002;
         public static final int demoTextView=0x7f080003;
+        public static final int homeFavoriteCheckBox=0x7f080005;
+        public static final int homeRSVPCheckBox=0x7f080007;
         public static final int homeScrollLinearLayout=0x7f080004;
+        public static final int homeSubjectTextView=0x7f080006;
         public static final int tableLayout=0x7f080000;
         public static final int tableRow0=0x7f080001;
     }
@@ -35,11 +49,13 @@ public final class R {
         public static final int activity_carnnecting_main=0x7f030000;
         public static final int activity_event_detail=0x7f030001;
         public static final int activity_home=0x7f030002;
+        public static final int home_item=0x7f030003;
     }
     public static final class menu {
         public static final int carnnecting_main=0x7f070000;
     }
     public static final class string {
+        public static final int RSVP_button_text=0x7f050005;
         public static final int action_settings=0x7f050001;
         public static final int app_name=0x7f050000;
         public static final int title_activity_event_detail=0x7f050004;

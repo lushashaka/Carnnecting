@@ -1,9 +1,14 @@
 package com.carnnecting.entities;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
+import android.util.Log;
+
 public class CarnnectingContract {
 	// To prevent the contract class from being instantiated
 	private CarnnectingContract() {}
-	
+
 	// Category table
 	public static abstract class Category {
 		public static final String TABLE_NAME 						= "category";
@@ -26,7 +31,7 @@ public class CarnnectingContract {
 	
 	// Favorite table
 	public static abstract class Favorite {
-		public static final String TABLE_NAME						= "favroite";
+		public static final String TABLE_NAME						= "favorite";
 		public static final String COLUMN_NAME_USER_ID				= "user_id";
 		public static final String COLUMN_NAME_EVENT_ID				= "event_id";
 	}
@@ -50,5 +55,27 @@ public class CarnnectingContract {
 		public static final String TABLE_NAME						= "user";
 		public static final String COLUMN_NAME_ID					= "id";
 		public static final String COLUMN_NAME_FB_LOGIN				= "fb_login";
+	}
+	
+	
+	/*
+	 * The timestamp when the database was last changed (CUD of CRUD).
+	 * We maintain this to minimize access to database. That is, if database was not changed since last load, we don't need to reload.
+	 * 
+	 * Note that I don't know where to put this. Here is the best place so far.
+	 */
+	private static Long databaseLastUpdateTimestamp = null;
+	public static synchronized Long getDatabaseLastUpdateTimestamp() {
+		// FIXME: Is the code robust enough even given the possibility that android will destroy random objects w/o notice?
+		if (databaseLastUpdateTimestamp == null) {
+			// In case Android mythically destroy the static object...?
+			databaseLastUpdateTimestamp = new Long(new Date().getTime());
+		}
+		
+		return new Long(databaseLastUpdateTimestamp.longValue());
+	}
+	
+	public static synchronized void setNowDatabaseLastUpdateTimestamp() {
+		databaseLastUpdateTimestamp = new Long(new Date().getTime());
 	}
 }
