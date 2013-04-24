@@ -2,11 +2,12 @@ package com.carnnecting.event;
 
 
 import android.os.Bundle;
-
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.widget.Button;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -93,6 +94,13 @@ public class EventDetail extends Activity {
 	protected void onPause() {
 		super.onPause();
 		// Save the read or RSVP/Favorite Info here
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.carnnecting_main, menu);
+	    return true;
 	}
 
 }
