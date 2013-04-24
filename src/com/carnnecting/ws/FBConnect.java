@@ -79,7 +79,7 @@ public class FBConnect extends Fragment {
 					int userId = 0;
 					// Launch "News Feed"
 					Intent intent = new Intent(getActivity().getApplicationContext(), Home.class);
-			        intent.putExtra("USERID", userId);
+			        //intent.putExtra("USERID", userId);
 					startActivity(intent);					
 				}
 	        });	        
