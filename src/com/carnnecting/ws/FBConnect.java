@@ -45,7 +45,7 @@ public class FBConnect extends Fragment {
 	    shareButton.setOnClickListener(new View.OnClickListener() {
 	        @Override
 	        public void onClick(View v) {
-	            share.publishStory();        
+	            share.shareEvent();        
 	        }
 	    });
 
@@ -73,7 +73,7 @@ public class FBConnect extends Fragment {
 	        if (share.pendingPublishReauthorization && 
 	                state.equals(SessionState.OPENED_TOKEN_UPDATED)) {
 	            share.pendingPublishReauthorization = false;
-	            share.publishStory();
+	            share.shareEvent();
 	        }
 	        
 	        Intent intent = new Intent(this.getActivity().getApplicationContext(), Home.class);
