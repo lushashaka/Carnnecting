@@ -329,6 +329,7 @@ public class Home extends ListActivity {
 	        case R.id.categories:
 	        	intent = new Intent(this, CategoryMenu.class);
 	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        	intent.putExtra("USERID", userId);
 	        	startActivity(intent);
 	        	return true;	
 	        default:

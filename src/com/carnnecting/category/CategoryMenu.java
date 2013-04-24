@@ -34,20 +34,27 @@ public class CategoryMenu extends Activity {
 	private ExpandableListView ExpandList;
 	private CategoryDataSource categoryDAO;
 	
+	private int	userId;
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_category_menu);
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		ExpandList = (ExpandableListView) findViewById(R.id.categoryListView);
-        ExpListItems = SetStandardGroups();
+		Intent intent  = getIntent();
+		userId = -1;
+		if (intent != null && intent.getExtras() != null) {
+			userId = intent.getExtras().getInt("USERID");
+		}
+        ExpListItems = SetStandardGroups(userId);
         ExpAdapter = new ExpandListAdapter(CategoryMenu.this, ExpListItems);
         ExpandList.setAdapter(ExpAdapter);
 
 		
 	}
 	
-	public ArrayList<ExpandListGroup> SetStandardGroups() {
+	public ArrayList<ExpandListGroup> SetStandardGroups(int userId) {
     	ArrayList<ExpandListGroup> parentList = new ArrayList<ExpandListGroup>();
     	ArrayList<ExpandListChild> childList = new ArrayList<ExpandListChild>();
         ExpandListGroup myCats = new ExpandListGroup();
@@ -56,7 +63,7 @@ public class CategoryMenu extends Activity {
         
         categoryDAO = new CategoryDataSource(this.getApplication());
 		categoryDAO.open();
-		ArrayList<Category> subscribedCategories = categoryDAO.getSubscribedCategoriesByUserId(1);
+		ArrayList<Category> subscribedCategories = categoryDAO.getSubscribedCategoriesByUserId(userId);
 		for (int i = 0; i < subscribedCategories.size(); i++) {
 			Category category = subscribedCategories.get(i);
 			ExpandListChild childCat = new ExpandListChild();
@@ -125,6 +132,7 @@ public class CategoryMenu extends Activity {
 	        case R.id.categories:
 	        	intent = new Intent(this, CategoryMenu.class);
 	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        	intent.putExtra("USERID", userId);
 	        	startActivity(intent);
 	        	return true;
 	        //TODO: add more cases for action bar
