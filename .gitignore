@@ -17,3 +17,4 @@ project.properties
 # Eclipse project files
 
 /gen
+.settings
