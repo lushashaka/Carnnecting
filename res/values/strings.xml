@@ -7,6 +7,7 @@
     
     <string name="title_activity_home">News Feed</string>
     <string name="title_activity_event_detail">Event Detail</string>
+    <string name="title_activity_create_event">Create an Event</string>
     
     <string name="app_id">333361920100865</string>
     
@@ -15,5 +16,26 @@
     <string name="my_events">My Events</string>
     <string name="news_feed">News Feed</string>
     <string name="settings">Settings</string>
+    
+    <!-- For floating icons -->
+    <string name="f1">CreateEvent</string>
+    <string name="f2">Favorites</string>
+    
+    <!-- Create Event -->
+    <string name="title">Title</string>
+    <string name="datetime">Date and Time</string>
+    <string name="date">ex) 1/1/2013</string>
+    <string name="time">ex) 12:00am</string>
+    <string name="loc">Location</string>
+    <string name="addr">Address</string>
+    <string name="host">Host</string>
+    <string name="org">Organization Name</string>
+    <string name="des">Description</string>
+    <string name="pic">Photos</string>
+    <string name="floating">Floating Button</string>
+    <string name="share">Share to Facebook?</string>
+    <string name="upload">UPLOAD</string>
+    <string name="camera">Camera</string>
+    <string name="album">Photo Album</string>
     
 </resources>
