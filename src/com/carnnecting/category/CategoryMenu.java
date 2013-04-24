@@ -57,6 +57,9 @@ public class CategoryMenu extends Activity {
         categoryDAO = new CategoryDataSource(this.getApplication());
 		categoryDAO.open();
 		ArrayList<Category> subscribedCategories = categoryDAO.getSubscribedCategoriesByUserId(1);
+		ArrayList<Category> allCategories = categoryDAO.getAllCategories();
+		ArrayList<Category> otherCategories = new ArrayList<Category>();
+		
 		for (int i = 0; i < subscribedCategories.size(); i++) {
 			Category category = subscribedCategories.get(i);
 			ExpandListChild childCat = new ExpandListChild();
@@ -87,7 +90,6 @@ public class CategoryMenu extends Activity {
         ExpandListGroup allCats = new ExpandListGroup();
         childList = new ArrayList<ExpandListChild>();
         allCats.setName("All Categories");
-        ArrayList<Category> allCategories = categoryDAO.getAllCategories();
 		for (int i = 0; i < allCategories.size(); i++) {
 			Category category = allCategories.get(i);
 			ExpandListChild childCat = new ExpandListChild();
