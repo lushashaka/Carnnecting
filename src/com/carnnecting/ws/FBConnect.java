@@ -1,5 +1,6 @@
 package com.carnnecting.ws;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.carnnecting.home.Home;
 import com.cmu.carnnecting.R;
@@ -20,7 +22,11 @@ import com.facebook.widget.LoginButton;
 
 public class FBConnect extends Fragment {
 	private static final String TAG = "FBConnect";
+	static Context context;
 	private UiLifecycleHelper uiHelper;
+	private FBShare share = new FBShare();
+	
+	private Button shareButton;
 	
 	public View onCreateView(LayoutInflater inflater, 
 	        ViewGroup container, 
@@ -29,6 +35,19 @@ public class FBConnect extends Fragment {
 	    
 	    LoginButton authButton = (LoginButton) view.findViewById(R.id.authButton);
 	    authButton.setFragment(this);
+	    
+	    if (savedInstanceState != null) {
+	    	share.pendingPublishReauthorization = 
+	    			savedInstanceState.getBoolean(share.PENDING_PUBLISH_KEY, false);
+	    }
+	    
+	    shareButton = (Button) view.findViewById(R.id.shareButton);
+	    shareButton.setOnClickListener(new View.OnClickListener() {
+	        @Override
+	        public void onClick(View v) {
+	            share.publishStory();        
+	        }
+	    });
 
 	    return view;
 	}
@@ -37,6 +56,8 @@ public class FBConnect extends Fragment {
 	    if (state.isOpened()) {
 	        Log.i(TAG, "Success: Logged in...");
 	        // Request user data and show the results
+	        
+	        shareButton.setVisibility(View.VISIBLE);
 	        
 	        Request.executeMeRequestAsync(session, new Request.GraphUserCallback() {
 
@@ -48,10 +69,18 @@ public class FBConnect extends Fragment {
 					        user.getUsername()));
 				}
 	        });
+	        
+	        if (share.pendingPublishReauthorization && 
+	                state.equals(SessionState.OPENED_TOKEN_UPDATED)) {
+	            share.pendingPublishReauthorization = false;
+	            share.publishStory();
+	        }
+	        
 	        Intent intent = new Intent(this.getActivity().getApplicationContext(), Home.class);
 			startActivity(intent);
 	    } else if (state.isClosed()) {
 	        Log.i(TAG, "Success: Logged out...");
+	        shareButton.setVisibility(View.INVISIBLE);
 	    }
 	}
 	
@@ -65,6 +94,7 @@ public class FBConnect extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
+	    context = this.getActivity().getApplicationContext();
 	    uiHelper = new UiLifecycleHelper(getActivity(), callback);
 	    uiHelper.onCreate(savedInstanceState);
 	}
@@ -106,6 +136,7 @@ public class FBConnect extends Fragment {
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 	    super.onSaveInstanceState(outState);
+	    outState.putBoolean(share.PENDING_PUBLISH_KEY, share.pendingPublishReauthorization);
 	    uiHelper.onSaveInstanceState(outState);
-	}
+	}	
 }
