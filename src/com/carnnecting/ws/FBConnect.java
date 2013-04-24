@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.carnnecting.entities.UserDataSource;
 import com.carnnecting.home.Home;
 import com.cmu.carnnecting.R;
 import com.facebook.Request;
@@ -75,11 +76,20 @@ public class FBConnect extends Fragment {
 					        user.getUsername()));
 					
 					// Insert username in DB
+					UserDataSource userDAO = new UserDataSource(getActivity().getApplication());
+					userDAO.open();
 					
-					int userId = 0;
+					String userName = user.getUsername();
+					userDAO.createUser(userName);
+					
+					int userId = userDAO.getUserIdByFbName(userName);;
+					
+					Log.i(TAG, "User ID: " + userId);
+					
 					// Launch "News Feed"
 					Intent intent = new Intent(getActivity().getApplicationContext(), Home.class);
-			        //intent.putExtra("USERID", userId);
+			        intent.putExtra("USERID", userId);
+			        
 					startActivity(intent);					
 				}
 	        });	        

@@ -1,5 +1,6 @@
 package com.carnnecting.entities;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import android.content.ContentValues;
@@ -26,7 +27,8 @@ public class EventDataSource {
 	  };
 	  
 	  public EventDataSource (Context context) {
-		  dbHelper = new CarnnectingSQLiteOpenHelper(context);
+		  // dbHelper = new CarnnectingSQLiteOpenHelper(context);
+		  dbHelper = CarnnectingContract.getCarnnectingSQLiteOpenHelper(context);
 	  }
 	  
 	  public void open() throws SQLException {
@@ -34,8 +36,10 @@ public class EventDataSource {
 	  }
 	  
 	  public void close() throws SQLException {
-		  db.close();
-		  dbHelper.close();
+		  // db.close();
+		  // According to http://stackoverflow.com/questions/7930139/android-database-locked. It is only a file handle
+		  // and will be recycled once the application finishes.
+		  // dbHelper.close();
 	  }
 	  
 	  // TODO: fill in the (necessary subset of) CRUD operations here. For now we just need to read
@@ -60,27 +64,61 @@ public class EventDataSource {
 		  return events;
 	  }
 	  
-	  /*
-	  public ArrayList<Category> getSubscribedCategoriesByUserId(int userId) throws SQLException {
-		  ArrayList<Category> subscribedCategories = new ArrayList<Category>();
-		  
-		  Cursor cursor = db.rawQuery(
-				  "SELECT * from "+CarnnectingContract.Category.TABLE_NAME+" WHERE "+ 
-						  CarnnectingContract.Category.COLUMN_NAME_ID + " IN " + "(" +
-						  	"SELECT "+CarnnectingContract.Subscribe.COLUMN_NAME_CATEGORY_ID+" FROM " + CarnnectingContract.Subscribe.TABLE_NAME + " WHERE "
-						  	+ CarnnectingContract.Subscribe.COLUMN_NAME_USER_ID + "="+ userId+
-						  ")", 
-				  null);
-		  
+	  public Event getAnEventByEventId(int eventId) {
+		  Cursor cursor = db.rawQuery(" SELECT * FROM "+CarnnectingContract.Event.TABLE_NAME+" WHERE "+
+				  			CarnnectingContract.Event.COLUMN_NAME_ID+" = "+eventId, null);
+
 		  cursor.moveToFirst();
-		  while (!cursor.isAfterLast()) {
-			  events.add(cursorToEvent(cursor));
-			  cursor.moveToNext();
-		  }
-		  
-		  return subscribedCategories;
+		  // We should have just one record returned
+		  return cursorToEvent(cursor);
 	  }
-	  */
+	  
+	  public void getHomeItemModelsByCategoryIds(ArrayList<Integer> categoryIds, ArrayList<HomeItemModel> homeItems) 
+			  throws SQLException 
+	  {
+		  
+		  // itemModels must be empty now
+		  for (int i = 0; i < categoryIds.size(); i++) {
+			  int catId = categoryIds.get(i);
+			  Log.e("INFO", "SELECT "+ CarnnectingContract.Event.COLUMN_NAME_ID +","+
+					  CarnnectingContract.Event.COLUMN_NAME_SUBJECT+","+
+					  CarnnectingContract.Event.COLUMN_NAME_START_TIME+" FROM " + CarnnectingContract.Event.TABLE_NAME+
+					  " WHERE "+CarnnectingContract.Event.COLUMN_NAME_CATEGORY_ID + " = " + catId);
+			  
+			  
+			  Cursor cursor = db.rawQuery(
+					  "SELECT "+ CarnnectingContract.Event.COLUMN_NAME_ID +","+
+							  CarnnectingContract.Event.COLUMN_NAME_SUBJECT+","+
+							  CarnnectingContract.Event.COLUMN_NAME_START_TIME+" FROM " + CarnnectingContract.Event.TABLE_NAME+
+							  " WHERE "+CarnnectingContract.Event.COLUMN_NAME_CATEGORY_ID + " = " + catId, 
+					  null);
+			  
+			  // Convert cursor to HomeItemModel
+			  SimpleDateFormat dateOnlyFormat = HomeItemModel.dateOnlyFormat;
+			  cursor.moveToFirst();
+			  while(!cursor.isAfterLast()) {
+				  int eventId = cursor.getInt(0);
+				  String subject = cursor.getString(1);
+				  String startDate = "01/01/1970";
+				  try {
+					  startDate = dateOnlyFormat.format(Event.dateFormat.parse(cursor.getString(2)));
+				  } catch (Exception e) {
+					  Log.e("ERROR", e.getStackTrace().toString());
+				  }
+				  
+				  // FIXME: should we discard all the past-due events?
+				  
+				  HomeItemModel it = new HomeItemModel();
+				  it.setEventId(eventId);
+				  it.setCategoryId(catId);
+				  it.setSubject(subject);
+				  it.setStartDate(startDate);
+				  homeItems.add(it);
+				  
+				  cursor.moveToNext();
+			  }
+		  }
+	  }
 	  
 	  private Event cursorToEvent(Cursor cursor) {
 		  // TODO: don't hardcode 0, 1, 2, 3... Instead, define them in contract class.
