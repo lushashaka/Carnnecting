@@ -26,7 +26,7 @@ public class FBShare extends Fragment {
 	public final String PENDING_PUBLISH_KEY = "pendingPublishReauthorization";
 	public boolean pendingPublishReauthorization = false;
 	
-	public void publishStory() {	
+	public void shareEvent() {	
 	    Session session = Session.getActiveSession();
 
 	    if (session != null){
@@ -67,7 +67,7 @@ public class FBShare extends Fragment {
 	                         Toast.LENGTH_SHORT).show();
 	                    } else {
 	                        Toast.makeText(FBConnect.context, 
-	                             postId,
+	                             "Event shared",
 	                             Toast.LENGTH_LONG).show();
 	                        
 	                        Log.i(TAG, "Event shared");

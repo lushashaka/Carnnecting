@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.carnnecting.entities.UserDataSource;
 import com.carnnecting.home.Home;
 import com.cmu.carnnecting.R;
 import com.facebook.Request;
@@ -45,7 +46,7 @@ public class FBConnect extends Fragment {
 	    shareButton.setOnClickListener(new View.OnClickListener() {
 	        @Override
 	        public void onClick(View v) {
-	            share.publishStory();        
+	            share.shareEvent();        
 	        }
 	    });
 
@@ -59,6 +60,12 @@ public class FBConnect extends Fragment {
 	        
 	        shareButton.setVisibility(View.VISIBLE);
 	        
+	        if (share.pendingPublishReauthorization && 
+	                state.equals(SessionState.OPENED_TOKEN_UPDATED)) {
+	            share.pendingPublishReauthorization = false;
+	            share.shareEvent();
+	        }
+	        
 	        Request.executeMeRequestAsync(session, new Request.GraphUserCallback() {
 
 				@Override
@@ -67,17 +74,25 @@ public class FBConnect extends Fragment {
 					        user.getName()));
 					Log.i(TAG, String.format("Username: %s\n\n", 
 					        user.getUsername()));
+					
+					// Insert username in DB
+					UserDataSource userDAO = new UserDataSource(getActivity().getApplication());
+					userDAO.open();
+					
+					String userName = user.getUsername();
+					userDAO.createUser(userName);
+					
+					int userId = userDAO.getUserIdByFbName(userName);;
+					
+					Log.i(TAG, "User ID: " + userId);
+					
+					// Launch "News Feed"
+					Intent intent = new Intent(getActivity().getApplicationContext(), Home.class);
+			        intent.putExtra("USERID", userId);
+			        
+					startActivity(intent);					
 				}
-	        });
-	        
-	        if (share.pendingPublishReauthorization && 
-	                state.equals(SessionState.OPENED_TOKEN_UPDATED)) {
-	            share.pendingPublishReauthorization = false;
-	            share.publishStory();
-	        }
-	        
-	        Intent intent = new Intent(this.getActivity().getApplicationContext(), Home.class);
-			startActivity(intent);
+	        });	        
 	    } else if (state.isClosed()) {
 	        Log.i(TAG, "Success: Logged out...");
 	        shareButton.setVisibility(View.INVISIBLE);
