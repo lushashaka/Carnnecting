@@ -28,6 +28,7 @@ public class FBConnect extends Fragment {
 	private FBShare share = new FBShare();
 	
 	private Button shareButton;
+	private int userId;
 	
 	public View onCreateView(LayoutInflater inflater, 
 	        ViewGroup container, 
@@ -82,7 +83,8 @@ public class FBConnect extends Fragment {
 					String userName = user.getUsername();
 					userDAO.createUser(userName);
 					
-					int userId = userDAO.getUserIdByFbName(userName);;
+					//int userId = userDAO.getUserIdByFbName(userName);;
+					userId = userDAO.getUserIdByFbName(userName);
 					
 					Log.i(TAG, "User ID: " + userId);
 					
@@ -154,4 +156,8 @@ public class FBConnect extends Fragment {
 	    outState.putBoolean(share.PENDING_PUBLISH_KEY, share.pendingPublishReauthorization);
 	    uiHelper.onSaveInstanceState(outState);
 	}	
+	
+	public int getUserId(){
+		return this.userId;
+	}
 }

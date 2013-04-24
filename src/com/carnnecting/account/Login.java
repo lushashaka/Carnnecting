@@ -36,6 +36,7 @@ public class Login extends FragmentActivity {
 	private SubscribeDataSource subscribeDAO;
 	private CategoryDataSource categoryDAO;
 	private EventDataSource eventDAO;
+	private int userId;
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -156,6 +157,8 @@ public class Login extends FragmentActivity {
 	        mainFragment = (FBConnect) getSupportFragmentManager()
 	        .findFragmentById(android.R.id.content);
 	    }
+		userId = mainFragment.getUserId();
+		Log.i(TAG, "User ID in login screen: " + userId);
 		setContentView(R.layout.activity_carnnecting_main);
 		
 	}
@@ -181,7 +184,7 @@ public class Login extends FragmentActivity {
 	        case R.id.categories:
 	        	intent = new Intent(this, CategoryMenu.class);
 	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	        	intent.putExtra("USERID", 1); //TODO: remove hard coded userId, should get current logged in userId
+	        	intent.putExtra("USERID", userId); //TODO: remove hard coded userId, should get current logged in userId
 	        	startActivity(intent);
 	        	return true;	
 	        default:
