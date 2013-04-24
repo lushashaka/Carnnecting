@@ -51,11 +51,11 @@ public class EventDetail extends Activity {
 		eventTimeTextView 	= (TextView) 	findViewById(R.id.eventDetailEventTimeTextView);
 		descriptionTextView = (TextView)	findViewById(R.id.eventDetailDescriptionTextView);
 		
-		eventDao = new EventDataSource(this);
+		eventDao = new EventDataSource(this.getApplication());
 		eventDao.open();
-		favoriteDao = new FavoriteDataSource(this);
+		favoriteDao = new FavoriteDataSource(this.getApplication());
 		favoriteDao.open();
-		RSVPDao = new RSVPDataSource(this);
+		RSVPDao = new RSVPDataSource(this.getApplication());
 		RSVPDao.open();
 		
 		Intent intent  = getIntent();
@@ -86,10 +86,6 @@ public class EventDetail extends Activity {
 			subjectTextView.setText("Oops..");
 			descriptionTextView.setText("Unrecognized userId: "+userId +" or eventId:"+eventId);
 		}
-		
-		eventDao.close();
-		RSVPDao.close();
-		favoriteDao.close();
 		
 	}
 	

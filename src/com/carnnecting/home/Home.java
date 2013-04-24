@@ -67,13 +67,13 @@ public class Home extends ListActivity {
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		
-		eventDao = new EventDataSource(this);
+		eventDao = new EventDataSource(this.getApplication());
 		eventDao.open();
-		categoryDao = new CategoryDataSource(this);
+		categoryDao = new CategoryDataSource(this.getApplication());
 		categoryDao.open();
-		favoriteDao = new FavoriteDataSource(this);
+		favoriteDao = new FavoriteDataSource(this.getApplication());
 		favoriteDao.open();
-		RSVPDao = new RSVPDataSource(this);
+		RSVPDao = new RSVPDataSource(this.getApplication());
 		RSVPDao.open();
 		
 		changedFavoriteEventIds = new HashMap<Integer, Boolean>();

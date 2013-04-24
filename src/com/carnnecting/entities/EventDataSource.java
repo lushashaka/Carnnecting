@@ -27,7 +27,8 @@ public class EventDataSource {
 	  };
 	  
 	  public EventDataSource (Context context) {
-		  dbHelper = new CarnnectingSQLiteOpenHelper(context);
+		  // dbHelper = new CarnnectingSQLiteOpenHelper(context);
+		  dbHelper = CarnnectingContract.getCarnnectingSQLiteOpenHelper(context);
 	  }
 	  
 	  public void open() throws SQLException {
@@ -36,7 +37,9 @@ public class EventDataSource {
 	  
 	  public void close() throws SQLException {
 		  db.close();
-		  dbHelper.close();
+		  // According to http://stackoverflow.com/questions/7930139/android-database-locked. It is only a file handle
+		  // and will be recycled once the application finishes.
+		  // dbHelper.close();
 	  }
 	  
 	  // TODO: fill in the (necessary subset of) CRUD operations here. For now we just need to read

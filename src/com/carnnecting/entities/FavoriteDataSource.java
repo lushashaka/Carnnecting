@@ -20,7 +20,8 @@ public class FavoriteDataSource {
 	};
 	  
 	public FavoriteDataSource (Context context) {
-		dbHelper = new CarnnectingSQLiteOpenHelper(context);
+		// dbHelper = new CarnnectingSQLiteOpenHelper(context);
+		dbHelper = CarnnectingContract.getCarnnectingSQLiteOpenHelper(context);
 	}
 	  
 	public void open() throws SQLException {
@@ -29,7 +30,9 @@ public class FavoriteDataSource {
 
 	public void close() throws SQLException {
 		db.close();
-		dbHelper.close();
+		// According to http://stackoverflow.com/questions/7930139/android-database-locked. It is only a file handle
+		// and will be recycled once the application finishes.
+		// dbHelper.close();
 	}
 
 	public boolean createFavorite(int userId, int eventId) {
