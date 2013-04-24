@@ -37,8 +37,9 @@ public class Login extends Activity {
 	private Button demoButton;
 	
 	// FIXME: To-Be-Removed. These are just to create the db and do bulk-populate in the first time. Using ADB shell is also feasible
-	 //private SQLiteDatabase db;
-	 //private CarnnectingSQLiteOpenHelper dbHelper;
+	private SQLiteDatabase db;
+	private CarnnectingSQLiteOpenHelper dbHelper;
+
 	
 	// FIXME: To-Be-Removed. These are to demo how to use DataSoruce classes
 	private SubscribeDataSource subscribeDAO;
@@ -49,12 +50,13 @@ public class Login extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_carnnecting_main);
 		
+		
 		//
 		// FIXME: To-Be-Removed. These are to demo how to use DataSoruce (DAO) classes
 		//
 		
 		// Testing subscribeDAO
-		subscribeDAO = new SubscribeDataSource(this);
+		subscribeDAO = new SubscribeDataSource(this.getApplication());
 		subscribeDAO.open();
 		ArrayList<Integer> subscribedCatIds;
 		ArrayList<Subscribe> subscribes = subscribeDAO.getSubscribeByUserId(1);
@@ -64,7 +66,7 @@ public class Login extends Activity {
 		}
 		
 		// Tesing categoryDAO
-		categoryDAO = new CategoryDataSource(this);
+		categoryDAO = new CategoryDataSource(this.getApplication());
 		categoryDAO.open();
 		ArrayList<Category> subscribedCategories = categoryDAO.getSubscribedCategoriesByUserId(1);
 		for (int i = 0; i < subscribedCategories.size(); i++) {
@@ -73,25 +75,25 @@ public class Login extends Activity {
 		}
 		
 		// Testing EventDAO
-		eventDAO = new EventDataSource(this);
+		eventDAO = new EventDataSource(this.getApplication());
 		eventDAO.open();
 		ArrayList<Event> events = eventDAO.getAllEvents();
 		for (int i = 0; i < events.size(); i+=5) {
 			Log.e("INFO", events.get(i).toString());
 		}
 		
-		/*
+		
 		//
 		// FIXME: To-Be-Removed. These are just to create the db and do bulk-populate in the first time. Using ADB shell is also feasible
 		//
 		
-		dbHelper = new CarnnectingSQLiteOpenHelper(this);
+		dbHelper = CarnnectingContract.getCarnnectingSQLiteOpenHelper(this.getApplication());
 		db = dbHelper.getWritableDatabase();
 		try {
 			int nCategories = 10;
 			int nEventsPerCategory = 20;
 			
-			// db.beginTransaction();
+			db.beginTransaction();
 			// Create a single user
 			ContentValues values = new ContentValues();
 			values.put(CarnnectingContract.User.COLUMN_NAME_ID, 1);
@@ -136,7 +138,6 @@ public class Login extends Activity {
 		} finally {
 			// db.endTransaction();
 		}
-		*/
 		
 		demoButton = (Button) findViewById(R.id.demoOnlyButton);
 		
@@ -146,6 +147,7 @@ public class Login extends Activity {
 				startActivity(intent);
 			}
 		});
+		
 		
 		//test comment
 		

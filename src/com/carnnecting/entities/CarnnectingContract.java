@@ -3,6 +3,7 @@ package com.carnnecting.entities;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import android.content.Context;
 import android.util.Log;
 
 public class CarnnectingContract {
@@ -77,5 +78,13 @@ public class CarnnectingContract {
 	
 	public static synchronized void setNowDatabaseLastUpdateTimestamp() {
 		databaseLastUpdateTimestamp = new Long(new Date().getTime());
+	}
+	
+	// The only SQLiteOpenHelper in the system. I don't know where to put it but here;
+	private static CarnnectingSQLiteOpenHelper dbHelper = null;
+	public static synchronized CarnnectingSQLiteOpenHelper getCarnnectingSQLiteOpenHelper(Context context) { // Should be got via getApplication()
+		if (dbHelper == null)
+			dbHelper = new CarnnectingSQLiteOpenHelper(context);
+		return dbHelper;
 	}
 }

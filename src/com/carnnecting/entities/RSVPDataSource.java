@@ -20,7 +20,8 @@ public class RSVPDataSource {
 	};
 	  
 	public RSVPDataSource (Context context) {
-		dbHelper = new CarnnectingSQLiteOpenHelper(context);
+		// dbHelper = new CarnnectingSQLiteOpenHelper(context);
+		dbHelper = CarnnectingContract.getCarnnectingSQLiteOpenHelper(context);
 	}
 	  
 	public void open() throws SQLException {
@@ -29,7 +30,9 @@ public class RSVPDataSource {
 
 	public void close() throws SQLException {
 		db.close();
-		dbHelper.close();
+		// According to http://stackoverflow.com/questions/7930139/android-database-locked. It is only a file handle
+		// and will be recycled once the application finishes.
+		// dbHelper.close();
 	}
 
 	public boolean createRSVP(int userId, int eventId) {
@@ -53,6 +56,17 @@ public class RSVPDataSource {
 			ret = true;
 		CarnnectingContract.setNowDatabaseLastUpdateTimestamp();
 		return ret;
+	}
+	
+	public RSVP getAnRSVPByUserIdAndEventId(int userId, int eventId) {
+		Cursor cursor = db.rawQuery("SELECT * FROM "+CarnnectingContract.RSVP.TABLE_NAME + " WHERE " + 
+					CarnnectingContract.RSVP.COLUMN_NAME_USER_ID+" = "+userId+" AND "+ 
+					CarnnectingContract.RSVP.COLUMN_NAME_EVENT_ID+" = "+eventId, null);
+		if (cursor!= null && cursor.getCount() > 0) {
+			// return cursorToRSVP(); FIXME: lets implement this method later
+			return new RSVP(userId, eventId);
+		} else 
+			return null;
 	}
 	
 	public ArrayList<Integer> getRSVPEventIdsByUserId(int userId) {

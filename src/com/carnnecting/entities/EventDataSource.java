@@ -27,7 +27,8 @@ public class EventDataSource {
 	  };
 	  
 	  public EventDataSource (Context context) {
-		  dbHelper = new CarnnectingSQLiteOpenHelper(context);
+		  // dbHelper = new CarnnectingSQLiteOpenHelper(context);
+		  dbHelper = CarnnectingContract.getCarnnectingSQLiteOpenHelper(context);
 	  }
 	  
 	  public void open() throws SQLException {
@@ -36,7 +37,9 @@ public class EventDataSource {
 	  
 	  public void close() throws SQLException {
 		  db.close();
-		  dbHelper.close();
+		  // According to http://stackoverflow.com/questions/7930139/android-database-locked. It is only a file handle
+		  // and will be recycled once the application finishes.
+		  // dbHelper.close();
 	  }
 	  
 	  // TODO: fill in the (necessary subset of) CRUD operations here. For now we just need to read
@@ -61,6 +64,14 @@ public class EventDataSource {
 		  return events;
 	  }
 	  
+	  public Event getAnEventByEventId(int eventId) {
+		  Cursor cursor = db.rawQuery(" SELECT * FROM "+CarnnectingContract.Event.TABLE_NAME+" WHERE "+
+				  			CarnnectingContract.Event.COLUMN_NAME_ID+" = "+eventId, null);
+
+		  cursor.moveToFirst();
+		  // We should have just one record returned
+		  return cursorToEvent(cursor);
+	  }
 	  
 	  public void getHomeItemModelsByCategoryIds(ArrayList<Integer> categoryIds, ArrayList<HomeItemModel> homeItems) 
 			  throws SQLException 

@@ -20,7 +20,8 @@ public class FavoriteDataSource {
 	};
 	  
 	public FavoriteDataSource (Context context) {
-		dbHelper = new CarnnectingSQLiteOpenHelper(context);
+		// dbHelper = new CarnnectingSQLiteOpenHelper(context);
+		dbHelper = CarnnectingContract.getCarnnectingSQLiteOpenHelper(context);
 	}
 	  
 	public void open() throws SQLException {
@@ -29,7 +30,9 @@ public class FavoriteDataSource {
 
 	public void close() throws SQLException {
 		db.close();
-		dbHelper.close();
+		// According to http://stackoverflow.com/questions/7930139/android-database-locked. It is only a file handle
+		// and will be recycled once the application finishes.
+		// dbHelper.close();
 	}
 
 	public boolean createFavorite(int userId, int eventId) {
@@ -52,6 +55,17 @@ public class FavoriteDataSource {
 			ret = true;
 		CarnnectingContract.setNowDatabaseLastUpdateTimestamp();
 		return ret;
+	}
+	
+	public Favorite getAnFavoriteByUserIdAndEventId(int userId, int eventId) {
+		Cursor cursor = db.rawQuery("SELECT * FROM "+CarnnectingContract.Favorite.TABLE_NAME + " WHERE " + 
+					CarnnectingContract.Favorite.COLUMN_NAME_USER_ID+" = "+userId+" AND "+ 
+					CarnnectingContract.Favorite.COLUMN_NAME_EVENT_ID+" = "+eventId, null);
+		if (cursor!= null && cursor.getCount() > 0) {
+			// return cursorToRSVP(); FIXME: lets implement this method later
+			return new Favorite(userId, eventId);
+		} else 
+			return null;
 	}
 	
 	public ArrayList<Integer> getFavoriteEventIdsByUserId(int userId) {
