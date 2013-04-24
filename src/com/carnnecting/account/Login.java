@@ -5,12 +5,17 @@ import android.support.v4.app.FragmentActivity;
 
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.carnnecting.ws.FBConnect;
 import com.cmu.carnnecting.R;
+import com.carnnecting.category.CategoryMenu;
 import com.carnnecting.entities.*;
+import com.carnnecting.home.Home;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.SQLException;
 
 // FIXME: To-Be-Removed. These are just to create the db and do bulk-populate in the first time. Using ADB shell is also feasible
@@ -160,6 +165,28 @@ public class Login extends FragmentActivity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.carnnecting_main, menu);
 		return true;
+	}
+	
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent intent;
+	    switch (item.getItemId()) {
+	        case R.id.news_feed:
+	            // app icon in action bar clicked; go home
+	            intent = new Intent(this, Home.class);
+	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	            startActivity(intent);
+	            return true;
+	        case R.id.categories:
+	        	intent = new Intent(this, CategoryMenu.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        	intent.putExtra("USERID", 1); //TODO: remove hard coded userId, should get current logged in userId
+	        	startActivity(intent);
+	        	return true;	
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
 	}
 	
 }
