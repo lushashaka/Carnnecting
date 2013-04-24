@@ -64,6 +64,8 @@ public class CategoryMenu extends Activity {
         categoryDAO = new CategoryDataSource(this.getApplication());
 		categoryDAO.open();
 		ArrayList<Category> subscribedCategories = categoryDAO.getSubscribedCategoriesByUserId(userId);
+		ArrayList<Category> allCategories = categoryDAO.getAllCategories();
+		
 		for (int i = 0; i < subscribedCategories.size(); i++) {
 			Category category = subscribedCategories.get(i);
 			ExpandListChild childCat = new ExpandListChild();
@@ -77,24 +79,21 @@ public class CategoryMenu extends Activity {
         ExpandListGroup otherCats = new ExpandListGroup();
         otherCats.setName("Other Categories");
         childList = new ArrayList<ExpandListChild>();
-        ExpandListChild ch2_1 = new ExpandListChild();
-        ch2_1.setName("A movie");
-        ch2_1.setTag(null);
-        childList.add(ch2_1);
-        ExpandListChild ch2_2 = new ExpandListChild();
-        ch2_2.setName("An other movie");
-        ch2_2.setTag(null);
-        childList.add(ch2_2);
-        ExpandListChild ch2_3 = new ExpandListChild();
-        ch2_3.setName("And an other movie");
-        ch2_3.setTag(null);
-        childList.add(ch2_3);
+        ArrayList<Category> otherCategories = categoryDAO.getOtherCategoriesByUserId(userId);
+
+		for (int i = 0; i < otherCategories.size(); i++) {
+			Category category = otherCategories.get(i);
+			ExpandListChild childCat = new ExpandListChild();
+			childCat.setName(category.getName());
+			childCat.setTag(null);
+			childList.add(childCat);
+		}
+
         otherCats.setItems(childList);
         
         ExpandListGroup allCats = new ExpandListGroup();
         childList = new ArrayList<ExpandListChild>();
         allCats.setName("All Categories");
-        ArrayList<Category> allCategories = categoryDAO.getAllCategories();
 		for (int i = 0; i < allCategories.size(); i++) {
 			Category category = allCategories.get(i);
 			ExpandListChild childCat = new ExpandListChild();

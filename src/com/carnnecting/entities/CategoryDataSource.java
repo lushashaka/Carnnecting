@@ -100,6 +100,26 @@ public class CategoryDataSource {
 		  
 		  return subscribedCategories;
 	  }
+	  
+	  public ArrayList<Category> getOtherCategoriesByUserId(int userId) throws SQLException {
+		  ArrayList<Category> otherCategories = new ArrayList<Category>();
+		  
+		  Cursor cursor = db.rawQuery(
+				  "SELECT * from "+CarnnectingContract.Category.TABLE_NAME+" WHERE "+ 
+						  CarnnectingContract.Category.COLUMN_NAME_ID + " NOT IN " + "(" +
+						  	"SELECT "+CarnnectingContract.Subscribe.COLUMN_NAME_CATEGORY_ID+" FROM " + CarnnectingContract.Subscribe.TABLE_NAME + " WHERE "
+						  	+ CarnnectingContract.Subscribe.COLUMN_NAME_USER_ID + "=="+ userId+
+						  ")", 
+				  null);
+		  
+		  cursor.moveToFirst();
+		  while (!cursor.isAfterLast()) {
+			  otherCategories.add(cursorToCategory(cursor));
+			  cursor.moveToNext();
+		  }
+		  
+		  return otherCategories;
+	  }
 
 	  private Category cursorToCategory(Cursor cursor) {
 		  // TODO: don't hardcode 0, 1, 2, 3... Instead, define them in contract class.
