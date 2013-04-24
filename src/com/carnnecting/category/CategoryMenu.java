@@ -54,7 +54,7 @@ public class CategoryMenu extends Activity {
         
         myCats.setName("My Categories");
         
-        categoryDAO = new CategoryDataSource(this);
+        categoryDAO = new CategoryDataSource(this.getApplication());
 		categoryDAO.open();
 		ArrayList<Category> subscribedCategories = categoryDAO.getSubscribedCategoriesByUserId(1);
 		for (int i = 0; i < subscribedCategories.size(); i++) {

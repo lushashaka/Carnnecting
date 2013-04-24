@@ -66,6 +66,8 @@ public class EventDetail extends Activity {
 			userId = intent.getExtras().getInt("userId");
 		}
 		
+		// FIXME: save userId and eventId? onSavedInstance
+		
 		
 		if (userId != -1 && eventId != -1) {
 			Event event = eventDao.getAnEventByEventId(eventId);

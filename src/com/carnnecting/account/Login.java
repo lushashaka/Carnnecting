@@ -53,7 +53,7 @@ public class Login extends Activity {
 		//
 		// FIXME: To-Be-Removed. These are to demo how to use DataSoruce (DAO) classes
 		//
-		
+		/*
 		// Testing subscribeDAO
 		subscribeDAO = new SubscribeDataSource(this.getApplication());
 		subscribeDAO.open();
@@ -80,7 +80,7 @@ public class Login extends Activity {
 		for (int i = 0; i < events.size(); i+=5) {
 			Log.e("INFO", events.get(i).toString());
 		}
-		
+		*/
 		
 		//
 		// FIXME: To-Be-Removed. These are just to create the db and do bulk-populate in the first time. Using ADB shell is also feasible

@@ -274,6 +274,7 @@ public class Home extends ListActivity {
 					}
 				}			
 			});
+			holder.favoriteCheckBox.setText("  ");
 			
 			holder.subjectTextView.setText(homeItems.get(position).getSubject());
 			holder.subjectTextView.setTypeface(Typeface.DEFAULT_BOLD, 0);

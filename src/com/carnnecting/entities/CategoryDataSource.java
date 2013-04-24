@@ -33,7 +33,7 @@ public class CategoryDataSource {
 	  }
 	  
 	  public void close() throws SQLException {
-		  db.close();
+		  // db.close();
 		  // dbHelper.close();
 		  // According to http://stackoverflow.com/questions/7930139/android-database-locked. It is only a file handle
 		  // and will be recycled once the application finishes.
