@@ -99,7 +99,7 @@ public class Login extends FragmentActivity {
 			int nCategories = 10;
 			int nEventsPerCategory = 20;
 			
-			db.beginTransaction();
+			//db.beginTransaction();
 			// Create a single user
 			ContentValues values = new ContentValues();
 //			values.put(CarnnectingContract.User.COLUMN_NAME_ID, 1);

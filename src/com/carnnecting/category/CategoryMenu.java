@@ -92,6 +92,7 @@ public class CategoryMenu extends Activity {
 			ExpandListChild childCat = new ExpandListChild();
 			childCat.setName(category.getName());
 			childCat.setId(category.getId());
+			childCat.setSubscribed(true);
 			childList.add(childCat);
 		}
         
@@ -107,6 +108,7 @@ public class CategoryMenu extends Activity {
 			ExpandListChild childCat = new ExpandListChild();
 			childCat.setName(category.getName());
 			childCat.setId(category.getId());
+			childCat.setSubscribed(false);
 			childList.add(childCat);
 		}
 

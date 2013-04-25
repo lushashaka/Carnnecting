@@ -82,7 +82,7 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
 		// TODO Auto-generated method stub
 		
 		holder.subscribeCheckBox.setOnCheckedChangeListener(null);
-		holder.subscribeCheckBox.setChecked(false);
+		holder.subscribeCheckBox.setChecked(child.isSubscribed());
 		holder.subscribeCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
 			@Override
 			public void onCheckedChanged(CompoundButton button,
