@@ -7,11 +7,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 
-// HERE
-// import com.carnnecting.ws.FBConnect;
+import com.carnnecting.ws.FBConnect;
 import com.cmu.carnnecting.R;
 import com.carnnecting.category.CategoryMenu;
 import com.carnnecting.entities.*;
@@ -28,8 +25,7 @@ import java.text.SimpleDateFormat;
 
 public class Login extends FragmentActivity {
 
-	// HERE
-	// private FBConnect mainFragment;
+	private FBConnect mainFragment;
 	private static final String TAG = "Login";
 
 	// FIXME: To-Be-Removed. These are just to create the db and do bulk-populate in the first time. Using ADB shell is also feasible
@@ -41,8 +37,6 @@ public class Login extends FragmentActivity {
 	private CategoryDataSource categoryDAO;
 	private EventDataSource eventDAO;
 	private int userId;
-	
-	Button btn;
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -105,12 +99,12 @@ public class Login extends FragmentActivity {
 			int nCategories = 10;
 			int nEventsPerCategory = 20;
 			
-			// db.beginTransaction();
+			db.beginTransaction();
 			// Create a single user
 			ContentValues values = new ContentValues();
-			values.put(CarnnectingContract.User.COLUMN_NAME_ID, 1);
-			values.put(CarnnectingContract.User.COLUMN_NAME_FB_LOGIN, "user1@fb.com");
-			db.insert(CarnnectingContract.User.TABLE_NAME, null, values);
+//			values.put(CarnnectingContract.User.COLUMN_NAME_ID, 1);
+//			values.put(CarnnectingContract.User.COLUMN_NAME_FB_LOGIN, "user1@fb.com");
+//			db.insert(CarnnectingContract.User.TABLE_NAME, null, values);
 //			Log.e("INFO", "user inserted");
 			
 			// Create several categories
@@ -151,8 +145,6 @@ public class Login extends FragmentActivity {
 			// db.endTransaction();
 		}
 		
-		
-		/*
 		if (savedInstanceState == null) {
 	        // Add the fragment on initial activity setup
 	        mainFragment = new FBConnect();
@@ -167,19 +159,8 @@ public class Login extends FragmentActivity {
 	    }
 		userId = mainFragment.getUserId();
 		Log.i(TAG, "User ID in login screen: " + userId);
-		*/
-		
 		setContentView(R.layout.activity_carnnecting_main);
-		btn = (Button) findViewById(R.id.demoOnlyButton);
-		btn.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(v.getContext(), Home.class);
-				intent.putExtra("USERID", 1);
-				startActivity(intent);
-			}
-		});
+		
 	}
 	
 	@Override
