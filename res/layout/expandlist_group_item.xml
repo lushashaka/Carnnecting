@@ -10,7 +10,7 @@
         android:id="@+id/tvGroup"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="15dp"
+        android:layout_marginLeft="40dp"
         android:textSize="50dip" />
 
 </LinearLayout>
