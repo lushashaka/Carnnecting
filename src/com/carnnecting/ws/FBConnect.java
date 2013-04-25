@@ -1,5 +1,6 @@
 package com.carnnecting.ws;
-
+// HERE
+/*
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -161,3 +162,4 @@ public class FBConnect extends Fragment {
 		return this.userId;
 	}
 }
+*/
