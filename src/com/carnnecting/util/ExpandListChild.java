@@ -3,7 +3,7 @@ package com.carnnecting.util;
 public class ExpandListChild {
 
 	private String Name;
-	private String Tag;
+	private int Id;
 	
 	public String getName() {
 		return Name;
@@ -11,10 +11,10 @@ public class ExpandListChild {
 	public void setName(String Name) {
 		this.Name = Name;
 	}
-	public String getTag() {
-		return Tag;
+	public int getId() {
+		return Id;
 	}
-	public void setTag(String Tag) {
-		this.Tag = Tag;
+	public void setId(int Id) {
+		this.Id = Id;
 	}
 }

@@ -8,7 +8,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ExpandableListView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.carnnecting.home.Home;
 import com.carnnecting.util.*;
@@ -21,9 +29,11 @@ import android.database.SQLException;
 
 // FIXME: To-Be-Removed. These are just to create the db and do bulk-populate in the first time. Using ADB shell is also feasible
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Typeface;
 
 // FIXME: To-Be-Removed. These are to demo how to use DataSoruce classes
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 
@@ -34,6 +44,8 @@ public class CategoryMenu extends Activity {
 	private ExpandableListView ExpandList;
 	private CategoryDataSource categoryDAO;
 	
+	private HashMap<Integer, Boolean> changedSubscribedCatIds;
+	
 	private int	userId;
 	
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,13 +54,14 @@ public class CategoryMenu extends Activity {
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		ExpandList = (ExpandableListView) findViewById(R.id.categoryListView);
+		changedSubscribedCatIds = new HashMap<Integer, Boolean>();
 		Intent intent  = getIntent();
 		userId = -1;
 		if (intent != null && intent.getExtras() != null) {
 			userId = intent.getExtras().getInt("USERID");
 		}
         ExpListItems = SetStandardGroups(userId);
-        ExpAdapter = new ExpandListAdapter(CategoryMenu.this, ExpListItems);
+        ExpAdapter = new ExpandListAdapter(CategoryMenu.this, ExpListItems, changedSubscribedCatIds);
         ExpandList.setAdapter(ExpAdapter);
 
 		
@@ -70,7 +83,7 @@ public class CategoryMenu extends Activity {
 			Category category = subscribedCategories.get(i);
 			ExpandListChild childCat = new ExpandListChild();
 			childCat.setName(category.getName());
-			childCat.setTag(null);
+			childCat.setId(category.getId());
 			childList.add(childCat);
 		}
         
@@ -85,7 +98,7 @@ public class CategoryMenu extends Activity {
 			Category category = otherCategories.get(i);
 			ExpandListChild childCat = new ExpandListChild();
 			childCat.setName(category.getName());
-			childCat.setTag(null);
+			childCat.setId(category.getId());
 			childList.add(childCat);
 		}
 
@@ -98,7 +111,7 @@ public class CategoryMenu extends Activity {
 			Category category = allCategories.get(i);
 			ExpandListChild childCat = new ExpandListChild();
 			childCat.setName(category.getName());
-			childCat.setTag(null);
+			childCat.setId(category.getId());
 			childList.add(childCat);
 		}
 		allCats.setItems(childList);
@@ -109,6 +122,15 @@ public class CategoryMenu extends Activity {
         
         return parentList;
     }
+	
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		
+	}
+	
+
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
