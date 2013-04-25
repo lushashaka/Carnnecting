@@ -154,5 +154,9 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
 		// TODO Auto-generated method stub
 		return true;
 	}
+	
+	public HashMap<Integer, Boolean> getSubscribedCatIds(){
+		return changedSubscribedCatIds;
+	}
 
 }

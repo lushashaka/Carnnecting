@@ -33,7 +33,11 @@ import android.graphics.Typeface;
 
 // FIXME: To-Be-Removed. These are to demo how to use DataSoruce classes
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 
 
 
@@ -43,6 +47,8 @@ public class CategoryMenu extends Activity {
 	private ArrayList<ExpandListGroup> ExpListItems;
 	private ExpandableListView ExpandList;
 	private CategoryDataSource categoryDAO;
+	private SubscribeDataSource subscribeDAO;
+	private Long lastDatabaseLoadTimestamp = null;
 	
 	private HashMap<Integer, Boolean> changedSubscribedCatIds;
 	
@@ -56,6 +62,8 @@ public class CategoryMenu extends Activity {
 		ExpandList = (ExpandableListView) findViewById(R.id.categoryListView);
 		changedSubscribedCatIds = new HashMap<Integer, Boolean>();
 		Intent intent  = getIntent();
+		subscribeDAO = new SubscribeDataSource(this.getApplication());
+		subscribeDAO.open();
 		userId = -1;
 		if (intent != null && intent.getExtras() != null) {
 			userId = intent.getExtras().getInt("USERID");
@@ -123,11 +131,31 @@ public class CategoryMenu extends Activity {
         return parentList;
     }
 	
+	@Override
+	public void onResume(){
+		super.onResume();
+		ExpListItems = SetStandardGroups(userId);
+		changedSubscribedCatIds = ExpAdapter.getSubscribedCatIds();
+	}
 	
 	@Override
 	public void onPause() {
 		super.onPause();
+		changedSubscribedCatIds = ExpAdapter.getSubscribedCatIds();
+		for (int categoryId : changedSubscribedCatIds.keySet()){
+			boolean isSubscribed = changedSubscribedCatIds.get(categoryId);
+			if (isSubscribed) {
+				if (!subscribeDAO.createSubscribe(userId, categoryId)) {
+					Log.e("ERROR", "Error creating a new Subscribe Cat entry");
+				}
+			} else {
+				if(!subscribeDAO.deleteSubscribe(userId, categoryId)) {
+					Log.e("ERROR", "Error deleting a new Subscribe Cat entry");
+				}
+			}
+		}
 		
+		changedSubscribedCatIds.clear();
 	}
 	
 
@@ -161,4 +189,5 @@ public class CategoryMenu extends Activity {
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
+	
 }
