@@ -33,7 +33,7 @@ public class CategoryDataSource {
 	  }
 	  
 	  public void close() throws SQLException {
-		  db.close();
+		  // db.close();
 		  // dbHelper.close();
 		  // According to http://stackoverflow.com/questions/7930139/android-database-locked. It is only a file handle
 		  // and will be recycled once the application finishes.
@@ -99,6 +99,26 @@ public class CategoryDataSource {
 		  }
 		  
 		  return subscribedCategories;
+	  }
+	  
+	  public ArrayList<Category> getOtherCategoriesByUserId(int userId) throws SQLException {
+		  ArrayList<Category> otherCategories = new ArrayList<Category>();
+		  
+		  Cursor cursor = db.rawQuery(
+				  "SELECT * from "+CarnnectingContract.Category.TABLE_NAME+" WHERE "+ 
+						  CarnnectingContract.Category.COLUMN_NAME_ID + " NOT IN " + "(" +
+						  	"SELECT "+CarnnectingContract.Subscribe.COLUMN_NAME_CATEGORY_ID+" FROM " + CarnnectingContract.Subscribe.TABLE_NAME + " WHERE "
+						  	+ CarnnectingContract.Subscribe.COLUMN_NAME_USER_ID + "=="+ userId+
+						  ")", 
+				  null);
+		  
+		  cursor.moveToFirst();
+		  while (!cursor.isAfterLast()) {
+			  otherCategories.add(cursorToCategory(cursor));
+			  cursor.moveToNext();
+		  }
+		  
+		  return otherCategories;
 	  }
 
 	  private Category cursorToCategory(Cursor cursor) {

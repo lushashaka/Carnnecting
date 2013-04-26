@@ -8,22 +8,38 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ExpandableListView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.carnnecting.home.Home;
 import com.carnnecting.util.*;
 import com.carnnecting.widget.*;
 import com.cmu.carnnecting.R;
 import com.carnnecting.entities.*;
+import com.carnnecting.event.EventDetail;
+import com.carnnecting.category.CategoryDetail;
 
 import android.database.SQLException;
 
 
 // FIXME: To-Be-Removed. These are just to create the db and do bulk-populate in the first time. Using ADB shell is also feasible
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Typeface;
 
 // FIXME: To-Be-Removed. These are to demo how to use DataSoruce classes
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 
 
 
@@ -33,6 +49,12 @@ public class CategoryMenu extends Activity {
 	private ArrayList<ExpandListGroup> ExpListItems;
 	private ExpandableListView ExpandList;
 	private CategoryDataSource categoryDAO;
+	private SubscribeDataSource subscribeDAO;
+	private Long lastDatabaseLoadTimestamp = null;
+	
+	private HashMap<Integer, Boolean> changedSubscribedCatIds;
+	
+	private int	userId;
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -40,14 +62,22 @@ public class CategoryMenu extends Activity {
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		ExpandList = (ExpandableListView) findViewById(R.id.categoryListView);
-        ExpListItems = SetStandardGroups();
-        ExpAdapter = new ExpandListAdapter(CategoryMenu.this, ExpListItems);
+		changedSubscribedCatIds = new HashMap<Integer, Boolean>();
+		Intent intent  = getIntent();
+		subscribeDAO = new SubscribeDataSource(this.getApplication());
+		subscribeDAO.open();
+		userId = -1;
+		if (intent != null && intent.getExtras() != null) {
+			userId = intent.getExtras().getInt("USERID");
+		}
+        ExpListItems = SetStandardGroups(userId);
+        ExpAdapter = new ExpandListAdapter(CategoryMenu.this, ExpListItems, changedSubscribedCatIds);
         ExpandList.setAdapter(ExpAdapter);
 
 		
 	}
 	
-	public ArrayList<ExpandListGroup> SetStandardGroups() {
+	public ArrayList<ExpandListGroup> SetStandardGroups(int userId) {
     	ArrayList<ExpandListGroup> parentList = new ArrayList<ExpandListGroup>();
     	ArrayList<ExpandListChild> childList = new ArrayList<ExpandListChild>();
         ExpandListGroup myCats = new ExpandListGroup();
@@ -56,15 +86,15 @@ public class CategoryMenu extends Activity {
         
         categoryDAO = new CategoryDataSource(this.getApplication());
 		categoryDAO.open();
-		ArrayList<Category> subscribedCategories = categoryDAO.getSubscribedCategoriesByUserId(1);
+		ArrayList<Category> subscribedCategories = categoryDAO.getSubscribedCategoriesByUserId(userId);
 		ArrayList<Category> allCategories = categoryDAO.getAllCategories();
-		ArrayList<Category> otherCategories = new ArrayList<Category>();
 		
 		for (int i = 0; i < subscribedCategories.size(); i++) {
 			Category category = subscribedCategories.get(i);
 			ExpandListChild childCat = new ExpandListChild();
 			childCat.setName(category.getName());
-			childCat.setTag(null);
+			childCat.setId(category.getId());
+			childCat.setSubscribed(true);
 			childList.add(childCat);
 		}
         
@@ -73,18 +103,17 @@ public class CategoryMenu extends Activity {
         ExpandListGroup otherCats = new ExpandListGroup();
         otherCats.setName("Other Categories");
         childList = new ArrayList<ExpandListChild>();
-        ExpandListChild ch2_1 = new ExpandListChild();
-        ch2_1.setName("A movie");
-        ch2_1.setTag(null);
-        childList.add(ch2_1);
-        ExpandListChild ch2_2 = new ExpandListChild();
-        ch2_2.setName("An other movie");
-        ch2_2.setTag(null);
-        childList.add(ch2_2);
-        ExpandListChild ch2_3 = new ExpandListChild();
-        ch2_3.setName("And an other movie");
-        ch2_3.setTag(null);
-        childList.add(ch2_3);
+        ArrayList<Category> otherCategories = categoryDAO.getOtherCategoriesByUserId(userId);
+
+		for (int i = 0; i < otherCategories.size(); i++) {
+			Category category = otherCategories.get(i);
+			ExpandListChild childCat = new ExpandListChild();
+			childCat.setName(category.getName());
+			childCat.setId(category.getId());
+			childCat.setSubscribed(false);
+			childList.add(childCat);
+		}
+
         otherCats.setItems(childList);
         
         ExpandListGroup allCats = new ExpandListGroup();
@@ -94,7 +123,7 @@ public class CategoryMenu extends Activity {
 			Category category = allCategories.get(i);
 			ExpandListChild childCat = new ExpandListChild();
 			childCat.setName(category.getName());
-			childCat.setTag(null);
+			childCat.setId(category.getId());
 			childList.add(childCat);
 		}
 		allCats.setItems(childList);
@@ -105,6 +134,43 @@ public class CategoryMenu extends Activity {
         
         return parentList;
     }
+	
+	@Override
+	public void onResume(){
+		super.onResume();
+		ExpListItems = SetStandardGroups(userId);
+		changedSubscribedCatIds = ExpAdapter.getSubscribedCatIds();
+		ExpAdapter.notifyDataSetChanged();
+	}
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		changedSubscribedCatIds = ExpAdapter.getSubscribedCatIds();
+		for (int categoryId : changedSubscribedCatIds.keySet()){
+			boolean isSubscribed = changedSubscribedCatIds.get(categoryId);
+			if (isSubscribed) {
+				if (!subscribeDAO.createSubscribe(userId, categoryId)) {
+					Log.e("ERROR", "Error creating a new Subscribe Cat entry");
+				}
+			} else {
+				if(!subscribeDAO.deleteSubscribe(userId, categoryId)) {
+					Log.e("ERROR", "Error deleting a new Subscribe Cat entry");
+				}
+			}
+		}
+		
+		changedSubscribedCatIds.clear();
+	}
+	
+	public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id){
+		Intent categoryDetailIntent = new Intent(v.getContext(), CategoryDetail.class);
+		// FIXME: the userId variable is now hardcoded
+		categoryDetailIntent.putExtra("userId", userId);
+		categoryDetailIntent.putExtra("categoryId", ExpListItems.get(groupPosition).getItems().get(childPosition).getId());
+		startActivity(categoryDetailIntent);
+		return true;
+	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -127,6 +193,7 @@ public class CategoryMenu extends Activity {
 	        case R.id.categories:
 	        	intent = new Intent(this, CategoryMenu.class);
 	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        	intent.putExtra("USERID", userId);
 	        	startActivity(intent);
 	        	return true;
 	        //TODO: add more cases for action bar
@@ -134,4 +201,5 @@ public class CategoryMenu extends Activity {
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
+	
 }

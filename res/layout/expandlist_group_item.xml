@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="55dip"
+    android:layout_height="400dp"
+    android:padding="10dp" 
     android:orientation="vertical" >
 
 
@@ -9,7 +10,7 @@
         android:id="@+id/tvGroup"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="15dp"
-        android:textSize="17dip" />
+        android:layout_marginLeft="40dp"
+        android:textSize="50dip" />
 
 </LinearLayout>
