@@ -10,6 +10,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ExpandableListView;
 
 public class CategoryDetail extends Activity {
@@ -26,8 +27,11 @@ public class CategoryDetail extends Activity {
 		
 		userId = -1;
 		if (intent != null && intent.getExtras() != null) {
+			
 			userId = intent.getExtras().getInt("userId");
 			categoryId = intent.getExtras().getInt("categoryId");
+			Log.i("In Category Detail", "userId is "+ userId + " categoryId is " + categoryId);
+			
 		}
         
 

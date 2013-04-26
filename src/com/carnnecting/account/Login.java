@@ -184,7 +184,7 @@ public class Login extends FragmentActivity {
 	        case R.id.categories:
 	        	intent = new Intent(this, CategoryMenu.class);
 	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	        	intent.putExtra("USERID", userId); //TODO: remove hard coded userId, should get current logged in userId
+	        	intent.putExtra("userId", userId); //TODO: remove hard coded userId, should get current logged in userId
 	        	startActivity(intent);
 	        	return true;	
 	        default:

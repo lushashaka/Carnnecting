@@ -70,7 +70,7 @@ public class CategoryMenu extends Activity {
 		subscribeDAO.open();
 		userId = -1;
 		if (intent != null && intent.getExtras() != null) {
-			userId = intent.getExtras().getInt("USERID");
+			userId = intent.getExtras().getInt("userId");
 		}
         ExpListItems = SetStandardGroups(userId);
         ExpAdapter = new ExpandListAdapter(CategoryMenu.this, ExpListItems, changedSubscribedCatIds, userId);
@@ -202,7 +202,7 @@ public class CategoryMenu extends Activity {
 	        case R.id.categories:
 	        	intent = new Intent(this, CategoryMenu.class);
 	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	        	intent.putExtra("USERID", userId);
+	        	intent.putExtra("userId", userId);
 	        	startActivity(intent);
 	        	return true;
 	        //TODO: add more cases for action bar
