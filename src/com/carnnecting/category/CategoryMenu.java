@@ -23,6 +23,8 @@ import com.carnnecting.util.*;
 import com.carnnecting.widget.*;
 import com.cmu.carnnecting.R;
 import com.carnnecting.entities.*;
+import com.carnnecting.event.EventDetail;
+import com.carnnecting.category.CategoryDetail;
 
 import android.database.SQLException;
 
@@ -138,6 +140,7 @@ public class CategoryMenu extends Activity {
 		super.onResume();
 		ExpListItems = SetStandardGroups(userId);
 		changedSubscribedCatIds = ExpAdapter.getSubscribedCatIds();
+		ExpAdapter.notifyDataSetChanged();
 	}
 	
 	@Override
@@ -160,7 +163,14 @@ public class CategoryMenu extends Activity {
 		changedSubscribedCatIds.clear();
 	}
 	
-
+	public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id){
+		Intent categoryDetailIntent = new Intent(v.getContext(), CategoryDetail.class);
+		// FIXME: the userId variable is now hardcoded
+		categoryDetailIntent.putExtra("userId", userId);
+		categoryDetailIntent.putExtra("categoryId", ExpListItems.get(groupPosition).getItems().get(childPosition).getId());
+		startActivity(categoryDetailIntent);
+		return true;
+	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
