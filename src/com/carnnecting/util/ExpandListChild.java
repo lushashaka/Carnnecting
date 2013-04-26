@@ -3,7 +3,8 @@ package com.carnnecting.util;
 public class ExpandListChild {
 
 	private String Name;
-	private String Tag;
+	private int Id;
+	private boolean isSubscribed;
 	
 	public String getName() {
 		return Name;
@@ -11,10 +12,24 @@ public class ExpandListChild {
 	public void setName(String Name) {
 		this.Name = Name;
 	}
-	public String getTag() {
-		return Tag;
+	public int getId() {
+		return Id;
 	}
-	public void setTag(String Tag) {
-		this.Tag = Tag;
+	public void setId(int Id) {
+		this.Id = Id;
+	}
+	
+	public boolean isSubscribed() {
+		return isSubscribed;
+	}
+	
+	public void setSubscribed(boolean isSubscribed) {
+		this.isSubscribed = isSubscribed;
+	}
+	
+	@Override
+	public String toString() {
+		return "CategoryListItem [categoryId=" + Id + ", isSubscribed=" + isSubscribed
+				+ ", name=" + Name + "]";
 	}
 }

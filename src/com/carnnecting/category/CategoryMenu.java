@@ -8,7 +8,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ExpandableListView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.carnnecting.home.Home;
 import com.carnnecting.util.*;
@@ -21,9 +29,15 @@ import android.database.SQLException;
 
 // FIXME: To-Be-Removed. These are just to create the db and do bulk-populate in the first time. Using ADB shell is also feasible
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Typeface;
 
 // FIXME: To-Be-Removed. These are to demo how to use DataSoruce classes
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 
 
 
@@ -33,6 +47,10 @@ public class CategoryMenu extends Activity {
 	private ArrayList<ExpandListGroup> ExpListItems;
 	private ExpandableListView ExpandList;
 	private CategoryDataSource categoryDAO;
+	private SubscribeDataSource subscribeDAO;
+	private Long lastDatabaseLoadTimestamp = null;
+	
+	private HashMap<Integer, Boolean> changedSubscribedCatIds;
 	
 	private int	userId;
 	
@@ -42,13 +60,16 @@ public class CategoryMenu extends Activity {
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		ExpandList = (ExpandableListView) findViewById(R.id.categoryListView);
+		changedSubscribedCatIds = new HashMap<Integer, Boolean>();
 		Intent intent  = getIntent();
+		subscribeDAO = new SubscribeDataSource(this.getApplication());
+		subscribeDAO.open();
 		userId = -1;
 		if (intent != null && intent.getExtras() != null) {
 			userId = intent.getExtras().getInt("USERID");
 		}
         ExpListItems = SetStandardGroups(userId);
-        ExpAdapter = new ExpandListAdapter(CategoryMenu.this, ExpListItems);
+        ExpAdapter = new ExpandListAdapter(CategoryMenu.this, ExpListItems, changedSubscribedCatIds);
         ExpandList.setAdapter(ExpAdapter);
 
 		
@@ -70,7 +91,8 @@ public class CategoryMenu extends Activity {
 			Category category = subscribedCategories.get(i);
 			ExpandListChild childCat = new ExpandListChild();
 			childCat.setName(category.getName());
-			childCat.setTag(null);
+			childCat.setId(category.getId());
+			childCat.setSubscribed(true);
 			childList.add(childCat);
 		}
         
@@ -85,7 +107,8 @@ public class CategoryMenu extends Activity {
 			Category category = otherCategories.get(i);
 			ExpandListChild childCat = new ExpandListChild();
 			childCat.setName(category.getName());
-			childCat.setTag(null);
+			childCat.setId(category.getId());
+			childCat.setSubscribed(false);
 			childList.add(childCat);
 		}
 
@@ -98,7 +121,7 @@ public class CategoryMenu extends Activity {
 			Category category = allCategories.get(i);
 			ExpandListChild childCat = new ExpandListChild();
 			childCat.setName(category.getName());
-			childCat.setTag(null);
+			childCat.setId(category.getId());
 			childList.add(childCat);
 		}
 		allCats.setItems(childList);
@@ -109,6 +132,35 @@ public class CategoryMenu extends Activity {
         
         return parentList;
     }
+	
+	@Override
+	public void onResume(){
+		super.onResume();
+		ExpListItems = SetStandardGroups(userId);
+		changedSubscribedCatIds = ExpAdapter.getSubscribedCatIds();
+	}
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		changedSubscribedCatIds = ExpAdapter.getSubscribedCatIds();
+		for (int categoryId : changedSubscribedCatIds.keySet()){
+			boolean isSubscribed = changedSubscribedCatIds.get(categoryId);
+			if (isSubscribed) {
+				if (!subscribeDAO.createSubscribe(userId, categoryId)) {
+					Log.e("ERROR", "Error creating a new Subscribe Cat entry");
+				}
+			} else {
+				if(!subscribeDAO.deleteSubscribe(userId, categoryId)) {
+					Log.e("ERROR", "Error deleting a new Subscribe Cat entry");
+				}
+			}
+		}
+		
+		changedSubscribedCatIds.clear();
+	}
+	
+
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -139,4 +191,5 @@ public class CategoryMenu extends Activity {
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
+	
 }

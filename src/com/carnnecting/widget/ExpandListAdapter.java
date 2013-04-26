@@ -1,25 +1,44 @@
 package com.carnnecting.widget;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.carnnecting.*;
 import com.carnnecting.util.*;
 import com.cmu.carnnecting.R;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class ExpandListAdapter extends BaseExpandableListAdapter {
 
 	private Context context;
 	private ArrayList<ExpandListGroup> groups;
+	private HashMap<Integer, Boolean> changedSubscribedCatIds;
+	
+	private static class ViewHolder {
+		public CheckBox subscribeCheckBox;
+		public TextView subjectTextView;
+	}
+	
 	public ExpandListAdapter(Context context, ArrayList<ExpandListGroup> groups) {
 		this.context = context;
 		this.groups = groups;
+	}
+	
+	public ExpandListAdapter(Context context, ArrayList<ExpandListGroup> groups, HashMap<Integer, Boolean> changedSubscribedCatIds) {
+		this.context = context;
+		this.groups = groups;
+		this.changedSubscribedCatIds = changedSubscribedCatIds;
 	}
 	
 	public void addItem(ExpandListChild item, ExpandListGroup group) {
@@ -44,15 +63,49 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
 
 	public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View view,
 			ViewGroup parent) {
-		ExpandListChild child = (ExpandListChild) getChild(groupPosition, childPosition);
+		final ExpandListChild child = (ExpandListChild) getChild(groupPosition, childPosition);
+		ViewHolder holder = null;
 		if (view == null) {
 			LayoutInflater infalInflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
 			view = infalInflater.inflate(R.layout.expandlist_child_item, null);
+			holder = new ViewHolder();
+			holder.subscribeCheckBox = (CheckBox)view.findViewById(R.id.checkbox_subscribe);
+			holder.subjectTextView = (TextView) view.findViewById(R.id.tvChild);
+			view.setTag(holder);
+		}
+		else{
+			holder = (ViewHolder)view.getTag();
 		}
 		TextView tv = (TextView) view.findViewById(R.id.tvChild);
 		tv.setText(child.getName().toString());
-		tv.setTag(child.getTag());
+		tv.setTag(child.getId());
 		// TODO Auto-generated method stub
+		
+		holder.subscribeCheckBox.setOnCheckedChangeListener(null);
+		holder.subscribeCheckBox.setChecked(child.isSubscribed());
+		holder.subscribeCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+			@Override
+			public void onCheckedChanged(CompoundButton button,
+					boolean isChecked) {
+				Log.i("child name", child.getName());
+				Log.i("child id", "" + child.getId());
+				int categoryId = child.getId();
+					if (!changedSubscribedCatIds.isEmpty()){
+						if (changedSubscribedCatIds.containsKey(categoryId)) {
+						// Toggle a boolean even number of times changes nothing
+							changedSubscribedCatIds.remove(categoryId);
+						}
+						else {
+							changedSubscribedCatIds.put(categoryId, isChecked);
+						}
+					}
+					else{
+						changedSubscribedCatIds.put(categoryId, isChecked);
+					}
+			
+			}
+			
+		});
 		return view;
 	}
 
@@ -100,6 +153,10 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
 	public boolean isChildSelectable(int arg0, int arg1) {
 		// TODO Auto-generated method stub
 		return true;
+	}
+	
+	public HashMap<Integer, Boolean> getSubscribedCatIds(){
+		return changedSubscribedCatIds;
 	}
 
 }
