@@ -94,10 +94,15 @@ public class Home extends ListActivity {
 	public void onResume() {
 		super.onResume();
 		loadHomeItems();
+		homeAdapter.notifyDataSetChanged();
 	}
 	
 	private void loadHomeItems() {
 		/* Always sync to newest in databases since last updates */
+		
+		Log.e("INFO", "Entering loadHomeItems()");
+		Log.e("INFO", "lastDatabaseLoadTimeStamp="+lastDatabaseLoadTimestamp);
+		Log.e("INFO", "databaseLastUpdateTimestamp="+CarnnectingContract.getDatabaseLastUpdateTimestamp());
 		if (lastDatabaseLoadTimestamp == null || 
 			lastDatabaseLoadTimestamp < CarnnectingContract.getDatabaseLastUpdateTimestamp()) 
 		{
@@ -134,8 +139,10 @@ public class Home extends ListActivity {
 			set.clear();
 			eventIds.clear();
 			eventIds = RSVPDao.getRSVPEventIdsByUserId(userId);
-			for (int i = 0; i < eventIds.size(); i++)
+			for (int i = 0; i < eventIds.size(); i++) {
+				Log.e("INFO", "RSVPed eventIds = "+eventIds.get(i));
 				set.add(eventIds.get(i));
+			}
 			for (int i = 0; i < homeItems.size(); i++) {
 				if (set.contains(homeItems.get(i).getEventId())) {
 					homeItems.get(i).setRSVP(true);
@@ -205,7 +212,6 @@ public class Home extends ListActivity {
 		changedFavoriteEventIds.clear();
 		changedRSVPEventIds.clear();
 	}
-	
 	
 	
 	protected void onSaveInstacnceState(Bundle outState) {
