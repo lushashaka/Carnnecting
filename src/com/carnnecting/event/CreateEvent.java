@@ -5,7 +5,6 @@ import java.io.File;
 import com.cmu.carnnecting.R;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -34,37 +33,36 @@ public class CreateEvent extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
-	    setContentView(R.layout.create_event);
+	    setContentView(R.layout.activity_create_event);
 		
 	    // TODO Auto-generated method stub
 	    iv = (ImageView) findViewById(R.id.imgView);
 	    
+	    Button takephotos = (Button) findViewById(R.id.takePhotos);
 	    Button getphotos = (Button) findViewById(R.id.getPhotos);
 	    Button upload = (Button) findViewById(R.id.upload);
 	 	    
+	    takephotos.setOnClickListener(new OnClickListener() {
+	    	public void onClick(View v) {
+	    		//takePicture();
+	      		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+	      		File file = new File(Environment.getExternalStorageDirectory(), SAMPLEIMG);
+	      		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+	      		startActivityForResult(intent, REQUEST_PICTURE);
+	    	}
+	    });
+	    
 	    getphotos.setOnClickListener(new OnClickListener() {
 	    	public void onClick(View v) {
-	    		photoAlbum();
-	    			    	}
+	    		//photoAlbum();
+	      		Intent intent = new Intent(Intent.ACTION_PICK);  		
+	      		intent.setType(Images.Media.CONTENT_TYPE);
+	      		intent.setData(Images.Media.EXTERNAL_CONTENT_URI);
+	      		startActivityForResult(intent, REQUEST_PHOTO_ALBUM);	    		
+	    	}
 	    });
-
 	}
-
 	
-	void takePicture() {
-  		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-  		File file = new File(Environment.getExternalStorageDirectory(), SAMPLEIMG);
-  		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-  		startActivityForResult(intent, REQUEST_PICTURE);
-  	}
-	
-  	void photoAlbum() {
-  		Intent intent = new Intent(Intent.ACTION_PICK);  		
-  		intent.setType(Images.Media.CONTENT_TYPE);
-  		intent.setData(Images.Media.EXTERNAL_CONTENT_URI);
-  		startActivityForResult(intent, REQUEST_PHOTO_ALBUM);
-  	}
-  	
 	Bitmap loadPicture() {
   		File file = new File(Environment.getExternalStorageDirectory(), SAMPLEIMG);
   		BitmapFactory.Options option = new BitmapFactory.Options();
@@ -87,5 +85,4 @@ public class CreateEvent extends Activity {
   			iv.setImageURI(data.getData());
   		}
   	}
-
 }
