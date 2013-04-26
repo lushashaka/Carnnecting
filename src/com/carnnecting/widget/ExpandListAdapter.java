@@ -64,7 +64,7 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
 		return childPosition;
 	}
 
-	public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View view,
+	public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View view,
 			ViewGroup parent) {
 		final ExpandListChild child = (ExpandListChild) getChild(groupPosition, childPosition);
 		ViewHolder holder = null;
@@ -93,7 +93,7 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
 				Log.i("child name", child.getName());
 				Log.i("child id", "" + child.getId());
 				int categoryId = child.getId();
-					if (!changedSubscribedCatIds.isEmpty()){
+				groups.get(groupPosition).getItems().get(childPosition).setSubscribed(isChecked);
 						if (changedSubscribedCatIds.containsKey(categoryId)) {
 						// Toggle a boolean even number of times changes nothing
 							changedSubscribedCatIds.remove(categoryId);
@@ -101,10 +101,6 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
 						else {
 							changedSubscribedCatIds.put(categoryId, isChecked);
 						}
-					}
-					else{
-						changedSubscribedCatIds.put(categoryId, isChecked);
-					}
 			
 			}
 			
