@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="55dip"
-    android:orientation="vertical" >
+    android:padding="6dp" 
+    android:orientation="vertical" 
+    android:descendantFocusability="blocksDescendants">
 
 
     <TextView
@@ -10,5 +12,10 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textSize="17dip" />
+    <CheckBox android:id="@+id/checkbox_subscribe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:button="@drawable/btn_check" />
 
 </LinearLayout>

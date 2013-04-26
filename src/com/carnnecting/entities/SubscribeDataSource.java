@@ -38,11 +38,26 @@ public class SubscribeDataSource {
 	  
 	  // TODO: fill in the (necessary subset of) CRUD operations here. For now we just need to read
 	  public boolean createSubscribe(int userId, int categoryId) {
-		  return true;
+		  ContentValues values = new ContentValues();
+			values.put(CarnnectingContract.Subscribe.COLUMN_NAME_USER_ID, userId);
+			values.put(CarnnectingContract.Subscribe.COLUMN_NAME_CATEGORY_ID, categoryId);
+			boolean ret = false;
+			if (db.insert(CarnnectingContract.Subscribe.TABLE_NAME, null, values) != -1)
+				ret = true;
+			CarnnectingContract.setNowDatabaseLastUpdateTimestamp();
+			return ret;
 	  }
 	  
 	  public boolean deleteSubscribe(int userId, int categoryId) {
-		  return true;
+		  String where = CarnnectingContract.Subscribe.COLUMN_NAME_USER_ID +" = ? "+ " AND " +
+			       CarnnectingContract.Subscribe.COLUMN_NAME_CATEGORY_ID +" = ?";
+		  String[] whereArgs = {userId+"", categoryId+""};
+	
+		  boolean ret = false;
+		  if (db.delete(CarnnectingContract.Subscribe.TABLE_NAME, where, whereArgs) == 1)	// Should alwyas be a valid delete
+			  ret = true;
+		  CarnnectingContract.setNowDatabaseLastUpdateTimestamp();
+		  return ret;
 	  }
 	  
 	  public ArrayList<Subscribe> getSubscribeByUserId(int userId) throws SQLException{
