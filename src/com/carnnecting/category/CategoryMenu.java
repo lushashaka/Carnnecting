@@ -3,6 +3,7 @@ package com.carnnecting.category;
 import android.os.Bundle;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.ExpandableListActivity;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
@@ -14,6 +15,7 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -68,11 +70,25 @@ public class CategoryMenu extends Activity {
 		subscribeDAO.open();
 		userId = -1;
 		if (intent != null && intent.getExtras() != null) {
-			userId = intent.getExtras().getInt("USERID");
+			userId = intent.getExtras().getInt("userId");
 		}
         ExpListItems = SetStandardGroups(userId);
-        ExpAdapter = new ExpandListAdapter(CategoryMenu.this, ExpListItems, changedSubscribedCatIds);
+        ExpAdapter = new ExpandListAdapter(CategoryMenu.this, ExpListItems, changedSubscribedCatIds, userId);
         ExpandList.setAdapter(ExpAdapter);
+        ExpandList.setOnChildClickListener(new OnChildClickListener() {
+
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v,
+                    int groupPosition, int childPosition, long id) {
+            	Intent categoryDetailIntent = new Intent(v.getContext(), CategoryDetail.class);
+				Log.i("Calling CategoryDetail", "inside onChildClick");
+				categoryDetailIntent.putExtra("userId", userId);
+				categoryDetailIntent.putExtra("categoryId", ExpListItems.get(groupPosition).getItems().get(childPosition).getId());
+				v.getContext().startActivity(categoryDetailIntent);
+                return false;
+
+            }
+        });
 
 		
 	}
@@ -163,14 +179,6 @@ public class CategoryMenu extends Activity {
 		changedSubscribedCatIds.clear();
 	}
 	
-	public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id){
-		Intent categoryDetailIntent = new Intent(v.getContext(), CategoryDetail.class);
-		// FIXME: the userId variable is now hardcoded
-		categoryDetailIntent.putExtra("userId", userId);
-		categoryDetailIntent.putExtra("categoryId", ExpListItems.get(groupPosition).getItems().get(childPosition).getId());
-		startActivity(categoryDetailIntent);
-		return true;
-	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -178,6 +186,7 @@ public class CategoryMenu extends Activity {
 	    inflater.inflate(R.menu.carnnecting_main, menu);
 	    return true;
 	}
+	
 	
 	
 	@Override
@@ -193,7 +202,7 @@ public class CategoryMenu extends Activity {
 	        case R.id.categories:
 	        	intent = new Intent(this, CategoryMenu.class);
 	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	        	intent.putExtra("USERID", userId);
+	        	intent.putExtra("userId", userId);
 	        	startActivity(intent);
 	        	return true;
 	        //TODO: add more cases for action bar

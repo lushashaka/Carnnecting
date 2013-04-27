@@ -13,6 +13,8 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
@@ -21,12 +23,14 @@ import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.Toast;
 
 public class ExpandListAdapter extends BaseExpandableListAdapter {
 
 	private Context context;
 	private ArrayList<ExpandListGroup> groups;
 	private HashMap<Integer, Boolean> changedSubscribedCatIds;
+	private int userId;
 	
 	private static class ViewHolder {
 		public CheckBox subscribeCheckBox;
@@ -38,10 +42,11 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
 		this.groups = groups;
 	}
 	
-	public ExpandListAdapter(Context context, ArrayList<ExpandListGroup> groups, HashMap<Integer, Boolean> changedSubscribedCatIds) {
+	public ExpandListAdapter(Context context, ArrayList<ExpandListGroup> groups, HashMap<Integer, Boolean> changedSubscribedCatIds, int userId) {
 		this.context = context;
 		this.groups = groups;
 		this.changedSubscribedCatIds = changedSubscribedCatIds;
+		this.userId = userId;
 	}
 	
 	public void addItem(ExpandListChild item, ExpandListGroup group) {
@@ -105,6 +110,7 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
 			}
 			
 		});
+
 		return view;
 	}
 

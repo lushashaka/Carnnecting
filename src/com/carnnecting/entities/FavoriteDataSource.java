@@ -83,4 +83,22 @@ public class FavoriteDataSource {
 		}
 		return favoriteEventIds;
 	}
+	
+	public ArrayList<Integer> getFavoriteEventIdsByCatId(int userId, int categoryId) {
+		ArrayList<Integer> favoriteEventIds = new ArrayList<Integer>();
+		Cursor cursor = db.rawQuery(
+				"SELECT " + CarnnectingContract.Event.COLUMN_NAME_ID + " FROM " + CarnnectingContract.Event.TABLE_NAME+
+						  " WHERE "+CarnnectingContract.Event.COLUMN_NAME_CATEGORY_ID + " = " + categoryId + " IN "
+						  + "(" + " SELECT "+CarnnectingContract.Favorite.COLUMN_NAME_EVENT_ID + " FROM " + 
+						  CarnnectingContract.Favorite.TABLE_NAME+
+						  " WHERE "+CarnnectingContract.Favorite.COLUMN_NAME_USER_ID + " = " + userId + ")", 
+				  null);
+		
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			favoriteEventIds.add(cursor.getInt(0));
+			cursor.moveToNext();
+		}
+		return favoriteEventIds;
+	}
 }
