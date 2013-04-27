@@ -13,6 +13,7 @@ import com.carnnecting.entities.FavoriteDataSource;
 import com.carnnecting.entities.HomeItemModel;
 import com.carnnecting.entities.RSVPDataSource;
 import com.carnnecting.entities.SubscribeDataSource;
+import com.carnnecting.event.EventDetail;
 import com.carnnecting.home.Home;
 import com.carnnecting.widget.ExpandListAdapter;
 import com.cmu.carnnecting.R;
@@ -210,6 +211,15 @@ public class CategoryDetail extends ListActivity {
 		
 		changedFavoriteEventIds.clear();
 		changedRSVPEventIds.clear();
+	}
+	
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		Intent eventDetailIntent = new Intent(v.getContext(), EventDetail.class);
+		// FIXME: the userId variable is now hardcoded
+		eventDetailIntent.putExtra("userId", userId);
+		eventDetailIntent.putExtra("eventId", eventItems.get(position).getEventId());
+		
+		startActivity(eventDetailIntent);
 	}
 	
 	@Override
