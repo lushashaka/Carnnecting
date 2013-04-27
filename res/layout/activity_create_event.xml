@@ -93,25 +93,24 @@
     android:paddingTop="@dimen/activity_vertical_margin" >
 
           <Button
+              android:id="@+id/takePhotos"
+              style="?android:attr/buttonStyleSmall"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignParentLeft="true"
+              android:layout_centerVertical="true"
+              android:text="@string/camera" />
+
+          <Button
               android:id="@+id/getPhotos"
               style="?android:attr/buttonStyleSmall"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_alignBaseline="@+id/takePhotos"
               android:layout_alignBottom="@+id/takePhotos"
-              android:layout_alignParentRight="true"
-              android:layout_marginRight="36dp"
+              android:layout_marginLeft="50dp"
+              android:layout_toRightOf="@+id/takePhotos"
               android:text="@string/album" />
-
-          <Button
-              android:id="@+id/takePhotos"
-              style="?android:attr/buttonStyleSmall"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_centerVertical="true"
-              android:layout_marginRight="35dp"
-              android:layout_toLeftOf="@+id/getPhotos"
-              android:text="@string/camera" />
 
       </RelativeLayout>
       <ImageView

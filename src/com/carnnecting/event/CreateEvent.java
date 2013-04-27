@@ -34,55 +34,54 @@ public class CreateEvent extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.activity_create_event);
+		    // TODO Auto-generated method stub
+		    iv = (ImageView) findViewById(R.id.imgView);
+		    
+		    Button takephotos = (Button) findViewById(R.id.takePhotos);
+		    Button getphotos = (Button) findViewById(R.id.getPhotos);
+		    Button upload = (Button) findViewById(R.id.upload);
+		 	    
+		    takephotos.setOnClickListener(new OnClickListener() {
+		    	public void onClick(View v) {
+		    		//takePicture();
+		      		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		      		File file = new File(Environment.getExternalStorageDirectory(), SAMPLEIMG);
+		      		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+		      		startActivityForResult(intent, REQUEST_PICTURE);
+		    	}
+		    });
+		    
+		    getphotos.setOnClickListener(new OnClickListener() {
+		    	public void onClick(View v) {
+		    		//photoAlbum();
+		      		Intent intent = new Intent(Intent.ACTION_PICK);  		
+		      		intent.setType(Images.Media.CONTENT_TYPE);
+		      		intent.setData(Images.Media.EXTERNAL_CONTENT_URI);
+		      		startActivityForResult(intent, REQUEST_PHOTO_ALBUM);	    		
+		    	}
+		    });
+		}
 		
-	    // TODO Auto-generated method stub
-	    iv = (ImageView) findViewById(R.id.imgView);
-	    
-	    Button takephotos = (Button) findViewById(R.id.takePhotos);
-	    Button getphotos = (Button) findViewById(R.id.getPhotos);
-	    Button upload = (Button) findViewById(R.id.upload);
-	 	    
-	    takephotos.setOnClickListener(new OnClickListener() {
-	    	public void onClick(View v) {
-	    		//takePicture();
-	      		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-	      		File file = new File(Environment.getExternalStorageDirectory(), SAMPLEIMG);
-	      		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-	      		startActivityForResult(intent, REQUEST_PICTURE);
-	    	}
-	    });
-	    
-	    getphotos.setOnClickListener(new OnClickListener() {
-	    	public void onClick(View v) {
-	    		//photoAlbum();
-	      		Intent intent = new Intent(Intent.ACTION_PICK);  		
-	      		intent.setType(Images.Media.CONTENT_TYPE);
-	      		intent.setData(Images.Media.EXTERNAL_CONTENT_URI);
-	      		startActivityForResult(intent, REQUEST_PHOTO_ALBUM);	    		
-	    	}
-	    });
+		Bitmap loadPicture() {
+	  		File file = new File(Environment.getExternalStorageDirectory(), SAMPLEIMG);
+	  		BitmapFactory.Options option = new BitmapFactory.Options();
+	  		option.inSampleSize = 4;
+	  		return BitmapFactory.decodeFile(file.getAbsolutePath(), option);
+	  	}
+		
+	  	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	  		// TODO Auto-generated method stub
+	  		super.onActivityResult(requestCode, resultCode, data);
+	  		
+	  		if(resultCode != RESULT_OK)
+	  			return;
+	  		
+	  		if(requestCode == REQUEST_PICTURE) {
+	  			iv.setImageBitmap(loadPicture());
+	  		}
+	  		
+	  		if(requestCode == REQUEST_PHOTO_ALBUM) {
+	  			iv.setImageURI(data.getData());
+	  		}
+	  	}
 	}
-	
-	Bitmap loadPicture() {
-  		File file = new File(Environment.getExternalStorageDirectory(), SAMPLEIMG);
-  		BitmapFactory.Options option = new BitmapFactory.Options();
-  		option.inSampleSize = 4;
-  		return BitmapFactory.decodeFile(file.getAbsolutePath(), option);
-  	}
-	
-  	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-  		// TODO Auto-generated method stub
-  		super.onActivityResult(requestCode, resultCode, data);
-  		
-  		if(resultCode != RESULT_OK)
-  			return;
-  		
-  		if(requestCode == REQUEST_PICTURE) {
-  			iv.setImageBitmap(loadPicture());
-  		}
-  		
-  		if(requestCode == REQUEST_PHOTO_ALBUM) {
-  			iv.setImageURI(data.getData());
-  		}
-  	}
-}
