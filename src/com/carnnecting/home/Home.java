@@ -125,6 +125,7 @@ public class Home extends ListActivity {
 			Log.e("INFO", "Before get favorites");
 			// Get favorites
 			ArrayList<Integer> eventIds = favoriteDao.getFavoriteEventIdsByUserId(userId);
+			Log.e("INFO_HOME", ""+eventIds.size());
 			HashSet<Integer> set = new HashSet<Integer>();
 			for (int i = 0; i < eventIds.size(); i++)
 				set.add(eventIds.get(i));

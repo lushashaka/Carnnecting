@@ -7,6 +7,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class FavoriteDataSource {
 	// Database fields
@@ -87,11 +88,11 @@ public class FavoriteDataSource {
 	public ArrayList<Integer> getFavoriteEventIdsByCatId(int userId, int categoryId) {
 		ArrayList<Integer> favoriteEventIds = new ArrayList<Integer>();
 		Cursor cursor = db.rawQuery(
-				"SELECT " + CarnnectingContract.Event.COLUMN_NAME_ID + " FROM " + CarnnectingContract.Event.TABLE_NAME+
-						  " WHERE "+CarnnectingContract.Event.COLUMN_NAME_CATEGORY_ID + " = " + categoryId + " IN "
-						  + "(" + " SELECT "+CarnnectingContract.Favorite.COLUMN_NAME_EVENT_ID + " FROM " + 
-						  CarnnectingContract.Favorite.TABLE_NAME+
-						  " WHERE "+CarnnectingContract.Favorite.COLUMN_NAME_USER_ID + " = " + userId + ")", 
+				"SELECT " + CarnnectingContract.Event.COLUMN_NAME_ID + " FROM " + CarnnectingContract.Event.TABLE_NAME
+				+ " WHERE " + CarnnectingContract.Event.COLUMN_NAME_CATEGORY_ID + "=" + categoryId 
+				+ " AND " + CarnnectingContract.Event.COLUMN_NAME_ID + " IN " 
+				+ "( SELECT " + CarnnectingContract.Favorite.COLUMN_NAME_EVENT_ID + " FROM " + CarnnectingContract.Favorite.TABLE_NAME
+				+ " WHERE " + CarnnectingContract.Favorite.COLUMN_NAME_USER_ID + "=" + userId + ")",
 				  null);
 		
 		cursor.moveToFirst();
@@ -99,6 +100,7 @@ public class FavoriteDataSource {
 			favoriteEventIds.add(cursor.getInt(0));
 			cursor.moveToNext();
 		}
+		Log.i("INFO_favDATASOURCE", "favourite size: "+favoriteEventIds.size());
 		return favoriteEventIds;
 	}
 }

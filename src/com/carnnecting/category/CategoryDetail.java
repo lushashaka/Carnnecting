@@ -24,6 +24,8 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -125,7 +127,7 @@ public class CategoryDetail extends ListActivity {
 					if (position != ListView.INVALID_POSITION) {
 						eventItems.get(position).setFavorite(arg1);
 						int eventId = eventItems.get(position).getEventId();
-						
+						Log.i("INFO_CAT_DETAIL", "current eventID faved " + eventId);
 						if (changedFavoriteEventIds.containsKey(eventId)) {
 							// Toggle a boolean even number of times changes nothing
 							changedFavoriteEventIds.remove(eventId);
@@ -176,8 +178,8 @@ public class CategoryDetail extends ListActivity {
 		
 		// FIXME: Maybe we could move the db commit code to onStop()? 
 		Log.e("INFO", "in onPause");
-		Log.e("INFO", "favChanged size = "+changedFavoriteEventIds.size());
-		Log.e("INFO", "RSVPChanged size = "+changedRSVPEventIds.size());
+		Log.e("INFO_CAT_DETAIL", "favChanged size = "+changedFavoriteEventIds.size());
+		Log.e("INFO_CAT_DETAIL", "RSVPChanged size = "+changedRSVPEventIds.size());
 		
 		for (int eventId : changedFavoriteEventIds.keySet()){
 			boolean isFavoriteNow = changedFavoriteEventIds.get(eventId);
@@ -232,6 +234,13 @@ public class CategoryDetail extends ListActivity {
 	    }
 	}
 	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.carnnecting_main, menu);
+	    return true;
+	}
+	
 	private void loadEventItems() {
 		/* Always sync to newest in databases since last updates */
 		
@@ -255,9 +264,10 @@ public class CategoryDetail extends ListActivity {
 			eventDAO.getEventsByCategoryIds(categoryId, eventItems);
 			
 			
-			Log.e("INFO", "Before get favorites");
+			Log.e("INFO_CAT_DETAIL", "Before get favorites");
 			// Get favorites
 			ArrayList<Integer> eventIds = favDAO.getFavoriteEventIdsByCatId(userId, categoryId);
+			Log.e("INFO_CAT_DETAIL", ""+eventIds.size());
 			HashSet<Integer> set = new HashSet<Integer>();
 			for (int i = 0; i < eventIds.size(); i++)
 				set.add(eventIds.get(i));
