@@ -13,6 +13,8 @@ import com.carnnecting.entities.FavoriteDataSource;
 import com.carnnecting.entities.HomeItemModel;
 import com.carnnecting.entities.RSVPDataSource;
 import com.carnnecting.entities.SubscribeDataSource;
+import com.carnnecting.event.CreateEvent;
+import com.carnnecting.event.Favorites;
 import com.carnnecting.home.Home;
 import com.carnnecting.widget.ExpandListAdapter;
 import com.cmu.carnnecting.R;
@@ -27,7 +29,9 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ExpandableListView;
@@ -65,6 +69,28 @@ public class CategoryDetail extends ListActivity {
 		changedRSVPEventIds	= new HashMap<Integer, Boolean>();
 		userId = -1;
 		categoryId = -1;
+		
+		Button ficon1 = (Button) findViewById(R.id.ficon1);
+		Button ficon2 = (Button) findViewById(R.id.ficon2);
+		
+		ficon1.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(CategoryDetail.this, CreateEvent.class);
+				startActivity(intent);
+			}
+		});
+		
+		ficon2.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(CategoryDetail.this, Favorites.class);
+				startActivity(intent);
+			}
+		});
+		
 		if (intent != null && intent.getExtras() != null) {
 			
 			userId = intent.getExtras().getInt("userId");
