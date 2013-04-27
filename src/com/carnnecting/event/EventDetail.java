@@ -15,6 +15,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -23,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.carnnecting.category.CategoryMenu;
 import com.carnnecting.entities.EventDataSource;
 import com.carnnecting.entities.RSVPDataSource;
 import com.carnnecting.entities.FavoriteDataSource;
@@ -60,6 +62,28 @@ boolean currentRSVPValIfChanged = false; // If isRSVPChanged is false then this 
 protected void onCreate(Bundle savedInstanceState) {
 super.onCreate(savedInstanceState);
 setContentView(R.layout.activity_event_detail);
+
+
+Button ficon1 = (Button) findViewById(R.id.ficon1);
+Button ficon2 = (Button) findViewById(R.id.ficon2);
+
+ficon1.setOnClickListener(new OnClickListener() {
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		Intent intent = new Intent(EventDetail.this, CreateEvent.class);
+		startActivity(intent);
+	}
+});
+
+ficon2.setOnClickListener(new OnClickListener() {
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		Intent intent = new Intent(EventDetail.this, Favorites.class);
+		startActivity(intent);
+	}
+});
 
 if (savedInstanceState != null) {
 userId = savedInstanceState.getInt(USER_ID);

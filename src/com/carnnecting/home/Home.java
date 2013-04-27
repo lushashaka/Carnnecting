@@ -1,7 +1,5 @@
 package com.carnnecting.home;
 
-
-
 import android.annotation.SuppressLint;
 import android.app.ListActivity;
 import android.os.Bundle;
@@ -39,7 +37,9 @@ import com.carnnecting.entities.EventDataSource;
 import com.carnnecting.entities.FavoriteDataSource;
 import com.carnnecting.entities.HomeItemModel;
 import com.carnnecting.entities.RSVPDataSource;
+import com.carnnecting.event.CreateEvent;
 import com.carnnecting.event.EventDetail;
+import com.carnnecting.event.Favorites;
 import com.cmu.carnnecting.R;
 
 import java.util.*;
@@ -65,7 +65,7 @@ public class Home extends ListActivity {
 	@SuppressLint("NewApi")
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+						
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		
@@ -206,9 +206,7 @@ public class Home extends ListActivity {
 					Log.e("ERROR", "Error deleting a new RSVP entry");
 				}
 			}
-		}
-		
-		
+		}		
 		changedFavoriteEventIds.clear();
 		changedRSVPEventIds.clear();
 	}
