@@ -23,11 +23,13 @@ public class CarnnectingContract {
 	public static abstract class Event {
 		public static final String TABLE_NAME						= "event";
 		public static final String COLUMN_NAME_ID					= "id";
-		public static final String COLUMN_NAME_CATEGORY_ID			= "category_id";
 		public static final String COLUMN_NAME_SUBJECT				= "subject";
 		public static final String COLUMN_NAME_START_TIME			= "start_time";
 		public static final String COLUMN_NAME_END_TIME				= "end_time";
+		public static final String COLUMN_NAME_LOCATION				= "location";
+		public static final String COLUMN_NAME_HOST					= "host";
 		public static final String COLUMN_NAME_DESCRIPTION			= "description";
+		public static final String COLUMN_NAME_CATEGORY_ID			= "category_id";
 	}
 	
 	// Favorite table

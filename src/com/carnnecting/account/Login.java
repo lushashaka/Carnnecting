@@ -1,6 +1,7 @@
 package com.carnnecting.account;
 
 import android.os.Bundle;
+
 import android.support.v4.app.FragmentActivity;
 
 import android.util.Log;
@@ -22,6 +23,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;;
 
 public class Login extends FragmentActivity {
 
@@ -99,13 +101,7 @@ public class Login extends FragmentActivity {
 			int nCategories = 10;
 			int nEventsPerCategory = 20;
 			
-			//db.beginTransaction();
-			// Create a single user
 			ContentValues values = new ContentValues();
-//			values.put(CarnnectingContract.User.COLUMN_NAME_ID, 1);
-//			values.put(CarnnectingContract.User.COLUMN_NAME_FB_LOGIN, "user1@fb.com");
-//			db.insert(CarnnectingContract.User.TABLE_NAME, null, values);
-//			Log.e("INFO", "user inserted");
 			
 			// Create several categories
 			for (int i = 1; i <= nCategories; i++) {
@@ -118,17 +114,28 @@ public class Login extends FragmentActivity {
 			}
 			
 			// Create several events for each of the category
-			SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // Use the one in Event class: Event.dateFormat
+			SimpleDateFormat dateFmt = Event.getDateformat(); //new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // Use the one in Event class: Event.dateFormat
+			Date d = new Date();
+			Calendar cal = Calendar.getInstance();
 			for (int i = 1; i <= nCategories; i++) {
 				for (int j = (i-1)*20+1; j <= (i-1)*20+nEventsPerCategory; j++) {
 					values = new ContentValues();
 					values.put(CarnnectingContract.Event.COLUMN_NAME_ID, j);
 					values.put(CarnnectingContract.Event.COLUMN_NAME_SUBJECT, "Event"+j+" Subject");
-					values.put(CarnnectingContract.Event.COLUMN_NAME_START_TIME, dateFmt.format(new Date()));
-					values.put(CarnnectingContract.Event.COLUMN_NAME_END_TIME, dateFmt.format(new Date()));  // Both start and end times are set to now
-					values.put(CarnnectingContract.Event.COLUMN_NAME_CATEGORY_ID, i);
+					values.put(CarnnectingContract.Event.COLUMN_NAME_START_TIME, dateFmt.format(d));
+					// Event duration will be set to one hour
+					cal.setTime(d);
+					cal.add(Calendar.HOUR, 1);
+					values.put(CarnnectingContract.Event.COLUMN_NAME_END_TIME, dateFmt.format(cal.getTime()));
+					values.put(CarnnectingContract.Event.COLUMN_NAME_LOCATION, "Event"+j+" Location");
+					values.put(CarnnectingContract.Event.COLUMN_NAME_HOST, "Event"+j+" HOST");
 					values.put(CarnnectingContract.Event.COLUMN_NAME_DESCRIPTION, "Event"+j+" Descriptions......");
+					values.put(CarnnectingContract.Event.COLUMN_NAME_CATEGORY_ID, i);
 					db.insert(CarnnectingContract.Event.TABLE_NAME, null, values);
+					
+					// Event 2 will be one day later than event 1 and so on so forth
+					cal.add(Calendar.HOUR, 23);
+					d = cal.getTime();
 				}
 			}
 			
@@ -141,9 +148,7 @@ public class Login extends FragmentActivity {
 			}
 		} catch (SQLException e) {
 			Log.e("ERROR", e.getStackTrace().toString());
-		} finally {
-			// db.endTransaction();
-		}
+		} 
 		
 		if (savedInstanceState == null) {
 	        // Add the fragment on initial activity setup

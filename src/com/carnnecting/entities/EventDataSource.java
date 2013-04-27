@@ -22,6 +22,8 @@ public class EventDataSource {
 			  CarnnectingContract.Event.COLUMN_NAME_SUBJECT,
 			  CarnnectingContract.Event.COLUMN_NAME_START_TIME,
 			  CarnnectingContract.Event.COLUMN_NAME_END_TIME,
+			  CarnnectingContract.Event.COLUMN_NAME_LOCATION,
+			  CarnnectingContract.Event.COLUMN_NAME_HOST,
 			  CarnnectingContract.Event.COLUMN_NAME_DESCRIPTION,
 			  CarnnectingContract.Event.COLUMN_NAME_CATEGORY_ID
 	  };
@@ -43,8 +45,19 @@ public class EventDataSource {
 	  }
 	  
 	  // TODO: fill in the (necessary subset of) CRUD operations here. For now we just need to read
-	  public boolean createEvent(int id, int categoryId, String subject, Date startTime, Date endTime, String description) {
-		  return true;
+	  public int createEvent(
+			  int id, 
+			  String subject, 
+			  Date startTime, 
+			  Date endTime,
+			  String location,
+			  String host,
+			  String description, 
+			  int categoryId) 
+	  {
+		  
+		  int newEventId = -1;
+		  return newEventId;
 	  }
 	  
 	  public boolean deleteEvent(int id) { // Primary key
@@ -168,10 +181,10 @@ public class EventDataSource {
 	  private Event cursorToEvent(Cursor cursor) {
 		  // TODO: don't hardcode 0, 1, 2, 3... Instead, define them in contract class.
 		  try {
-			  return new Event(cursor.getInt(0), cursor.getString(1), Event.dateFormat.parse(cursor.getString(2)), Event.dateFormat.parse(cursor.getString(3)), cursor.getString(4), cursor.getInt(5));
+			  return new Event(cursor.getInt(0), cursor.getString(1), Event.dateFormat.parse(cursor.getString(2)), Event.dateFormat.parse(cursor.getString(3)), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getInt(7));
 		  } catch (Exception e) {
 			  Log.e("ERROR", e.getStackTrace().toString());
-			  return new Event(-1, "ERORR ORCCURED!", new Date(), new Date(), "ERROR: exception when cursorToEvent()", 0);
+			  return new Event(-1, "ERORR ORCCURED!", new Date(), new Date(),"NAV", "NAV", "ERROR: exception when cursorToEvent()", 0);
 		  }
 	  }
 }

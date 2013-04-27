@@ -24,6 +24,8 @@ public class CarnnectingSQLiteOpenHelper extends SQLiteOpenHelper{
 			CarnnectingContract.Event.COLUMN_NAME_SUBJECT + " TEXT," + 
 			CarnnectingContract.Event.COLUMN_NAME_START_TIME + " DATETIME," +
 			CarnnectingContract.Event.COLUMN_NAME_END_TIME + " DATETIME," +
+			CarnnectingContract.Event.COLUMN_NAME_LOCATION + " TEXT," +
+			CarnnectingContract.Event.COLUMN_NAME_HOST + " TEXT," +
 			CarnnectingContract.Event.COLUMN_NAME_DESCRIPTION + " TEXT, " +
 			CarnnectingContract.Event.COLUMN_NAME_CATEGORY_ID + " INTEGER" +
 			")";
