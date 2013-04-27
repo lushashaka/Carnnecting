@@ -40,6 +40,7 @@ import com.carnnecting.entities.FavoriteDataSource;
 import com.carnnecting.entities.HomeItemModel;
 import com.carnnecting.entities.RSVPDataSource;
 import com.carnnecting.event.EventDetail;
+import com.carnnecting.event.MyEvents;
 import com.cmu.carnnecting.R;
 
 import java.util.*;
@@ -339,6 +340,12 @@ public class Home extends ListActivity {
 	        	intent.putExtra("userId", userId);
 	        	startActivity(intent);
 	        	return true;	
+	        case R.id.my_events:
+	        	intent = new Intent(this, MyEvents.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        	intent.putExtra("userId", userId);
+	        	startActivity(intent);
+	        	return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }

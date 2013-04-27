@@ -14,6 +14,7 @@ import com.carnnecting.entities.HomeItemModel;
 import com.carnnecting.entities.RSVPDataSource;
 import com.carnnecting.entities.SubscribeDataSource;
 import com.carnnecting.event.EventDetail;
+import com.carnnecting.event.MyEvents;
 import com.carnnecting.home.Home;
 import com.carnnecting.widget.ExpandListAdapter;
 import com.cmu.carnnecting.R;
@@ -233,6 +234,12 @@ public class CategoryDetail extends ListActivity {
 	            return true;
 	        case R.id.categories:
 	        	intent = new Intent(this, CategoryMenu.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        	intent.putExtra("userId", userId);
+	        	startActivity(intent);
+	        	return true;
+	        case R.id.my_events:
+	        	intent = new Intent(this, MyEvents.class);
 	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 	        	intent.putExtra("userId", userId);
 	        	startActivity(intent);
