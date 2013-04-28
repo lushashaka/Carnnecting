@@ -11,6 +11,7 @@
     <string name="title_activity_category_menu">Category Menu</string>
     <string name="title_activity_category_detail">Category Detail</string>
     <string name="title_activity_my_events">My Events</string>
+    <string name="title_activity_favorite">Favorite</string>
 
     <string name="RSVP_button_text">RSVP</string>
     <string name="TO"> TO </string>

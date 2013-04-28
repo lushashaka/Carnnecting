@@ -133,6 +133,53 @@ public class EventDataSource {
 		  }
 	  }
 	  
+	  public void getHomeItemModelsByFavoriteEventIds(ArrayList<Integer> favoriteEventIds, ArrayList<HomeItemModel> homeItems) 
+			  throws SQLException 
+	  {
+		  
+		  // itemModels must be empty now
+		  for (int i = 0; i < favoriteEventIds.size(); i++) {
+			  int eventId = favoriteEventIds.get(i);
+			  Log.e("INFO", "SELECT "+ CarnnectingContract.Event.COLUMN_NAME_SUBJECT+","+
+					  CarnnectingContract.Event.COLUMN_NAME_START_TIME+","+
+					  CarnnectingContract.Event.COLUMN_NAME_CATEGORY_ID+" FROM " + CarnnectingContract.Event.TABLE_NAME+
+					  " WHERE "+CarnnectingContract.Event.COLUMN_NAME_ID + " = " + eventId);
+			  
+			  
+			  Cursor cursor = db.rawQuery(
+					  "SELECT "+ CarnnectingContract.Event.COLUMN_NAME_SUBJECT+","+
+							  CarnnectingContract.Event.COLUMN_NAME_START_TIME+","+
+							  CarnnectingContract.Event.COLUMN_NAME_CATEGORY_ID+" FROM " + CarnnectingContract.Event.TABLE_NAME+
+							  " WHERE "+CarnnectingContract.Event.COLUMN_NAME_ID + " = " + eventId, 
+					  null);
+			  
+			  // Convert cursor to HomeItemModel
+			  SimpleDateFormat dateOnlyFormat = HomeItemModel.dateOnlyFormat;
+			  cursor.moveToFirst();
+			  while(!cursor.isAfterLast()) {
+				  String subject = cursor.getString(0);
+				  String startDate = "01/01/1970";
+				  try {
+					  startDate = dateOnlyFormat.format(Event.dateFormat.parse(cursor.getString(1)));
+				  } catch (Exception e) {
+					  Log.e("ERROR", e.getStackTrace().toString());
+				  }
+				  int catId = cursor.getInt(2);
+				  
+				  // FIXME: should we discard all the past-due events?
+				  
+				  HomeItemModel it = new HomeItemModel();
+				  it.setEventId(eventId);
+				  it.setSubject(subject);
+				  it.setStartDate(startDate);
+				  it.setCategoryId(catId);
+				  homeItems.add(it);
+				  
+				  cursor.moveToNext();
+			  }
+		  }
+	  }
+	  
 	  public void getEventsByCategoryIds(int categoryId, ArrayList<HomeItemModel> eventItems) 
 			  throws SQLException 
 	  {
