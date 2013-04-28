@@ -118,28 +118,28 @@ public class MyEventsListAdapter extends BaseExpandableListAdapter {
 			
 		});*/
 		
-		/*
+		
 		holder.RSVPCheckBox.setOnCheckedChangeListener(null);
-		holder.RSVPCheckBox.setChecked(child.isSubscribed());
+		holder.RSVPCheckBox.setChecked(child.isRSVP());
 		holder.RSVPCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
 			@Override
 			public void onCheckedChanged(CompoundButton button,
 					boolean isChecked) {
-				Log.i("child name", child.getName());
-				Log.i("child id", "" + child.getId());
-				int categoryId = child.getId();
-				groups.get(groupPosition).getItems().get(childPosition).setSubscribed(isChecked);
-						if (changedSubscribedCatIds.containsKey(categoryId)) {
+				Log.i("child name", child.getSubject());
+				Log.i("child id", "" + child.getEventId());
+				int eventId = child.getEventId();
+				groups.get(groupPosition).getItems().get(childPosition).setRSVP(isChecked);
+						if (changedRSVPIds.containsKey(eventId)) {
 						// Toggle a boolean even number of times changes nothing
-							changedSubscribedCatIds.remove(categoryId);
+							changedRSVPIds.remove(eventId);
 						}
 						else {
-							changedSubscribedCatIds.put(categoryId, isChecked);
+							changedRSVPIds.put(eventId, isChecked);
 						}
 			
 			}
 			
-		});*/
+		});
 
 		return view;
 	}

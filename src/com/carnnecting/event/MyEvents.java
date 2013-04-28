@@ -51,12 +51,12 @@ public class MyEvents extends Activity {
 	private MyEventsListAdapter ExpAdapter;
 	private ArrayList<ExpandEventListGroup> ExpListItems;
 	private ExpandableListView ExpandList;
-	private CategoryDataSource categoryDAO;
-	private SubscribeDataSource subscribeDAO;
+	private FavoriteDataSource favDAO;
+	private RSVPDataSource RSVPDAO;
 	private EventDataSource eventDAO;
 	private Long lastDatabaseLoadTimestamp = null;
 	
-	private HashMap<Integer, Boolean> changedSubscribedCatIds;
+	private HashMap<Integer, Boolean> changedRSVPIds;
 	
 	private int	userId;
 	
@@ -66,10 +66,12 @@ public class MyEvents extends Activity {
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		ExpandList = (ExpandableListView) findViewById(R.id.myEventListView);
-		changedSubscribedCatIds = new HashMap<Integer, Boolean>();
+		changedRSVPIds = new HashMap<Integer, Boolean>();
 		Intent intent  = getIntent();
-		subscribeDAO = new SubscribeDataSource(this.getApplication());
-		subscribeDAO.open();
+		RSVPDAO = new RSVPDataSource(this.getApplication());
+		RSVPDAO.open();
+		favDAO = new FavoriteDataSource(this.getApplication());
+		favDAO.open();
 		eventDAO = new EventDataSource(this.getApplication());
 		eventDAO.open();
 		userId = -1;
@@ -77,7 +79,7 @@ public class MyEvents extends Activity {
 			userId = intent.getExtras().getInt("userId");
 		}
         ExpListItems = SetStandardGroups(userId);
-        ExpAdapter = new MyEventsListAdapter(MyEvents.this, ExpListItems, changedSubscribedCatIds, userId);
+        ExpAdapter = new MyEventsListAdapter(MyEvents.this, ExpListItems, changedRSVPIds, userId);
         ExpandList.setAdapter(ExpAdapter);
         ExpandList.setOnChildClickListener(new OnChildClickListener() {
 
@@ -86,6 +88,7 @@ public class MyEvents extends Activity {
                     int groupPosition, int childPosition, long id) {
             	Intent eventDetailIntent = new Intent(v.getContext(), EventDetail.class);
 				Log.i("Calling EventDetail", "inside onChildClick");
+				eventDetailIntent.putExtra("eventId", ExpListItems.get(groupPosition).getItems().get(childPosition).getEventId());
 				eventDetailIntent.putExtra("userId", userId);
 				v.getContext().startActivity(eventDetailIntent);
                 return false;
@@ -172,20 +175,20 @@ public class MyEvents extends Activity {
 	public void onPause() {
 		super.onPause();
 		//changedSubscribedCatIds = ExpAdapter.getSubscribedCatIds();
-		for (int categoryId : changedSubscribedCatIds.keySet()){
-			boolean isSubscribed = changedSubscribedCatIds.get(categoryId);
-			if (isSubscribed) {
-				if (!subscribeDAO.createSubscribe(userId, categoryId)) {
+		for (int eventId : changedRSVPIds.keySet()){
+			boolean isRSVP = changedRSVPIds.get(eventId);
+			if (isRSVP) {
+				if (!RSVPDAO.createRSVP(userId, eventId)) {
 					Log.e("ERROR", "Error creating a new Subscribe Cat entry");
 				}
 			} else {
-				if(!subscribeDAO.deleteSubscribe(userId, categoryId)) {
+				if(!RSVPDAO.deleteRSVP(userId, eventId)) {
 					Log.e("ERROR", "Error deleting a new Subscribe Cat entry");
 				}
 			}
 		}
 		
-		changedSubscribedCatIds.clear();
+		changedRSVPIds.clear();
 	}
 	
 	

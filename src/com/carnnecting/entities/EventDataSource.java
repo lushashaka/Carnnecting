@@ -226,17 +226,32 @@ public class EventDataSource {
 		  Log.e("GET TODAY", "SELECT " + CarnnectingContract.Event.COLUMN_NAME_START_TIME + " FROM " + CarnnectingContract.Event.TABLE_NAME);
 		  String test = todaySQLFormat + " 23:59:59";
 		  Log.e("TODAY DATE", test);
+		  /*Cursor cursor = db.rawQuery(
+				  "SELECT "+ CarnnectingContract.Event.COLUMN_NAME_START_TIME 
+				  + "," + CarnnectingContract.Event.COLUMN_NAME_ID
+				  + "," + CarnnectingContract.Event.COLUMN_NAME_SUBJECT
+				  + " FROM " + CarnnectingContract.Event.TABLE_NAME
+				  + " WHERE "+ CarnnectingContract.Event.COLUMN_NAME_START_TIME + " >= \'" + test + "\'", 
+				  null);*/
+		  
 		  Cursor cursor = db.rawQuery(
-				  "SELECT "+ CarnnectingContract.Event.COLUMN_NAME_START_TIME + " FROM " + CarnnectingContract.Event.TABLE_NAME
-				  + " WHERE "+ CarnnectingContract.Event.COLUMN_NAME_START_TIME + " < \'" + test + "\'", 
+				  "SELECT "+ CarnnectingContract.Event.COLUMN_NAME_START_TIME 
+				  + "," + CarnnectingContract.Event.COLUMN_NAME_ID
+				  + "," + CarnnectingContract.Event.COLUMN_NAME_SUBJECT
+				  + " FROM " + CarnnectingContract.Event.TABLE_NAME
+				  + " WHERE "+ CarnnectingContract.Event.COLUMN_NAME_START_TIME + " >= \'" + test + "\'"
+				  + " AND " + CarnnectingContract.Event.COLUMN_NAME_ID + " IN "
+				  + "(SELECT " + CarnnectingContract.RSVP.COLUMN_NAME_EVENT_ID + " FROM " 
+				  + CarnnectingContract.RSVP.TABLE_NAME 
+				  + " WHERE "+ CarnnectingContract.RSVP.COLUMN_NAME_USER_ID + " = " + userId + ")", 
 				  null);
 		  
 		  // Convert cursor to HomeItemModel
 		  SimpleDateFormat dateOnlyFormat = HomeItemModel.dateOnlyFormat;
 		  cursor.moveToFirst();
 		  while(!cursor.isAfterLast()) {
-			  //int eventId = cursor.getInt(0);
-			  //String subject = cursor.getString(1);
+			  int eventId = cursor.getInt(1);
+			  String subject = cursor.getString(2);
 			  Log.e("GET DATE SQL", cursor.getString(0));
 			  String startDate = "01/01/1970";
 			  try {
@@ -248,9 +263,10 @@ public class EventDataSource {
 			  // FIXME: should we discard all the past-due events?
 			  
 			  HomeItemModel it = new HomeItemModel();
-			  //it.setEventId(eventId);
-			  //it.setSubject(subject);
+			  it.setEventId(eventId);
+			  it.setSubject(subject);
 			  it.setStartDate(startDate);
+			  it.setRSVP(true);
 			  todayEvents.add(it);
 			  
 			  cursor.moveToNext();
