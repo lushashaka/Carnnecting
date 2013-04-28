@@ -11,17 +11,21 @@ public class Event {
 	private String 			subject;
 	private Date			startTime;
 	private Date			endTime;
+	private String			location;
+	private String			host;
 	private String 			description;
 	private int 			categoryId;		// Can be defined in some Enum in entities/Category.java
 	
 	// Constructors
 	public Event(int id, String subject, Date startTime, Date endTime,
-			String description, int categoryId) {
+			String location, String host, String description, int categoryId) {
 		super();
 		this.id = id;
 		this.subject = subject;
 		this.startTime = startTime;
 		this.endTime = endTime;
+		this.location = location;
+		this.host = host;
 		this.description = description;
 		this.categoryId = categoryId;
 	}
@@ -59,6 +63,22 @@ public class Event {
 		this.endTime = endTime;
 	}
 
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public String getHost() {
+		return host;
+	}
+
+	public void setHost(String host) {
+		this.host = host;
+	}
+
 	public String getDescription() {
 		return description;
 	}
@@ -79,10 +99,11 @@ public class Event {
 		return dateFormat;
 	}
 
+	@Override
 	public String toString() {
 		return "Event [id=" + id + ", subject=" + subject + ", startTime="
-				+ startTime + ", endTime=" + endTime + ", description="
-				+ description + ", categoryId=" + categoryId + "]";
+				+ startTime + ", endTime=" + endTime + ", location=" + location
+				+ ", host=" + host + ", description=" + description
+				+ ", categoryId=" + categoryId + "]";
 	}
-
 }

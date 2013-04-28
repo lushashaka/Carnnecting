@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+         android:orientation="vertical"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:paddingLeft="8dp"
+         android:paddingRight="8dp">
 
-<!-- News Feed -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
-    
-	<ScrollView  android:layout_height="fill_parent"  
-		android:layout_width="fill_parent" >
-		  
-		<LinearLayout  android:orientation="vertical"
-		    android:id="@+id/homeScrollLinearLayout"  
-  			android:layout_width="fill_parent"  
-  			android:layout_height="fill_parent">
-  			 					
-		</LinearLayout>
+     <ListView android:id="@android:id/list"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               
+               android:layout_weight="1"
+               android:drawSelectorOnTop="false"/>
+     
+    <Button android:id="@+id/testFavoriteButton"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="TEST_FAVORITE" />
+     
 
-	</ScrollView>
-    
-</LinearLayout>
+ </LinearLayout>
+

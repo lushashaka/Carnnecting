@@ -15,6 +15,8 @@ import com.carnnecting.entities.RSVPDataSource;
 import com.carnnecting.entities.SubscribeDataSource;
 import com.carnnecting.event.CreateEvent;
 import com.carnnecting.event.Favorites;
+import com.carnnecting.event.EventDetail;
+import com.carnnecting.event.MyEvents;
 import com.carnnecting.home.Home;
 import com.carnnecting.widget.ExpandListAdapter;
 import com.cmu.carnnecting.R;
@@ -26,6 +28,8 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,21 +58,9 @@ public class CategoryDetail extends ListActivity {
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//setContentView(R.layout.activity_category_detail);
-		ActionBar actionBar = getActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
-		
-		Intent intent  = getIntent();
-		eventDAO = new EventDataSource(this.getApplication());
-		eventDAO.open();
-		favDAO = new FavoriteDataSource(this.getApplication());
-		favDAO.open();
-		RSVPDAO = new RSVPDataSource(this.getApplication());
-		RSVPDAO.open();
-		changedFavoriteEventIds = new HashMap<Integer, Boolean>();
-		changedRSVPEventIds	= new HashMap<Integer, Boolean>();
-		userId = -1;
-		categoryId = -1;
+		setContentView(R.layout.activity_category_detail);
+
+
 		
 		Button ficon1 = (Button) findViewById(R.id.ficon1);
 		Button ficon2 = (Button) findViewById(R.id.ficon2);
@@ -91,6 +83,22 @@ public class CategoryDetail extends ListActivity {
 			}
 		});
 		
+		ActionBar actionBar = getActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
+		
+		Intent intent  = getIntent();
+		eventDAO = new EventDataSource(this.getApplication());
+		eventDAO.open();
+		favDAO = new FavoriteDataSource(this.getApplication());
+		favDAO.open();
+		RSVPDAO = new RSVPDataSource(this.getApplication());
+		RSVPDAO.open();
+		changedFavoriteEventIds = new HashMap<Integer, Boolean>();
+		changedRSVPEventIds	= new HashMap<Integer, Boolean>();
+		userId = -1;
+		categoryId = -1;
+		
+				
 		if (intent != null && intent.getExtras() != null) {
 			
 			userId = intent.getExtras().getInt("userId");
@@ -151,7 +159,7 @@ public class CategoryDetail extends ListActivity {
 					if (position != ListView.INVALID_POSITION) {
 						eventItems.get(position).setFavorite(arg1);
 						int eventId = eventItems.get(position).getEventId();
-						
+						Log.i("INFO_CAT_DETAIL", "current eventID faved " + eventId);
 						if (changedFavoriteEventIds.containsKey(eventId)) {
 							// Toggle a boolean even number of times changes nothing
 							changedFavoriteEventIds.remove(eventId);
@@ -202,8 +210,8 @@ public class CategoryDetail extends ListActivity {
 		
 		// FIXME: Maybe we could move the db commit code to onStop()? 
 		Log.e("INFO", "in onPause");
-		Log.e("INFO", "favChanged size = "+changedFavoriteEventIds.size());
-		Log.e("INFO", "RSVPChanged size = "+changedRSVPEventIds.size());
+		Log.e("INFO_CAT_DETAIL", "favChanged size = "+changedFavoriteEventIds.size());
+		Log.e("INFO_CAT_DETAIL", "RSVPChanged size = "+changedRSVPEventIds.size());
 		
 		for (int eventId : changedFavoriteEventIds.keySet()){
 			boolean isFavoriteNow = changedFavoriteEventIds.get(eventId);
@@ -236,6 +244,15 @@ public class CategoryDetail extends ListActivity {
 		changedRSVPEventIds.clear();
 	}
 	
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		Intent eventDetailIntent = new Intent(v.getContext(), EventDetail.class);
+		// FIXME: the userId variable is now hardcoded
+		eventDetailIntent.putExtra("userId", userId);
+		eventDetailIntent.putExtra("eventId", eventItems.get(position).getEventId());
+		
+		startActivity(eventDetailIntent);
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent;
@@ -252,10 +269,23 @@ public class CategoryDetail extends ListActivity {
 	        	intent.putExtra("userId", userId);
 	        	startActivity(intent);
 	        	return true;
+	        case R.id.my_events:
+	        	intent = new Intent(this, MyEvents.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        	intent.putExtra("userId", userId);
+	        	startActivity(intent);
+	        	return true;
 	        //TODO: add more cases for action bar
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.carnnecting_main, menu);
+	    return true;
 	}
 	
 	private void loadEventItems() {
@@ -281,9 +311,10 @@ public class CategoryDetail extends ListActivity {
 			eventDAO.getEventsByCategoryIds(categoryId, eventItems);
 			
 			
-			Log.e("INFO", "Before get favorites");
+			Log.e("INFO_CAT_DETAIL", "Before get favorites");
 			// Get favorites
 			ArrayList<Integer> eventIds = favDAO.getFavoriteEventIdsByCatId(userId, categoryId);
+			Log.e("INFO_CAT_DETAIL", ""+eventIds.size());
 			HashSet<Integer> set = new HashSet<Integer>();
 			for (int i = 0; i < eventIds.size(); i++)
 				set.add(eventIds.get(i));

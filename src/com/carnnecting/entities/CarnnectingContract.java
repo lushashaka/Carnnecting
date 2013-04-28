@@ -23,11 +23,13 @@ public class CarnnectingContract {
 	public static abstract class Event {
 		public static final String TABLE_NAME						= "event";
 		public static final String COLUMN_NAME_ID					= "id";
-		public static final String COLUMN_NAME_CATEGORY_ID			= "category_id";
 		public static final String COLUMN_NAME_SUBJECT				= "subject";
 		public static final String COLUMN_NAME_START_TIME			= "start_time";
 		public static final String COLUMN_NAME_END_TIME				= "end_time";
+		public static final String COLUMN_NAME_LOCATION				= "location";
+		public static final String COLUMN_NAME_HOST					= "host";
 		public static final String COLUMN_NAME_DESCRIPTION			= "description";
+		public static final String COLUMN_NAME_CATEGORY_ID			= "category_id";
 	}
 	
 	// Favorite table
@@ -58,6 +60,12 @@ public class CarnnectingContract {
 		public static final String COLUMN_NAME_FB_LOGIN				= "fb_login";
 	}
 	
+	// Read_event table
+	public static abstract class ReadEvent {
+		public static final String TABLE_NAME						= "read_event";
+		public static final String COLUMN_NAME_USER_ID				= "user_id";
+		public static final String COLUMN_NAME_EVENT_ID				= "event_id";
+	}
 	
 	/*
 	 * The timestamp when the database was last changed (CUD of CRUD).

@@ -30,6 +30,7 @@ import com.carnnecting.entities.*;
 import com.carnnecting.event.CreateEvent;
 import com.carnnecting.event.EventDetail;
 import com.carnnecting.event.Favorites;
+import com.carnnecting.event.MyEvents;
 import com.carnnecting.category.CategoryDetail;
 
 import android.database.SQLException;
@@ -227,6 +228,12 @@ public class CategoryMenu extends Activity {
 	            return true;
 	        case R.id.categories:
 	        	intent = new Intent(this, CategoryMenu.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        	intent.putExtra("userId", userId);
+	        	startActivity(intent);
+	        	return true;
+	        case R.id.my_events:
+	        	intent = new Intent(this, MyEvents.class);
 	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 	        	intent.putExtra("userId", userId);
 	        	startActivity(intent);

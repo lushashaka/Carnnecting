@@ -22,6 +22,8 @@ public class EventDataSource {
 			  CarnnectingContract.Event.COLUMN_NAME_SUBJECT,
 			  CarnnectingContract.Event.COLUMN_NAME_START_TIME,
 			  CarnnectingContract.Event.COLUMN_NAME_END_TIME,
+			  CarnnectingContract.Event.COLUMN_NAME_LOCATION,
+			  CarnnectingContract.Event.COLUMN_NAME_HOST,
 			  CarnnectingContract.Event.COLUMN_NAME_DESCRIPTION,
 			  CarnnectingContract.Event.COLUMN_NAME_CATEGORY_ID
 	  };
@@ -43,8 +45,19 @@ public class EventDataSource {
 	  }
 	  
 	  // TODO: fill in the (necessary subset of) CRUD operations here. For now we just need to read
-	  public boolean createEvent(int id, int categoryId, String subject, Date startTime, Date endTime, String description) {
-		  return true;
+	  public int createEvent(
+			  int id, 
+			  String subject, 
+			  Date startTime, 
+			  Date endTime,
+			  String location,
+			  String host,
+			  String description, 
+			  int categoryId) 
+	  {
+		  
+		  int newEventId = -1;
+		  return newEventId;
 	  }
 	  
 	  public boolean deleteEvent(int id) { // Primary key
@@ -120,17 +133,56 @@ public class EventDataSource {
 		  }
 	  }
 	  
-	  public void getEventsByCategoryIds(int categoryId, ArrayList<HomeItemModel> eventItems) 
+	  public void getHomeItemModelsByFavoriteEventIds(ArrayList<Integer> favoriteEventIds, ArrayList<HomeItemModel> homeItems) 
 			  throws SQLException 
 	  {
 		  
 		  // itemModels must be empty now
-			  /*Log.e("INFO", "SELECT "+ CarnnectingContract.Event.COLUMN_NAME_ID +","+
-					  CarnnectingContract.Event.COLUMN_NAME_SUBJECT+","+
-					  CarnnectingContract.Event.COLUMN_NAME_START_TIME+" FROM " + CarnnectingContract.Event.TABLE_NAME+
-					  " WHERE "+CarnnectingContract.Event.COLUMN_NAME_CATEGORY_ID + " = " + categoryId);*/
+		  for (int i = 0; i < favoriteEventIds.size(); i++) {
+			  int eventId = favoriteEventIds.get(i);
+			  Log.e("INFO", "SELECT "+ CarnnectingContract.Event.COLUMN_NAME_SUBJECT+","+
+					  CarnnectingContract.Event.COLUMN_NAME_START_TIME+","+
+					  CarnnectingContract.Event.COLUMN_NAME_CATEGORY_ID+" FROM " + CarnnectingContract.Event.TABLE_NAME+
+					  " WHERE "+CarnnectingContract.Event.COLUMN_NAME_ID + " = " + eventId);
 			  
 			  
+			  Cursor cursor = db.rawQuery(
+					  "SELECT "+ CarnnectingContract.Event.COLUMN_NAME_SUBJECT+","+
+							  CarnnectingContract.Event.COLUMN_NAME_START_TIME+","+
+							  CarnnectingContract.Event.COLUMN_NAME_CATEGORY_ID+" FROM " + CarnnectingContract.Event.TABLE_NAME+
+							  " WHERE "+CarnnectingContract.Event.COLUMN_NAME_ID + " = " + eventId, 
+					  null);
+			  
+			  // Convert cursor to HomeItemModel
+			  SimpleDateFormat dateOnlyFormat = HomeItemModel.dateOnlyFormat;
+			  cursor.moveToFirst();
+			  while(!cursor.isAfterLast()) {
+				  String subject = cursor.getString(0);
+				  String startDate = "01/01/1970";
+				  try {
+					  startDate = dateOnlyFormat.format(Event.dateFormat.parse(cursor.getString(1)));
+				  } catch (Exception e) {
+					  Log.e("ERROR", e.getStackTrace().toString());
+				  }
+				  int catId = cursor.getInt(2);
+				  
+				  // FIXME: should we discard all the past-due events?
+				  
+				  HomeItemModel it = new HomeItemModel();
+				  it.setEventId(eventId);
+				  it.setSubject(subject);
+				  it.setStartDate(startDate);
+				  it.setCategoryId(catId);
+				  homeItems.add(it);
+				  
+				  cursor.moveToNext();
+			  }
+		  }
+	  }
+	  
+	  public void getEventsByCategoryIds(int categoryId, ArrayList<HomeItemModel> eventItems) 
+			  throws SQLException 
+	  {	  	  
 			  Cursor cursor = db.rawQuery(
 					  "SELECT "+ CarnnectingContract.Event.COLUMN_NAME_ID +","+
 							  CarnnectingContract.Event.COLUMN_NAME_SUBJECT+","+
@@ -165,13 +217,233 @@ public class EventDataSource {
 		  
 	  }
 	  
+	  public ArrayList<HomeItemModel> getTodayEvents(int userId) 
+			  throws SQLException {
+		  ArrayList<HomeItemModel> todayEvents = new ArrayList<HomeItemModel>();
+		  Date today = new Date();
+		  SimpleDateFormat SQLFormat = new SimpleDateFormat("yyyy-MM-dd");
+		  String todaySQLFormat = SQLFormat.format(today);
+		  Log.e("GET TODAY", "SELECT " + CarnnectingContract.Event.COLUMN_NAME_START_TIME + " FROM " + CarnnectingContract.Event.TABLE_NAME);
+		  String todayEnd = todaySQLFormat + " 23:59:59";
+		  String todayStart = todaySQLFormat + " 00:00:00";
+		  Log.e("TODAY DATE", todayEnd);
+		  
+		  Cursor cursor = db.rawQuery(
+				  "SELECT "+ CarnnectingContract.Event.COLUMN_NAME_START_TIME 
+				  + "," + CarnnectingContract.Event.COLUMN_NAME_ID
+				  + "," + CarnnectingContract.Event.COLUMN_NAME_SUBJECT
+				  + " FROM " + CarnnectingContract.Event.TABLE_NAME
+				  + " WHERE "+ CarnnectingContract.Event.COLUMN_NAME_START_TIME + " < \'" + todayEnd + "\'"
+				  + " AND " + CarnnectingContract.Event.COLUMN_NAME_START_TIME + " > \'" + todayStart + "\'"
+				  + " AND " + CarnnectingContract.Event.COLUMN_NAME_ID + " IN "
+				  + "(SELECT " + CarnnectingContract.RSVP.COLUMN_NAME_EVENT_ID + " FROM " 
+				  + CarnnectingContract.RSVP.TABLE_NAME 
+				  + " WHERE "+ CarnnectingContract.RSVP.COLUMN_NAME_USER_ID + " = " + userId + ")", 
+				  null);
+		  
+		  // Convert cursor to HomeItemModel
+		  SimpleDateFormat dateOnlyFormat = HomeItemModel.dateOnlyFormat;
+		  cursor.moveToFirst();
+		  while(!cursor.isAfterLast()) {
+			  int eventId = cursor.getInt(1);
+			  String subject = cursor.getString(2);
+			  Log.e("GET DATE SQL", cursor.getString(0));
+			  String startDate = "01/01/1970";
+			  try {
+				  startDate = dateOnlyFormat.format(Event.dateFormat.parse(cursor.getString(0)));
+			  } catch (Exception e) {
+				  Log.e("ERROR", e.getStackTrace().toString());
+			  }
+			  
+			  // FIXME: should we discard all the past-due events?
+			  
+			  HomeItemModel it = new HomeItemModel();
+			  it.setEventId(eventId);
+			  it.setSubject(subject);
+			  it.setStartDate(startDate);
+			  it.setRSVP(true);
+			  todayEvents.add(it);
+			  
+			  cursor.moveToNext();
+		  }
+		  
+		  return todayEvents;
+	  }
+	  
+	  public ArrayList<HomeItemModel> getTmrwEvents(int userId) 
+			  throws SQLException {
+		  ArrayList<HomeItemModel> tmrwEvents = new ArrayList<HomeItemModel>();
+		  Date today = new Date();
+		  SimpleDateFormat SQLFormat = new SimpleDateFormat("yyyy-MM-dd");
+		  String tmrwSQLFormat = SQLFormat.format(today);
+		  Calendar cal = Calendar.getInstance();
+		  cal.setTime(today);
+		  cal.add(Calendar.DATE, 1);
+		  tmrwSQLFormat = SQLFormat.format(cal.getTime());
+		  Log.i("GET TMRW", ""+tmrwSQLFormat);
+		  Log.e("GET TODAY", "SELECT " + CarnnectingContract.Event.COLUMN_NAME_START_TIME + " FROM " + CarnnectingContract.Event.TABLE_NAME);
+		  String tmrwEnd = tmrwSQLFormat + " 23:59:59";
+		  String tmrwStart = tmrwSQLFormat + " 00:00:00";
+		  Log.e("TODAY DATE", tmrwEnd);
+		  
+		  Cursor cursor = db.rawQuery(
+				  "SELECT "+ CarnnectingContract.Event.COLUMN_NAME_START_TIME 
+				  + "," + CarnnectingContract.Event.COLUMN_NAME_ID
+				  + "," + CarnnectingContract.Event.COLUMN_NAME_SUBJECT
+				  + " FROM " + CarnnectingContract.Event.TABLE_NAME
+				  + " WHERE "+ CarnnectingContract.Event.COLUMN_NAME_START_TIME + " < \'" + tmrwEnd + "\'"
+				  + " AND " + CarnnectingContract.Event.COLUMN_NAME_START_TIME + " > \'" + tmrwStart + "\'"
+				  + " AND " + CarnnectingContract.Event.COLUMN_NAME_ID + " IN "
+				  + "(SELECT " + CarnnectingContract.RSVP.COLUMN_NAME_EVENT_ID + " FROM " 
+				  + CarnnectingContract.RSVP.TABLE_NAME 
+				  + " WHERE "+ CarnnectingContract.RSVP.COLUMN_NAME_USER_ID + " = " + userId + ")", 
+				  null);
+		  
+		  // Convert cursor to HomeItemModel
+		  SimpleDateFormat dateOnlyFormat = HomeItemModel.dateOnlyFormat;
+		  cursor.moveToFirst();
+		  while(!cursor.isAfterLast()) {
+			  int eventId = cursor.getInt(1);
+			  String subject = cursor.getString(2);
+			  Log.e("GET DATE SQL", cursor.getString(0));
+			  String startDate = "01/01/1970";
+			  try {
+				  startDate = dateOnlyFormat.format(Event.dateFormat.parse(cursor.getString(0)));
+			  } catch (Exception e) {
+				  Log.e("ERROR", e.getStackTrace().toString());
+			  }
+			  
+			  // FIXME: should we discard all the past-due events?
+			  
+			  HomeItemModel it = new HomeItemModel();
+			  it.setEventId(eventId);
+			  it.setSubject(subject);
+			  it.setStartDate(startDate);
+			  it.setRSVP(true);
+			  tmrwEvents.add(it);
+			  
+			  cursor.moveToNext();
+		  }
+		  
+		  return tmrwEvents;
+	  }
+	  
+	  public ArrayList<HomeItemModel> getUpcomingEvents(int userId) 
+			  throws SQLException {
+		  ArrayList<HomeItemModel> upcomingEvents = new ArrayList<HomeItemModel>();
+		  Date today = new Date();
+		  SimpleDateFormat SQLFormat = new SimpleDateFormat("yyyy-MM-dd");
+		  String tmrwSQLFormat = SQLFormat.format(today);
+		  Calendar cal = Calendar.getInstance();
+		  cal.setTime(today);
+		  cal.add(Calendar.DATE, 1);
+		  tmrwSQLFormat = SQLFormat.format(cal.getTime());
+		  Log.i("GET TMRW", ""+tmrwSQLFormat);
+		  Log.e("GET TODAY", "SELECT " + CarnnectingContract.Event.COLUMN_NAME_START_TIME + " FROM " + CarnnectingContract.Event.TABLE_NAME);
+		  String tmrwEnd = tmrwSQLFormat + " 23:59:59";
+		  Log.e("TODAY DATE", tmrwEnd);
+		  
+		  Cursor cursor = db.rawQuery(
+				  "SELECT "+ CarnnectingContract.Event.COLUMN_NAME_START_TIME 
+				  + "," + CarnnectingContract.Event.COLUMN_NAME_ID
+				  + "," + CarnnectingContract.Event.COLUMN_NAME_SUBJECT
+				  + " FROM " + CarnnectingContract.Event.TABLE_NAME
+				  + " WHERE "+ CarnnectingContract.Event.COLUMN_NAME_START_TIME + " > \'" + tmrwEnd + "\'"
+				  + " AND " + CarnnectingContract.Event.COLUMN_NAME_ID + " IN "
+				  + "(SELECT " + CarnnectingContract.RSVP.COLUMN_NAME_EVENT_ID + " FROM " 
+				  + CarnnectingContract.RSVP.TABLE_NAME 
+				  + " WHERE "+ CarnnectingContract.RSVP.COLUMN_NAME_USER_ID + " = " + userId + ")", 
+				  null);
+		  
+		  // Convert cursor to HomeItemModel
+		  SimpleDateFormat dateOnlyFormat = HomeItemModel.dateOnlyFormat;
+		  cursor.moveToFirst();
+		  while(!cursor.isAfterLast()) {
+			  int eventId = cursor.getInt(1);
+			  String subject = cursor.getString(2);
+			  Log.e("GET DATE SQL", cursor.getString(0));
+			  String startDate = "01/01/1970";
+			  try {
+				  startDate = dateOnlyFormat.format(Event.dateFormat.parse(cursor.getString(0)));
+			  } catch (Exception e) {
+				  Log.e("ERROR", e.getStackTrace().toString());
+			  }
+			  
+			  // FIXME: should we discard all the past-due events?
+			  
+			  HomeItemModel it = new HomeItemModel();
+			  it.setEventId(eventId);
+			  it.setSubject(subject);
+			  it.setStartDate(startDate);
+			  it.setRSVP(true);
+			  upcomingEvents.add(it);
+			  
+			  cursor.moveToNext();
+		  }
+		  
+		  return upcomingEvents;
+	  }
+	  
+	  public ArrayList<HomeItemModel> getPastEvents(int userId) 
+			  throws SQLException {
+		  ArrayList<HomeItemModel> pastEvents = new ArrayList<HomeItemModel>();
+		  Date today = new Date();
+		  SimpleDateFormat SQLFormat = new SimpleDateFormat("yyyy-MM-dd");
+		  String todaySQLFormat = SQLFormat.format(today);
+		  Log.i("GET TMRW", ""+today);
+		  Log.e("GET TODAY", "SELECT " + CarnnectingContract.Event.COLUMN_NAME_START_TIME + " FROM " + CarnnectingContract.Event.TABLE_NAME);
+		  String todayStart = todaySQLFormat + " 00:00:00";
+		  Log.e("TODAY DATE PAST", todayStart);
+		  
+		  Cursor cursor = db.rawQuery(
+				  "SELECT "+ CarnnectingContract.Event.COLUMN_NAME_START_TIME 
+				  + "," + CarnnectingContract.Event.COLUMN_NAME_ID
+				  + "," + CarnnectingContract.Event.COLUMN_NAME_SUBJECT
+				  + " FROM " + CarnnectingContract.Event.TABLE_NAME
+				  + " WHERE "+ CarnnectingContract.Event.COLUMN_NAME_START_TIME + " < \'" + todayStart + "\'"
+				  + " AND " + CarnnectingContract.Event.COLUMN_NAME_ID + " IN "
+				  + "(SELECT " + CarnnectingContract.RSVP.COLUMN_NAME_EVENT_ID + " FROM " 
+				  + CarnnectingContract.RSVP.TABLE_NAME 
+				  + " WHERE "+ CarnnectingContract.RSVP.COLUMN_NAME_USER_ID + " = " + userId + ")", 
+				  null);
+		  
+		  // Convert cursor to HomeItemModel
+		  SimpleDateFormat dateOnlyFormat = HomeItemModel.dateOnlyFormat;
+		  cursor.moveToFirst();
+		  while(!cursor.isAfterLast()) {
+			  int eventId = cursor.getInt(1);
+			  String subject = cursor.getString(2);
+			  Log.e("GET DATE SQL", cursor.getString(0));
+			  String startDate = "01/01/1970";
+			  try {
+				  startDate = dateOnlyFormat.format(Event.dateFormat.parse(cursor.getString(0)));
+			  } catch (Exception e) {
+				  Log.e("ERROR", e.getStackTrace().toString());
+			  }
+			  
+			  // FIXME: should we discard all the past-due events?
+			  
+			  HomeItemModel it = new HomeItemModel();
+			  it.setEventId(eventId);
+			  it.setSubject(subject);
+			  it.setStartDate(startDate);
+			  it.setRSVP(true);
+			  pastEvents.add(it);
+			  
+			  cursor.moveToNext();
+		  }
+		  
+		  return pastEvents;
+	  }
+	  
+	  
 	  private Event cursorToEvent(Cursor cursor) {
 		  // TODO: don't hardcode 0, 1, 2, 3... Instead, define them in contract class.
 		  try {
-			  return new Event(cursor.getInt(0), cursor.getString(1), Event.dateFormat.parse(cursor.getString(2)), Event.dateFormat.parse(cursor.getString(3)), cursor.getString(4), cursor.getInt(5));
+			  return new Event(cursor.getInt(0), cursor.getString(1), Event.dateFormat.parse(cursor.getString(2)), Event.dateFormat.parse(cursor.getString(3)), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getInt(7));
 		  } catch (Exception e) {
 			  Log.e("ERROR", e.getStackTrace().toString());
-			  return new Event(-1, "ERORR ORCCURED!", new Date(), new Date(), "ERROR: exception when cursorToEvent()", 0);
+			  return new Event(-1, "ERORR ORCCURED!", new Date(), new Date(),"NAV", "NAV", "ERROR: exception when cursorToEvent()", 0);
 		  }
 	  }
 }
