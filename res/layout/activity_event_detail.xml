@@ -22,7 +22,7 @@
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_width="0dp"
-        android:textSize="25dip" />
+        android:textSize="35dip" />
     
     
     <com.carnnecting.widget.NotPressedWithParentCheckBox android:id="@+id/eventDetailRSVPCheckBox"
@@ -33,10 +33,6 @@
     
     </LinearLayout>
    
-	<LinearLayout
-	    android:layout_width="fill_parent"
-    	android:layout_height="wrap_content"
-    	android:orientation="horizontal" >
     
         
     <TextView
@@ -45,10 +41,20 @@
         android:layout_width="fill_parent"
         android:textSize="25dip" />
 	  
-    </LinearLayout>
-    
-   
-       
+	<TextView
+        android:id="@+id/eventDetailLocationTextView"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:textSize="25dip" />
+	
+	<TextView
+        android:id="@+id/eventDetailHostTextView"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:textSize="25dip" />
+	  
+	
+	   
     <TextView
         android:id="@+id/eventDetailDescriptionTextView"
         android:layout_height="wrap_content"

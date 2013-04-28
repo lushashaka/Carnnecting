@@ -57,6 +57,13 @@ public class CarnnectingSQLiteOpenHelper extends SQLiteOpenHelper{
 			CarnnectingContract.User.COLUMN_NAME_FB_LOGIN + " TEXT" +
 			")";
 	
+	private static final String SQL_CREATE_READ_EVENT= 
+			"CREATE TABLE IF NOT EXISTS " + CarnnectingContract.ReadEvent.TABLE_NAME + " (" +
+			CarnnectingContract.ReadEvent.COLUMN_NAME_USER_ID + " INTEGER," + 
+			CarnnectingContract.ReadEvent.COLUMN_NAME_EVENT_ID + " INTEGER," +
+			" PRIMARY KEY ("+CarnnectingContract.ReadEvent.COLUMN_NAME_USER_ID+", "+CarnnectingContract.ReadEvent.COLUMN_NAME_EVENT_ID+")" +
+			")";
+
 	
 	public CarnnectingSQLiteOpenHelper (Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -68,6 +75,7 @@ public class CarnnectingSQLiteOpenHelper extends SQLiteOpenHelper{
 		Log.e("INFO", SQL_CREATE_FAVORITE);
 		Log.e("INFO", SQL_CREATE_RSVP);
 		Log.e("INFO", SQL_CREATE_SUBSCRIBE);
+		Log.e("INFO", SQL_CREATE_READ_EVENT);
 		
 		db.execSQL(SQL_CREATE_CATEGORY);
 		db.execSQL(SQL_CREATE_EVENT);
@@ -75,6 +83,7 @@ public class CarnnectingSQLiteOpenHelper extends SQLiteOpenHelper{
 		db.execSQL(SQL_CREATE_RSVP);
 		db.execSQL(SQL_CREATE_SUBSCRIBE);
 		db.execSQL(SQL_CREATE_USER);
+		db.execSQL(SQL_CREATE_READ_EVENT);
 	}
 
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -87,6 +96,7 @@ public class CarnnectingSQLiteOpenHelper extends SQLiteOpenHelper{
 			    db.execSQL("DROP TABLE IF EXISTS " + CarnnectingContract.RSVP.TABLE_NAME);
 			    db.execSQL("DROP TABLE IF EXISTS " + CarnnectingContract.Subscribe.TABLE_NAME);
 			    db.execSQL("DROP TABLE IF EXISTS " + CarnnectingContract.User.TABLE_NAME);
+			    db.execSQL("DROP TABLE IF EXISTS " + CarnnectingContract.ReadEvent.TABLE_NAME);
 			    
 			    onCreate(db);
 	}

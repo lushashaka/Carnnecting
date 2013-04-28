@@ -60,6 +60,12 @@ public class CarnnectingContract {
 		public static final String COLUMN_NAME_FB_LOGIN				= "fb_login";
 	}
 	
+	// Read_event table
+	public static abstract class ReadEvent {
+		public static final String TABLE_NAME						= "read_event";
+		public static final String COLUMN_NAME_USER_ID				= "user_id";
+		public static final String COLUMN_NAME_EVENT_ID				= "event_id";
+	}
 	
 	/*
 	 * The timestamp when the database was last changed (CUD of CRUD).
