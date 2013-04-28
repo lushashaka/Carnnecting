@@ -48,11 +48,12 @@ import java.util.HashSet;
 
 public class MyEvents extends Activity {
 
-	private ExpandListAdapter ExpAdapter;
-	private ArrayList<ExpandListGroup> ExpListItems;
+	private MyEventsListAdapter ExpAdapter;
+	private ArrayList<ExpandEventListGroup> ExpListItems;
 	private ExpandableListView ExpandList;
 	private CategoryDataSource categoryDAO;
 	private SubscribeDataSource subscribeDAO;
+	private EventDataSource eventDAO;
 	private Long lastDatabaseLoadTimestamp = null;
 	
 	private HashMap<Integer, Boolean> changedSubscribedCatIds;
@@ -69,23 +70,24 @@ public class MyEvents extends Activity {
 		Intent intent  = getIntent();
 		subscribeDAO = new SubscribeDataSource(this.getApplication());
 		subscribeDAO.open();
+		eventDAO = new EventDataSource(this.getApplication());
+		eventDAO.open();
 		userId = -1;
 		if (intent != null && intent.getExtras() != null) {
 			userId = intent.getExtras().getInt("userId");
 		}
         ExpListItems = SetStandardGroups(userId);
-        ExpAdapter = new ExpandListAdapter(MyEvents.this, ExpListItems, changedSubscribedCatIds, userId);
+        ExpAdapter = new MyEventsListAdapter(MyEvents.this, ExpListItems, changedSubscribedCatIds, userId);
         ExpandList.setAdapter(ExpAdapter);
         ExpandList.setOnChildClickListener(new OnChildClickListener() {
 
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
                     int groupPosition, int childPosition, long id) {
-            	Intent categoryDetailIntent = new Intent(v.getContext(), CategoryDetail.class);
-				Log.i("Calling CategoryDetail", "inside onChildClick");
-				categoryDetailIntent.putExtra("userId", userId);
-				categoryDetailIntent.putExtra("categoryId", ExpListItems.get(groupPosition).getItems().get(childPosition).getId());
-				v.getContext().startActivity(categoryDetailIntent);
+            	Intent eventDetailIntent = new Intent(v.getContext(), EventDetail.class);
+				Log.i("Calling EventDetail", "inside onChildClick");
+				eventDetailIntent.putExtra("userId", userId);
+				v.getContext().startActivity(eventDetailIntent);
                 return false;
 
             }
@@ -94,60 +96,66 @@ public class MyEvents extends Activity {
 		
 	}
 	
-	public ArrayList<ExpandListGroup> SetStandardGroups(int userId) {
-    	ArrayList<ExpandListGroup> parentList = new ArrayList<ExpandListGroup>();
-    	ArrayList<ExpandListChild> childList = new ArrayList<ExpandListChild>();
-        ExpandListGroup myCats = new ExpandListGroup();
+	public ArrayList<ExpandEventListGroup> SetStandardGroups(int userId) {
+    	ArrayList<ExpandEventListGroup> parentList = new ArrayList<ExpandEventListGroup>();
+    	ArrayList<HomeItemModel> childList = new ArrayList<HomeItemModel>();
         
-        myCats.setName("Today");
+    	ExpandEventListGroup todayEvents = new ExpandEventListGroup();
+        todayEvents.setName("Today");
         
-        categoryDAO = new CategoryDataSource(this.getApplication());
-		categoryDAO.open();
-		ArrayList<Category> subscribedCategories = categoryDAO.getSubscribedCategoriesByUserId(userId);
-		ArrayList<Category> allCategories = categoryDAO.getAllCategories();
+        eventDAO = new EventDataSource(this.getApplication());
+		eventDAO.open();
+	    ArrayList<HomeItemModel> todays = eventDAO.getTodayEvents(userId);//TODO: get today's events: eventDAO.getSubscribedCategoriesByUserId(userId);
 		
-		for (int i = 0; i < subscribedCategories.size(); i++) {
-			Category category = subscribedCategories.get(i);
-			ExpandListChild childCat = new ExpandListChild();
-			childCat.setName(category.getName());
-			childCat.setId(category.getId());
-			childCat.setSubscribed(true);
+		for (int i = 0; i < todays.size(); i++) {
+			HomeItemModel childCat = todays.get(i);
+			//TODO: also show my favourite events in my events screen???
+			childCat.setRSVP(true);
 			childList.add(childCat);
 		}
         
-        myCats.setItems(childList);
+        todayEvents.setItems(childList);
         
-        ExpandListGroup otherCats = new ExpandListGroup();
-        otherCats.setName("Tomorrow");
-        childList = new ArrayList<ExpandListChild>();
-        ArrayList<Category> otherCategories = categoryDAO.getOtherCategoriesByUserId(userId);
+       /* ExpandEventListGroup tmrwEvents = new ExpandEventListGroup();
+        tmrwEvents.setName("Tomorrow");
+        childList = new ArrayList<HomeItemModel>();
+        ArrayList<HomeItemModel> tmrws = eventDAO.getTmrwEvents(userId);
 
-		for (int i = 0; i < otherCategories.size(); i++) {
-			Category category = otherCategories.get(i);
-			ExpandListChild childCat = new ExpandListChild();
-			childCat.setName(category.getName());
-			childCat.setId(category.getId());
-			childCat.setSubscribed(false);
+		for (int i = 0; i < tmrws.size(); i++) {
+			HomeItemModel childCat = tmrws.get(i);
+			childCat.setRSVP(true);
 			childList.add(childCat);
 		}
 
-        otherCats.setItems(childList);
+        tmrwEvents.setItems(childList);
         
-        ExpandListGroup allCats = new ExpandListGroup();
-        childList = new ArrayList<ExpandListChild>();
-        allCats.setName("Upcoming");
-		for (int i = 0; i < allCategories.size(); i++) {
-			Category category = allCategories.get(i);
-			ExpandListChild childCat = new ExpandListChild();
-			childCat.setName(category.getName());
-			childCat.setId(category.getId());
+        ExpandEventListGroup upcomingEvents = new ExpandEventListGroup();
+        childList = new ArrayList<HomeItemModel>();
+        ArrayList<HomeItemModel> upcomings = eventDAO.getUpcomings(userId);
+        upcomingEvents.setName("Upcoming");
+		for (int i = 0; i < upcomings.size(); i++) {
+			HomeItemModel childCat = upcomings.get(i);
+			childCat.setRSVP(true);
 			childList.add(childCat);
 		}
-		allCats.setItems(childList);
+		upcomingEvents.setItems(childList);
 		
-        parentList.add(myCats);
-        parentList.add(otherCats);
-        parentList.add(allCats);
+		ExpandEventListGroup pastEvents = new ExpandEventListGroup();
+        childList = new ArrayList<HomeItemModel>();
+        ArrayList<HomeItemModel> pasts = eventDAO.getPasts(userId);
+        pastEvents.setName("Past");
+		for (int i = 0; i < pasts.size(); i++) {
+			HomeItemModel childCat = pasts.get(i);
+			childCat.setRSVP(true);
+			childList.add(childCat);
+		}
+		pastEvents.setItems(childList);
+		
+        parentList.add(todayEvents);
+        parentList.add(tmrwEvents);
+        parentList.add(upcomingEvents);
+        parentList.add(pastEvents);*/
+        parentList.add(todayEvents);
         
         return parentList;
     }
@@ -156,14 +164,14 @@ public class MyEvents extends Activity {
 	public void onResume(){
 		super.onResume();
 		ExpListItems = SetStandardGroups(userId);
-		changedSubscribedCatIds = ExpAdapter.getSubscribedCatIds();
+		//changedSubscribedCatIds = ExpAdapter.getSubscribedCatIds();
 		ExpAdapter.notifyDataSetChanged();
 	}
 	
 	@Override
 	public void onPause() {
 		super.onPause();
-		changedSubscribedCatIds = ExpAdapter.getSubscribedCatIds();
+		//changedSubscribedCatIds = ExpAdapter.getSubscribedCatIds();
 		for (int categoryId : changedSubscribedCatIds.keySet()){
 			boolean isSubscribed = changedSubscribedCatIds.get(categoryId);
 			if (isSubscribed) {
