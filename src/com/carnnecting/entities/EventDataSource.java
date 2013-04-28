@@ -122,15 +122,7 @@ public class EventDataSource {
 	  
 	  public void getEventsByCategoryIds(int categoryId, ArrayList<HomeItemModel> eventItems) 
 			  throws SQLException 
-	  {
-		  
-		  // itemModels must be empty now
-			  /*Log.e("INFO", "SELECT "+ CarnnectingContract.Event.COLUMN_NAME_ID +","+
-					  CarnnectingContract.Event.COLUMN_NAME_SUBJECT+","+
-					  CarnnectingContract.Event.COLUMN_NAME_START_TIME+" FROM " + CarnnectingContract.Event.TABLE_NAME+
-					  " WHERE "+CarnnectingContract.Event.COLUMN_NAME_CATEGORY_ID + " = " + categoryId);*/
-			  
-			  
+	  {	  	  
 			  Cursor cursor = db.rawQuery(
 					  "SELECT "+ CarnnectingContract.Event.COLUMN_NAME_ID +","+
 							  CarnnectingContract.Event.COLUMN_NAME_SUBJECT+","+
@@ -164,6 +156,49 @@ public class EventDataSource {
 			  }
 		  
 	  }
+	  
+	  public ArrayList<HomeItemModel> getTodayEvents(int userId) 
+			  throws SQLException {
+		  ArrayList<HomeItemModel> todayEvents = new ArrayList<HomeItemModel>();
+		  Date today = new Date();
+		  SimpleDateFormat SQLFormat = new SimpleDateFormat("yyyy-MM-dd");
+		  String todaySQLFormat = SQLFormat.format(today);
+		  Log.e("GET TODAY", "SELECT " + CarnnectingContract.Event.COLUMN_NAME_START_TIME + " FROM " + CarnnectingContract.Event.TABLE_NAME);
+		  String test = todaySQLFormat + " 23:59:59";
+		  Log.e("TODAY DATE", test);
+		  Cursor cursor = db.rawQuery(
+				  "SELECT "+ CarnnectingContract.Event.COLUMN_NAME_START_TIME + " FROM " + CarnnectingContract.Event.TABLE_NAME
+				  + " WHERE "+ CarnnectingContract.Event.COLUMN_NAME_START_TIME + " < \'" + test + "\'", 
+				  null);
+		  
+		  // Convert cursor to HomeItemModel
+		  SimpleDateFormat dateOnlyFormat = HomeItemModel.dateOnlyFormat;
+		  cursor.moveToFirst();
+		  while(!cursor.isAfterLast()) {
+			  //int eventId = cursor.getInt(0);
+			  //String subject = cursor.getString(1);
+			  Log.e("GET DATE SQL", cursor.getString(0));
+			  String startDate = "01/01/1970";
+			  try {
+				  startDate = dateOnlyFormat.format(Event.dateFormat.parse(cursor.getString(0)));
+			  } catch (Exception e) {
+				  Log.e("ERROR", e.getStackTrace().toString());
+			  }
+			  
+			  // FIXME: should we discard all the past-due events?
+			  
+			  HomeItemModel it = new HomeItemModel();
+			  //it.setEventId(eventId);
+			  //it.setSubject(subject);
+			  it.setStartDate(startDate);
+			  todayEvents.add(it);
+			  
+			  cursor.moveToNext();
+		  }
+		  
+		  return todayEvents;
+	  }
+	  
 	  
 	  private Event cursorToEvent(Cursor cursor) {
 		  // TODO: don't hardcode 0, 1, 2, 3... Instead, define them in contract class.
