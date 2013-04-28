@@ -74,4 +74,15 @@ public class ReadEventDataSource {
 		}
 		return readEventIds;
 	}
+	
+	public boolean userReadEvent(int userId, int eventId) {
+		Cursor cursor = db.rawQuery(
+				  "SELECT * FROM " + 
+						  CarnnectingContract.ReadEvent.TABLE_NAME+
+						  " WHERE "+CarnnectingContract.ReadEvent.COLUMN_NAME_USER_ID + " = " + userId +" AND "+
+						  CarnnectingContract.ReadEvent.COLUMN_NAME_EVENT_ID +" = "+eventId, 
+				  null);
+		
+		return cursor != null && cursor.getCount() > 0;
+	}
 }

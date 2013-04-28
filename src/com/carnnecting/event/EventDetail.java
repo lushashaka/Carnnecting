@@ -30,6 +30,7 @@ import com.carnnecting.entities.FavoriteDataSource;
 import com.carnnecting.entities.Event;
 import com.carnnecting.entities.RSVP;
 import com.carnnecting.entities.Favorite;
+import com.carnnecting.entities.ReadEventDataSource;
 import com.carnnecting.home.Home;
 import com.cmu.carnnecting.R;
 
@@ -44,9 +45,11 @@ public class EventDetail extends Activity {
 	private TextView locationTextView;
 	private TextView hostTextView;
 	private TextView descriptionTextView;
+	
 	private EventDataSource eventDao;
 	private FavoriteDataSource favoriteDao;
 	private RSVPDataSource RSVPDao;
+	private ReadEventDataSource readEventDao;
 
 	private static final String USER_ID = "USER_ID";
 	private static final String EVENT_ID = "EVENT_ID";
@@ -90,6 +93,8 @@ public class EventDetail extends Activity {
 			favoriteDao.open();
 			RSVPDao = new RSVPDataSource(this.getApplication());
 			RSVPDao.open();
+			readEventDao = new ReadEventDataSource(this.getApplication());
+			readEventDao.open();
 
 			Intent intent = getIntent();
 			if (intent != null && intent.getExtras() != null) {
@@ -139,9 +144,12 @@ public class EventDetail extends Activity {
 				descriptionTextView.setText(event.getDescription());
 
 				Log.e("INFO", event.toString());
-				
-				Home.addReadEvent(userId, eventId);
-				Log.e("INFO", "EventDetail: added read event id:"+eventId);
+
+				if (readEventDao.createReadEvent(userId, eventId)) {
+					Log.e("INFO", "EventDetail: added read event id:"+eventId);
+				} else {
+					Log.e("ERROR", "EventDetail: cannot add read event id:"+eventId);
+				}
 
 			} else {
 				favoriteCheckBox.setEnabled(false);

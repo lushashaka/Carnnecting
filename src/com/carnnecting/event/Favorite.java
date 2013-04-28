@@ -297,7 +297,7 @@ public class Favorite extends ListActivity {
 			holder.subjectTextView.setText(homeItems.get(position).getSubject());
 			holder.subjectTextView.setTypeface(Typeface.DEFAULT_BOLD, 0);
 			
-			if (!Home.isEventRead(userId, homeItems.get(position).getEventId()))
+			if (!readEventDao.userReadEvent(userId, homeItems.get(position).getEventId()))
 				holder.subjectTextView.setTextColor(Color.WHITE);
 			else
 				holder.subjectTextView.setTextColor(Color.GRAY);
@@ -347,7 +347,7 @@ public class Favorite extends ListActivity {
 	        case R.id.categories:
 	        	intent = new Intent(this, CategoryMenu.class);
 	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	        	intent.putExtra("USERID", userId);
+	        	intent.putExtra("userId", userId);
 	        	startActivity(intent);
 	        	return true;	
 	        default:
