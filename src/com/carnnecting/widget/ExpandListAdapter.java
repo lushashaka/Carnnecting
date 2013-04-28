@@ -3,27 +3,19 @@ package com.carnnecting.widget;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.carnnecting.*;
-import com.carnnecting.category.CategoryDetail;
 import com.carnnecting.util.*;
 import com.cmu.carnnecting.R;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ExpandableListView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.Toast;
 
 public class ExpandListAdapter extends BaseExpandableListAdapter {
 

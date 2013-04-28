@@ -3,28 +3,20 @@ package com.carnnecting.widget;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.carnnecting.*;
-import com.carnnecting.category.CategoryDetail;
 import com.carnnecting.entities.HomeItemModel;
 import com.carnnecting.util.*;
 import com.cmu.carnnecting.R;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ExpandableListView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.Toast;
 
 public class MyEventsListAdapter extends BaseExpandableListAdapter {
 
@@ -46,7 +38,9 @@ public class MyEventsListAdapter extends BaseExpandableListAdapter {
 	}
 	
 	public MyEventsListAdapter(Context context, ArrayList<ExpandEventListGroup> groups, 
-								HashMap<Integer, Boolean> changedRSVPIds, int userId) {
+								HashMap<Integer, Boolean> changedRSVPIds, 
+								HashMap<Integer, Boolean> changedFavIds,
+								int userId) {
 		this.context = context;
 		this.groups = groups;
 		this.changedFavIds = changedFavIds;
@@ -95,28 +89,27 @@ public class MyEventsListAdapter extends BaseExpandableListAdapter {
 		tv.setTag(child.getEventId());
 		
 		// TODO Auto-generated method stub
-		//TODO: add favorite checkbox for events
-		/*holder.favoriteCheckBox.setOnCheckedChangeListener(null);
-		holder.favoriteCheckBox.setChecked(child.isSubscribed());
+		holder.favoriteCheckBox.setOnCheckedChangeListener(null);
+		holder.favoriteCheckBox.setChecked(child.isFavorite());
 		holder.favoriteCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
 			@Override
 			public void onCheckedChanged(CompoundButton button,
 					boolean isChecked) {
-				Log.i("child name", child.getName());
-				Log.i("child id", "" + child.getId());
-				int categoryId = child.getId();
-				groups.get(groupPosition).getItems().get(childPosition).setSubscribed(isChecked);
-						if (changedSubscribedCatIds.containsKey(categoryId)) {
+				Log.i("child name", child.getSubject());
+				Log.i("child id", "" + child.getEventId());
+				int eventId = child.getEventId();
+				groups.get(groupPosition).getItems().get(childPosition).setFavorite(isChecked);
+						if (changedFavIds.containsKey(eventId)) {
 						// Toggle a boolean even number of times changes nothing
-							changedSubscribedCatIds.remove(categoryId);
+							changedFavIds.remove(eventId);
 						}
 						else {
-							changedSubscribedCatIds.put(categoryId, isChecked);
+							changedFavIds.put(eventId, isChecked);
 						}
 			
 			}
 			
-		});*/
+		});
 		
 		
 		holder.RSVPCheckBox.setOnCheckedChangeListener(null);
@@ -189,10 +182,6 @@ public class MyEventsListAdapter extends BaseExpandableListAdapter {
 		// TODO Auto-generated method stub
 		return true;
 	}
-	
-	/*public HashMap<Integer, Boolean> getSubscribedCatIds(){
-		return changedSubscribedCatIds;
-	}*/
 	
 
 }
