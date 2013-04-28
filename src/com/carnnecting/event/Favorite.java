@@ -349,7 +349,13 @@ public class Favorite extends ListActivity {
 	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 	        	intent.putExtra("userId", userId);
 	        	startActivity(intent);
-	        	return true;	
+	        	return true;
+	        case R.id.my_events:
+	        	intent = new Intent(this, MyEvents.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        	intent.putExtra("userId", userId);
+	        	startActivity(intent);
+	        	return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
