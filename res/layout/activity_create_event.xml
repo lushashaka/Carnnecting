@@ -19,18 +19,6 @@
           android:hint="@string/title"
           android:ems="10" />
 	
-	      <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/host" />
-	<EditText
-          android:id="@+id/editText2"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:hint="@string/org"
-          android:ems="10" />
-	
       <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
@@ -50,9 +38,15 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:ems="10"
-          android:hint="@string/time"
+          android:hint="@string/start_time"
           android:inputType="time" />
-      
+      <EditText
+          android:id="@+id/editText7"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:ems="10"
+          android:hint="@string/end_time"
+          android:inputType="time" />
       <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
