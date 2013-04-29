@@ -163,6 +163,7 @@ public class EventDetail extends Activity {
 				FBmessage += "\nLocation: " + event.getLocation();
 				FBmessage += "\nWhen: " + Event.dateFormat.format(event.getStartTime()) + "~" + Event.dateFormat.format(event.getEndTime());
 				FBmessage += "\nDescription: " + event.getDescription();
+				FBmessage += "\nRSVP to this event by downloading the 'Carnnecting' app!";
 				// End - String construction for "Share event on Facebook"
 				
 				favoriteCheckBox.setOnCheckedChangeListener(null);
