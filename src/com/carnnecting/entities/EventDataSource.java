@@ -44,12 +44,12 @@ public class EventDataSource {
 		  // dbHelper.close();
 	  }
 	  
-	  // TODO: fill in the (necessary subset of) CRUD operations here. For now we just need to read
+	  // HERE
 	  public int createEvent(
 			  int id, 
 			  String subject, 
-			  Date startTime, 
-			  Date endTime,
+			  String startTime,	// It's expected that time format to be consistent with Event.getDateformat(): yyyy-MM-dd HH:mm:ss 
+			  String endTime,	// It's expected that time format to be consistent with Event.getDateformat(): yyyy-MM-dd HH:mm:ss
 			  String location,
 			  String host,
 			  String description, 
@@ -57,6 +57,20 @@ public class EventDataSource {
 	  {
 		  
 		  int newEventId = -1;
+		  ContentValues values = new ContentValues();
+		  values = new ContentValues();
+		  values.put(CarnnectingContract.Event.COLUMN_NAME_SUBJECT, subject);
+		  values.put(CarnnectingContract.Event.COLUMN_NAME_START_TIME, startTime);
+		  values.put(CarnnectingContract.Event.COLUMN_NAME_END_TIME, endTime);
+		  values.put(CarnnectingContract.Event.COLUMN_NAME_LOCATION, location);
+		  values.put(CarnnectingContract.Event.COLUMN_NAME_HOST, host);
+		  values.put(CarnnectingContract.Event.COLUMN_NAME_DESCRIPTION, description);
+		  values.put(CarnnectingContract.Event.COLUMN_NAME_CATEGORY_ID, categoryId);
+		  // Check this out for the return value of db.insert: http://stackoverflow.com/questions/10363884/clarification-on-the-row-id-returned-by-sqlites-insert-statement
+		  newEventId = (int)db.insert(CarnnectingContract.Event.TABLE_NAME, null, values);
+		  if (newEventId == -1)
+			  Log.e("ERROR", "Not able to insert event with subject "+subject);
+		  
 		  return newEventId;
 	  }
 	  

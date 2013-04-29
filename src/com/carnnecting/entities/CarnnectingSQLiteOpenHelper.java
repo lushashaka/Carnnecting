@@ -63,6 +63,12 @@ public class CarnnectingSQLiteOpenHelper extends SQLiteOpenHelper{
 			CarnnectingContract.ReadEvent.COLUMN_NAME_EVENT_ID + " INTEGER," +
 			" PRIMARY KEY ("+CarnnectingContract.ReadEvent.COLUMN_NAME_USER_ID+", "+CarnnectingContract.ReadEvent.COLUMN_NAME_EVENT_ID+")" +
 			")";
+	
+	private static final String SQL_CREATE_IMAGE= 
+			"CREATE TABLE IF NOT EXISTS " + CarnnectingContract.Image.TABLE_NAME + " (" +
+			CarnnectingContract.Image.COLUMN_NAME_EVENT_ID + " INTEGER," + 
+			CarnnectingContract.Image.COLUMN_NAME_IMAGE + " BLOB"+
+			")";
 
 	
 	public CarnnectingSQLiteOpenHelper (Context context) {
@@ -76,6 +82,7 @@ public class CarnnectingSQLiteOpenHelper extends SQLiteOpenHelper{
 		Log.e("INFO", SQL_CREATE_RSVP);
 		Log.e("INFO", SQL_CREATE_SUBSCRIBE);
 		Log.e("INFO", SQL_CREATE_READ_EVENT);
+		Log.e("INFO", SQL_CREATE_IMAGE);
 		
 		db.execSQL(SQL_CREATE_CATEGORY);
 		db.execSQL(SQL_CREATE_EVENT);
@@ -84,6 +91,7 @@ public class CarnnectingSQLiteOpenHelper extends SQLiteOpenHelper{
 		db.execSQL(SQL_CREATE_SUBSCRIBE);
 		db.execSQL(SQL_CREATE_USER);
 		db.execSQL(SQL_CREATE_READ_EVENT);
+		db.execSQL(SQL_CREATE_IMAGE);
 	}
 
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
