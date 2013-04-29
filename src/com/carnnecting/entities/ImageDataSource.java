@@ -56,7 +56,7 @@ public class ImageDataSource {
 		return ret;
 	}
 	
-	public Bitmap getAnFavoriteByUserIdAndEventId(int eventId) {
+	public Bitmap getAnImageByEventId(int eventId) {
 		Cursor cursor = db.rawQuery("SELECT "+CarnnectingContract.Image.COLUMN_NAME_IMAGE+" FROM "+CarnnectingContract.Image.TABLE_NAME + " WHERE " + 
 					CarnnectingContract.Image.COLUMN_NAME_EVENT_ID+" = "+eventId, null);
 		if (cursor!= null && cursor.getCount() > 0) {

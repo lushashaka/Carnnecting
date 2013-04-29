@@ -8,6 +8,7 @@ import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,12 +22,14 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.carnnecting.category.CategoryMenu;
 import com.carnnecting.entities.EventDataSource;
+import com.carnnecting.entities.ImageDataSource;
 import com.carnnecting.entities.RSVPDataSource;
 import com.carnnecting.entities.FavoriteDataSource;
 import com.carnnecting.entities.Event;
@@ -40,18 +43,20 @@ import java.util.*;
 
 public class EventDetail extends Activity {
 
-	private CheckBox favoriteCheckBox;
-	private TextView subjectTextView;
-	private CheckBox RSVPCheckBox;
-	private TextView eventTimeTextView;
-	private TextView locationTextView;
-	private TextView hostTextView;
-	private TextView descriptionTextView;
+	private CheckBox 	favoriteCheckBox;
+	private TextView 	subjectTextView;
+	private CheckBox 	RSVPCheckBox;
+	private TextView 	eventTimeTextView;
+	private TextView 	locationTextView;
+	private TextView 	hostTextView;
+	private TextView 	descriptionTextView;
+	private ImageView	eventImageView;
 	
 	private EventDataSource eventDao;
 	private FavoriteDataSource favoriteDao;
 	private RSVPDataSource RSVPDao;
 	private ReadEventDataSource readEventDao;
+	private ImageDataSource imageDao;
 
 	private static final String USER_ID = "USER_ID";
 	private static final String EVENT_ID = "EVENT_ID";
@@ -107,6 +112,7 @@ public class EventDetail extends Activity {
 			locationTextView = (TextView) findViewById(R.id.eventDetailLocationTextView);
 			hostTextView = (TextView) findViewById(R.id.eventDetailHostTextView);
 			descriptionTextView = (TextView)	findViewById(R.id.eventDetailDescriptionTextView);
+			eventImageView = (ImageView) findViewById(R.id.eventImageView);
 			
 			// favoriteCheckBox.setText("   ");
 			// RSVPCheckBox.setText("   ");
@@ -119,6 +125,8 @@ public class EventDetail extends Activity {
 			RSVPDao.open();
 			readEventDao = new ReadEventDataSource(this.getApplication());
 			readEventDao.open();
+			imageDao = new ImageDataSource(this.getApplication());
+			imageDao.open();
 
 			Intent intent = getIntent();
 			if (intent != null && intent.getExtras() != null) {
@@ -166,6 +174,11 @@ public class EventDetail extends Activity {
 				locationTextView.setText(event.getLocation());
 				hostTextView.setText(event.getHost());
 				descriptionTextView.setText(event.getDescription());
+				Bitmap bmp = imageDao.getAnImageByEventId(eventId);
+				if (bmp != null) {
+					eventImageView.setImageBitmap(bmp);
+				}
+				
 
 				Log.e("INFO", event.toString());
 
