@@ -7,6 +7,7 @@ import java.util.HashMap;
 import com.carnnecting.entities.Category;
 import com.carnnecting.entities.CategoryDataSource;
 import com.carnnecting.entities.EventDataSource;
+import com.carnnecting.entities.ImageDataSource;
 import com.cmu.carnnecting.R;
 
 import android.app.Activity;
@@ -36,8 +37,10 @@ public class CreateEvent extends Activity {
 	static String SAMPLEIMG = "sample_img.png";
 	EventDataSource eventDao;
 	CategoryDataSource categoryDao;
+	ImageDataSource imgDao;
 	HashMap<String, Integer> catName2Id = new HashMap<String, Integer>();
     int catId = 1;
+    Bitmap bmp;
 	
 	Context mContext = this;
 	ImageView iv;
@@ -53,6 +56,10 @@ public class CreateEvent extends Activity {
 	    eventDao.open();
 	    categoryDao = new CategoryDataSource(this.getApplication());
 	    categoryDao.open();
+	    imgDao = new ImageDataSource(this.getApplication());
+	    imgDao.open();
+	    
+	    bmp = null;
 	    
 	    ArrayList<Category> categories= categoryDao.getAllCategories();
 	    final String[] items = new String[categories.size()];
@@ -141,7 +148,14 @@ public class CreateEvent extends Activity {
 		    	    
 		    	    Log.e("INFO", subject + " " + startTime +" " + endTime + " " + location + " " + host + " " + description + " " + categoryId);
 		    	    
-		    	    eventDao.createEvent(0/*not used*/, subject, startTime, endTime, location, host, description, categoryId);
+		    	    int eventId = eventDao.createEvent(0/*not used*/, subject, startTime, endTime, location, host, description, categoryId);
+		    	    if (bmp != null) {
+		    	    	if(imgDao.createImage(eventId, bmp) == false) 
+		    	    		Log.e("ERROR", "Cannot insert image");
+		    	    	else
+		    	    		Log.e("INFO", "image inserted");
+		    	    }
+		    	    
 		    	    Toast.makeText(CreateEvent.this, "Your event is uploaded", Toast.LENGTH_SHORT).show();
 		    	    finish();
 		    	}
@@ -163,7 +177,9 @@ public class CreateEvent extends Activity {
 	  			return;
 	  		
 	  		if(requestCode == REQUEST_PICTURE) {
-	  			iv.setImageBitmap(loadPicture());
+	  			bmp = loadPicture();
+	  			iv.setImageBitmap(bmp);
+	  			
 	  		}
 	  		
 	  		if(requestCode == REQUEST_PHOTO_ALBUM) {
