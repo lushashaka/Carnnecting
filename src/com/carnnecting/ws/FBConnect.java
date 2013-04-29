@@ -45,13 +45,13 @@ public class FBConnect extends Fragment {
 	    			savedInstanceState.getBoolean(share.PENDING_PUBLISH_KEY, false);
 	    }
 	    
-	    shareButton = (Button) view.findViewById(R.id.shareButton);
-	    shareButton.setOnClickListener(new View.OnClickListener() {
-	        @Override
-	        public void onClick(View v) {
-	            share.shareEvent();        
-	        }
-	    });
+//	    shareButton = (Button) view.findViewById(R.id.shareButton);
+//	    shareButton.setOnClickListener(new View.OnClickListener() {
+//	        @Override
+//	        public void onClick(View v) {
+//	            share.shareEvent();        
+//	        }
+//	    });
 
 	    return view;
 	}

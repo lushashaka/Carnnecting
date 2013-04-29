@@ -8,24 +8,15 @@ import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.widget.Button;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.carnnecting.category.CategoryMenu;
 import com.carnnecting.entities.EventDataSource;
 import com.carnnecting.entities.RSVPDataSource;
 import com.carnnecting.entities.FavoriteDataSource;
@@ -33,10 +24,8 @@ import com.carnnecting.entities.Event;
 import com.carnnecting.entities.RSVP;
 import com.carnnecting.entities.Favorite;
 import com.carnnecting.entities.ReadEventDataSource;
-import com.carnnecting.home.Home;
+import com.carnnecting.ws.FBShare;
 import com.cmu.carnnecting.R;
-
-import java.util.*;
 
 public class EventDetail extends Activity {
 
@@ -47,6 +36,10 @@ public class EventDetail extends Activity {
 	private TextView locationTextView;
 	private TextView hostTextView;
 	private TextView descriptionTextView;
+	private Button shareButton;
+	
+	private FBShare share = new FBShare();
+	private String FBmessage;
 	
 	private EventDataSource eventDao;
 	private FavoriteDataSource favoriteDao;
@@ -108,6 +101,18 @@ public class EventDetail extends Activity {
 			hostTextView = (TextView) findViewById(R.id.eventDetailHostTextView);
 			descriptionTextView = (TextView)	findViewById(R.id.eventDetailDescriptionTextView);
 			
+			// Share event on Facebook - Begin
+			shareButton = (Button) findViewById(R.id.shareButton);
+			
+			shareButton.setOnClickListener(new View.OnClickListener() {
+		        @Override
+		        public void onClick(View v) {
+		        	Log.i("Event Detail", "FBEvent: " + FBmessage);
+		            share.shareEvent(FBmessage);        
+		        }
+		    });
+			// Share event on Facebook - End
+			
 			// favoriteCheckBox.setText("   ");
 			// RSVPCheckBox.setText("   ");
 
@@ -133,6 +138,14 @@ public class EventDetail extends Activity {
 				Favorite favorite = favoriteDao.getAnFavoriteByUserIdAndEventId(userId, eventId);
 				RSVP rsvp = RSVPDao.getAnRSVPByUserIdAndEventId(userId, eventId);
 
+				// Begin - String construction for "Share event on Facebook"
+				FBmessage = "Event: " + event.getSubject();
+				FBmessage += "\nHost: " + event.getHost();
+				FBmessage += "\nLocation: " + event.getLocation();
+				FBmessage += "\nWhen: " + Event.dateFormat.format(event.getStartTime()) + "~" + Event.dateFormat.format(event.getEndTime());
+				FBmessage += "\nDescription: " + event.getDescription();
+				// End - String construction for "Share event on Facebook"
+				
 				favoriteCheckBox.setOnCheckedChangeListener(null);
 				favoriteCheckBox.setChecked(favorite!=null);
 				favoriteCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener(){

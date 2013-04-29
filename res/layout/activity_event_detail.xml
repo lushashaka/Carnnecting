@@ -64,6 +64,14 @@
         android:layout_width="match_parent"
         android:textSize="25dip" />
     
+     <Button
+	    android:id="@+id/shareButton"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:textStyle="bold"
+	    android:gravity="center"
+	    android:text="@string/share"/>
+    
       
 </LinearLayout>
  <Button 
