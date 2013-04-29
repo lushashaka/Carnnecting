@@ -1,7 +1,12 @@
 package com.carnnecting.event;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 
+import com.carnnecting.entities.Category;
+import com.carnnecting.entities.CategoryDataSource;
+import com.carnnecting.entities.EventDataSource;
 import com.cmu.carnnecting.R;
 
 import android.app.Activity;
@@ -27,6 +32,9 @@ public class CreateEvent extends Activity {
 	static int REQUEST_PICTURE = 1;
 	static int REQUEST_PHOTO_ALBUM = 2;
 	static String SAMPLEIMG = "sample_img.png";
+	EventDataSource eventDao;
+	CategoryDataSource categoryDao;
+	
 	
 	Context mContext = this;
 	ImageView iv;
@@ -38,7 +46,32 @@ public class CreateEvent extends Activity {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.activity_create_event);
 	    
-	    final String[] items = {"Category1", "Category2", "Category3", "Category4", "Category5", "Category6", "Category7", "Category8", "Category9", "Category10"};
+	    eventDao  = new EventDataSource(this.getApplication());
+	    eventDao.open();
+	    categoryDao = new CategoryDataSource(this.getApplication());
+	    categoryDao.open();
+	    
+	    ArrayList<Category> categories= categoryDao.getAllCategories();
+	    String[] items = new String[categories.size()];
+	    HashMap<String, Integer> catName2Id = new HashMap<String, Integer>();
+	    
+	    for (int i = 0; i < items.length; i++) {
+	    	items[i] = categories.get(i).getName();
+	    	catName2Id.put(categories.get(i).getName(), categories.get(i).getId());
+	    	
+	    }
+	    
+	    String subject = (String) getText(R.id.editText1);
+	    String StartTime = (String) getText(R.id.editText3_1) + (String) getText(R.id.editText6_1);
+	    String EndTime = (String) getText(R.id.editText3_2) + (String) getText(R.id.editText6_2);
+	    String location = (String) getText(R.id.editText4);
+	    String host = (String) getText(R.id.edit_host);
+	    String description = (String) getText(R.id.editText5);
+	    int categoryId = catName2Id.get(categories);
+	    
+	    // final String[] items = {"Category1", "Category2", "Category3", "Category4", "Category5", "Category6", "Category7", "Category8", "Category9", "Category10"};
+	    
+	    
 	    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Select Category");
 		builder.setItems(items, new DialogInterface.OnClickListener()
@@ -88,6 +121,12 @@ public class CreateEvent extends Activity {
 		      		intent.setType(Images.Media.CONTENT_TYPE);
 		      		intent.setData(Images.Media.EXTERNAL_CONTENT_URI);
 		      		startActivityForResult(intent, REQUEST_PHOTO_ALBUM);	    		
+		    	}
+		    });
+		    
+		    upload.setOnClickListener(new OnClickListener() {
+		    	public void onClick(View v) {
+		    		
 		    	}
 		    });
 	}

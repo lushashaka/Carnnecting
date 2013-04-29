@@ -25,6 +25,17 @@
           android:layout_height="wrap_content"
           android:hint="@string/title"
           android:ems="10" />
+	  <TextView
+        android:id="@+id/loccc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/host" />
+	<EditText
+          android:id="@+id/edit_host"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="@string/host"
+          android:ems="10" />
 	
       <TextView
         android:id="@+id/textView3_1"
