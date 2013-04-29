@@ -22,9 +22,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -34,7 +36,8 @@ public class CreateEvent extends Activity {
 	static String SAMPLEIMG = "sample_img.png";
 	EventDataSource eventDao;
 	CategoryDataSource categoryDao;
-	
+	HashMap<String, Integer> catName2Id = new HashMap<String, Integer>();
+    int catId = 1;
 	
 	Context mContext = this;
 	ImageView iv;
@@ -52,8 +55,7 @@ public class CreateEvent extends Activity {
 	    categoryDao.open();
 	    
 	    ArrayList<Category> categories= categoryDao.getAllCategories();
-	    String[] items = new String[categories.size()];
-	    HashMap<String, Integer> catName2Id = new HashMap<String, Integer>();
+	    final String[] items = new String[categories.size()];
 	    
 	    for (int i = 0; i < items.length; i++) {
 	    	items[i] = categories.get(i).getName();
@@ -61,13 +63,6 @@ public class CreateEvent extends Activity {
 	    	
 	    }
 	    
-	    String subject = (String) getText(R.id.editText1);
-	    String StartTime = (String) getText(R.id.editText3_1) + (String) getText(R.id.editText6_1);
-	    String EndTime = (String) getText(R.id.editText3_2) + (String) getText(R.id.editText6_2);
-	    String location = (String) getText(R.id.editText4);
-	    String host = (String) getText(R.id.edit_host);
-	    String description = (String) getText(R.id.editText5);
-	    int categoryId = catName2Id.get(categories);
 	    
 	    // final String[] items = {"Category1", "Category2", "Category3", "Category4", "Category5", "Category6", "Category7", "Category8", "Category9", "Category10"};
 	    
@@ -79,6 +74,7 @@ public class CreateEvent extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int which)
 			{
+				catId = catName2Id.get(items[which]);
 				Toast.makeText(CreateEvent.this, "You selected " + items[which], Toast.LENGTH_SHORT).show();
 			}
 		});
@@ -92,7 +88,16 @@ public class CreateEvent extends Activity {
 		    Button getphotos = (Button) findViewById(R.id.getPhotos);
 		    Button upload = (Button) findViewById(R.id.upload);
 		    Button selCategory = (Button) findViewById(R.id.selectCategory);
-		    
+		         	    
+		    final EditText title = (EditText) findViewById(R.id.editText1);
+		    final EditText startD = (EditText) findViewById(R.id.editText3_1);
+		    final EditText startT = (EditText) findViewById(R.id.editText6_1);
+		    final EditText endD = (EditText) findViewById(R.id.editText3_2);
+		    final EditText endT = (EditText) findViewById(R.id.editText6_2);
+		    final EditText addr = (EditText) findViewById(R.id.editText4);
+		    final EditText org = (EditText) findViewById(R.id.edit_host);
+		    final EditText dscr = (EditText) findViewById(R.id.editText5);
+		    		    
 		    selCategory.setOnClickListener(new OnClickListener()
 			{
 				@Override
@@ -126,40 +131,23 @@ public class CreateEvent extends Activity {
 		    
 		    upload.setOnClickListener(new OnClickListener() {
 		    	public void onClick(View v) {
-		    		
+		    		String subject = title.getText().toString();
+				    String startTime = startD.getText().toString() + " " + startT.getText().toString();
+				    String endTime = endD.getText().toString() + " " + endT.getText().toString();
+				    String location = addr.getText().toString();
+				    String host = org.getText().toString();
+				    String description = dscr.getText().toString();
+		    	    int categoryId = catId;
+		    	    
+		    	    Log.e("INFO", subject + " " + startTime +" " + endTime + " " + location + " " + host + " " + description + " " + categoryId);
+		    	    
+		    	    eventDao.createEvent(0/*not used*/, subject, startTime, endTime, location, host, description, categoryId);
+		    	    Toast.makeText(CreateEvent.this, "Your event is uploaded", Toast.LENGTH_SHORT).show();
+		    	    finish();
 		    	}
 		    });
 	}
-	/*
-	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-		if(v.getId() == R.id.selectCategory) {
-		menu.setHeaderTitle("Select category");
-        menu.add(0,1,0, "Category1");
-        menu.add(0,2,0, "Category2");
-        menu.add(0,3,0, "Category3");
-        menu.add(0,4,0, "Category4");
-        menu.add(0,5,0, "Category5");
-        menu.add(0,6,0, "Category6");
-        menu.add(0,7,0, "Category7");
-        menu.add(0,8,0, "Category8");
-        menu.add(0,9,0, "Category9");
-        menu.add(0,10,0, "Category10");
-		}
-        super.onCreateContextMenu(menu, v, menuInfo);
-		
-    } 
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        if ("Category1" == item.getTitle())
-            Toast.makeText(this, "Select Category1", Toast.LENGTH_SHORT).show();
-        else if ("Category2" == item.getTitle())
-            Toast.makeText(this, "Select Category2", Toast.LENGTH_SHORT).show();
-        else
-        	Toast.makeText(this, "Select Category?", Toast.LENGTH_SHORT).show();
-        return true;
-    }
-*/
-		
+			
 		Bitmap loadPicture() {
 	  		File file = new File(Environment.getExternalStorageDirectory(), SAMPLEIMG);
 	  		BitmapFactory.Options option = new BitmapFactory.Options();
