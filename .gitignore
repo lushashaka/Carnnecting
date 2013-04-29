@@ -14,4 +14,4 @@ local.properties
 project.properties
 
 # Eclipse project files
-.settings
+.settings/

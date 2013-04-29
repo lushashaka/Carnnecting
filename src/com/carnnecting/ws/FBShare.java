@@ -22,11 +22,11 @@ import com.facebook.Session;
 
 public class FBShare extends Fragment {
 	private static final String TAG = "FBShare";
-	private static final List<String> PERMISSIONS = Arrays.asList("publish_actions");
+	private static final List<String> PERMISSIONS = Arrays.asList("publish_actions"); 
 	public final String PENDING_PUBLISH_KEY = "pendingPublishReauthorization";
 	public boolean pendingPublishReauthorization = false;
 	
-	public void shareEvent() {	
+	public void shareEvent(String event) {	
 	    Session session = Session.getActiveSession();
 
 	    if (session != null){
@@ -42,11 +42,12 @@ public class FBShare extends Fragment {
 	        }
 
 	        Bundle postParams = new Bundle();
-	        postParams.putString("name", "Facebook SDK for Android");
-	        postParams.putString("caption", "Build great social apps and get more installs.");
-	        postParams.putString("description", "The Facebook SDK for Android makes it easier and faster to develop Facebook integrated Android apps.");
-	        postParams.putString("link", "https://developers.facebook.com/android");
-	        postParams.putString("picture", "https://raw.github.com/fbsamples/ios-3.x-howtos/master/Images/iossdk_logo.png");
+//	        postParams.putString("name", "Facebook SDK for Android");
+//	        postParams.putString("caption", "Build great social apps and get more installs.");
+//	        postParams.putString("description", "The Facebook SDK for Android makes it easier and faster to develop Facebook integrated Android apps.");
+	        //postParams.putString("link", "https://developers.facebook.com/android");
+	        //postParams.putString("picture", "https://raw.github.com/fbsamples/ios-3.x-howtos/master/Images/iossdk_logo.png");
+	        postParams.putString("message", event);
 
 	        Request.Callback callback= new Request.Callback() {
 	            public void onCompleted(Response response) {

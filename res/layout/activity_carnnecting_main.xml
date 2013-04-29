@@ -11,15 +11,5 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="30dp"
         />
-    <Button
-	    android:id="@+id/shareButton"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:textStyle="bold"
-	    android:gravity="center"
-	    android:layout_marginTop="30dp"
-	    android:visibility="invisible"
-	    android:text="Share"
-    />
-
+    
 </LinearLayout>

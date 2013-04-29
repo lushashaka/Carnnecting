@@ -15,5 +15,9 @@
     <item android:id="@+id/settings"
           android:title="@string/settings"
           android:showAsAction="ifRoom|withText" />
+    
+    <item android:id="@+id/logout"
+          android:title="@string/logout"
+          android:showAsAction="ifRoom|withText" />
 
 </menu>

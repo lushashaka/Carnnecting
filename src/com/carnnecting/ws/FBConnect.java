@@ -27,29 +27,31 @@ public class FBConnect extends Fragment {
 	private UiLifecycleHelper uiHelper;
 	private FBShare share = new FBShare();
 	
+	private LoginButton authButton;
 	private Button shareButton;
 	private int userId;
+	private boolean firstLaunch = true;
 	
 	public View onCreateView(LayoutInflater inflater, 
 	        ViewGroup container, 
 	        Bundle savedInstanceState) {
 	    View view = inflater.inflate(R.layout.activity_carnnecting_main, container, false);
 	    
-	    LoginButton authButton = (LoginButton) view.findViewById(R.id.authButton);
+	    authButton = (LoginButton) view.findViewById(R.id.authButton);
 	    authButton.setFragment(this);
-	    
+    	
 	    if (savedInstanceState != null) {
 	    	share.pendingPublishReauthorization = 
 	    			savedInstanceState.getBoolean(share.PENDING_PUBLISH_KEY, false);
 	    }
 	    
-	    shareButton = (Button) view.findViewById(R.id.shareButton);
-	    shareButton.setOnClickListener(new View.OnClickListener() {
-	        @Override
-	        public void onClick(View v) {
-	            share.shareEvent();        
-	        }
-	    });
+//	    shareButton = (Button) view.findViewById(R.id.shareButton);
+//	    shareButton.setOnClickListener(new View.OnClickListener() {
+//	        @Override
+//	        public void onClick(View v) {
+//	            share.shareEvent();        
+//	        }
+//	    });
 
 	    return view;
 	}
@@ -59,45 +61,47 @@ public class FBConnect extends Fragment {
 	        Log.i(TAG, "Success: Logged in...");
 	        // Request user data and show the results
 	        
-	        shareButton.setVisibility(View.VISIBLE);
-	        
-	        if (share.pendingPublishReauthorization && 
-	                state.equals(SessionState.OPENED_TOKEN_UPDATED)) {
-	            share.pendingPublishReauthorization = false;
-	            share.shareEvent();
-	        }
+//	        // shareButton.setVisibility(View.VISIBLE);
+//	        
+//	        if (share.pendingPublishReauthorization && 
+//	                state.equals(SessionState.OPENED_TOKEN_UPDATED)) {
+//	            share.pendingPublishReauthorization = false;
+//	            share.shareEvent();
+//	        }
 	        
 	        Request.executeMeRequestAsync(session, new Request.GraphUserCallback() {
 
 				@Override
 				public void onCompleted(GraphUser user, Response response) {
-					Log.i(TAG, String.format("Name: %s\n\n", 
-					        user.getName()));
-					Log.i(TAG, String.format("Username: %s\n\n", 
-					        user.getUsername()));
-					
-					// Insert username in DB
-					UserDataSource userDAO = new UserDataSource(getActivity().getApplication());
-					userDAO.open();
-					
-					String userName = user.getUsername();
-					userDAO.createUser(userName);
-					
-					//int userId = userDAO.getUserIdByFbName(userName);;
-					userId = userDAO.getUserIdByFbName(userName);
-					
-					Log.i(TAG, "User ID: " + userId);
-					
 					// Launch "News Feed"
-					Intent intent = new Intent(getActivity().getApplicationContext(), Home.class);
-			        intent.putExtra("USERID", userId);
-			        
-					startActivity(intent);					
+					if(firstLaunch == true) {
+						firstLaunch = false;
+						
+						Log.i(TAG, String.format("Name: %s\n\n", 
+						        user.getName()));
+						Log.i(TAG, String.format("Username: %s\n\n", 
+						        user.getUsername()));
+						
+						// Insert username in DB
+						UserDataSource userDAO = new UserDataSource(getActivity().getApplication());
+						userDAO.open();
+						
+						String userName = user.getUsername();
+						userDAO.createUser(userName);
+						
+						userId = userDAO.getUserIdByFbName(userName);
+						
+						Log.i(TAG, "User ID: " + userId);
+						Log.i(TAG, "Launching NEWS FEED");
+						Intent intent = new Intent(getActivity().getApplicationContext(), Home.class);
+						intent.putExtra("USERID", userId);
+						startActivity(intent);
+					}
 				}
 	        });	        
 	    } else if (state.isClosed()) {
 	        Log.i(TAG, "Success: Logged out...");
-	        shareButton.setVisibility(View.INVISIBLE);
+	        //shareButton.setVisibility(View.INVISIBLE);
 	    }
 	}
 	
@@ -123,12 +127,12 @@ public class FBConnect extends Fragment {
 	    // For scenarios where the main activity is launched and user
 	    // session is not null, the session state change notification
 	    // may not be triggered. Trigger it if it's open/closed.
-//	    Session session = Session.getActiveSession();
-//	    if (session != null &&
-//	           (session.isOpened() || session.isClosed()) ) {
-//	        onSessionStateChange(session, session.getState(), null);
-//	    }
-
+	    Session session = Session.getActiveSession();
+	    if (session != null &&
+	           (session.isOpened())) {
+	        		   //|| session.isClosed()) ) {
+	        onSessionStateChange(session, session.getState(), null);
+	    }
 	    uiHelper.onResume();
 	}
 
