@@ -32,8 +32,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.carnnecting.category.CategoryDetail;
-import com.carnnecting.category.CategoryMenu;
+import com.carnnecting.category.CategoryDetail;import com.carnnecting.account.Logout;import com.carnnecting.category.CategoryMenu;
 import com.carnnecting.entities.CarnnectingContract;
 import com.carnnecting.event.CreateEvent;
 import com.carnnecting.event.Favorites;
@@ -429,8 +428,8 @@ public class Home extends ListActivity {
 	        	intent.putExtra("userId", userId);
 	        	startActivity(intent);
 	        	return true;
-	        default:
+	        		        case R.id.logout:	        	System.out.println("***LOGOUT***");	        	Logout logout = new Logout();	        	logout.FBLogout();	        	finish();	        	return true;		        default:
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
-}
+		@Override	public void onBackPressed() {		// do something on back.		finish();		return;	}}

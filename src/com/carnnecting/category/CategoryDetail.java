@@ -12,6 +12,7 @@ import com.carnnecting.entities.EventDataSource;
 import com.carnnecting.entities.FavoriteDataSource;
 import com.carnnecting.entities.HomeItemModel;
 import com.carnnecting.entities.RSVPDataSource;
+import com.carnnecting.entities.ReadEventDataSource;
 import com.carnnecting.entities.SubscribeDataSource;
 import com.carnnecting.event.CreateEvent;
 import com.carnnecting.event.EventDetail;
@@ -25,6 +26,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
@@ -55,6 +57,8 @@ public class CategoryDetail extends ListActivity {
 	private EventDataSource eventDAO;
 	private FavoriteDataSource favDAO;
 	private RSVPDataSource RSVPDAO;
+	private ReadEventDataSource	readEventDao;
+	private static HashSet<Integer> readEventIds;
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -93,6 +97,8 @@ public class CategoryDetail extends ListActivity {
 		favDAO.open();
 		RSVPDAO = new RSVPDataSource(this.getApplication());
 		RSVPDAO.open();
+		readEventDao = new ReadEventDataSource(this.getApplication());
+		readEventDao.open();
 		changedFavoriteEventIds = new HashMap<Integer, Boolean>();
 		changedRSVPEventIds	= new HashMap<Integer, Boolean>();
 		userId = -1;
@@ -173,6 +179,11 @@ public class CategoryDetail extends ListActivity {
 			
 			holder.subjectTextView.setText(eventItems.get(position).getSubject());
 			holder.subjectTextView.setTypeface(Typeface.DEFAULT_BOLD, 0);
+
+			if (!readEventIds.contains(eventItems.get(position).getEventId()))
+				holder.subjectTextView.setTextColor(Color.WHITE);
+			else
+				holder.subjectTextView.setTextColor(Color.GRAY);
 			
 			holder.RSVPCheckBox.setOnCheckedChangeListener(null);
 			holder.RSVPCheckBox.setChecked(eventItems.get(position).isRSVP());
@@ -339,6 +350,7 @@ public class CategoryDetail extends ListActivity {
 				}
 			}
 			
+			readEventIds = readEventDao.getReadEventIdsByUserId(userId);
 			
 			// Sort the Events by their startDates
 			Collections.sort(eventItems, new Comparator<HomeItemModel>(){
@@ -348,7 +360,7 @@ public class CategoryDetail extends ListActivity {
 					try {
 						Date date0 = HomeItemModel.dateOnlyFormat.parse(arg0.getStartDate());
 						Date date1 = HomeItemModel.dateOnlyFormat.parse(arg1.getStartDate());
-						return date0.compareTo(date1);
+						return date1.compareTo(date0);
 					} catch (Exception e) {
 						Log.e("ERROR", e.getStackTrace().toString());
 					}

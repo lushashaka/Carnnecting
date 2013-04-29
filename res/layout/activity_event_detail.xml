@@ -64,12 +64,22 @@
         android:layout_width="match_parent"
         android:textSize="25dip" />
     
- 
+
     <ImageView	android:id="@+id/eventImageView"       
         	android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     
+         <Button
+	    android:id="@+id/shareButton"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:textStyle="bold"
+	    android:gravity="center"
+	    android:text="@string/share"/>
+    
+    
 </LinearLayout>
+
  <Button 
             android:layout_height="wrap_content" 
             android:text="@string/f1"

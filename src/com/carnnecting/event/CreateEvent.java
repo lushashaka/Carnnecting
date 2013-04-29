@@ -138,6 +138,7 @@ public class CreateEvent extends Activity {
 		    
 		    upload.setOnClickListener(new OnClickListener() {
 		    	public void onClick(View v) {
+		    		
 		    		String subject = title.getText().toString();
 				    String startTime = startD.getText().toString() + " " + startT.getText().toString();
 				    String endTime = endD.getText().toString() + " " + endT.getText().toString();
@@ -145,6 +146,7 @@ public class CreateEvent extends Activity {
 				    String host = org.getText().toString();
 				    String description = dscr.getText().toString();
 		    	    int categoryId = catId;
+		    	    
 		    	    
 		    	    Log.e("INFO", subject + " " + startTime +" " + endTime + " " + location + " " + host + " " + description + " " + categoryId);
 		    	    
