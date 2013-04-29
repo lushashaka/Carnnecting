@@ -28,14 +28,11 @@ public class Login extends FragmentActivity {
 	// FIXME: To-Be-Removed. These are just to create the db and do bulk-populate in the first time. Using ADB shell is also feasible
 	private SQLiteDatabase db;
 	private CarnnectingSQLiteOpenHelper dbHelper;
-	
-	private int userId;
-	
-	protected void onCreate(Bundle savedInstanceState) {
+	private int userId;
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.i(TAG, "Login Screen");
-		
-		/* Use this code to generate hash
+		/* Use this code to generate hash
 		  try {
 	        PackageInfo info = getPackageManager().getPackageInfo(
 	                "com.cmu.carnnecting", 
@@ -56,10 +53,8 @@ public class Login extends FragmentActivity {
 		try {
 			int nCategories = 10;
 			int nEventsPerCategory = 20;
-			
-			ContentValues values = new ContentValues();
-			
-			// Create several categories
+			ContentValues values = new ContentValues();
+			// Create several categories
 			for (int i = 1; i <= nCategories; i++) {
 				values = new ContentValues();
 				values.put(CarnnectingContract.Category.COLUMN_NAME_ID, i);
@@ -68,8 +63,7 @@ public class Login extends FragmentActivity {
 				values.put(CarnnectingContract.Category.COLUMN_NAME_PARENT_CAT_ID, 0); // Root level categories
 				db.insert(CarnnectingContract.Category.TABLE_NAME, null, values);
 			}
-			
-			// Create several events for each of the category
+			// Create several events for each of the category
 			SimpleDateFormat dateFmt = Event.getDateformat(); //new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // Use the one in Event class: Event.dateFormat
 			Date d = new Date();
 			Calendar cal = Calendar.getInstance();
@@ -88,14 +82,12 @@ public class Login extends FragmentActivity {
 					values.put(CarnnectingContract.Event.COLUMN_NAME_DESCRIPTION, "Event"+j+" Descriptions......");
 					values.put(CarnnectingContract.Event.COLUMN_NAME_CATEGORY_ID, i);
 					db.insert(CarnnectingContract.Event.TABLE_NAME, null, values);
-					
-					// Event 2 will be one day later than event 1 and so on so forth
+					// Event 2 will be one day later than event 1 and so on so forth
 					cal.add(Calendar.HOUR, 23);
 					d = cal.getTime();
 				}
 			}
-			
-			// Create the categories that the user subscribed to
+			// Create the categories that the user subscribed to
 			for (int i = 1; i <= nCategories/2; i++) {
 				values = new ContentValues();
 				values.put(CarnnectingContract.Subscribe.COLUMN_NAME_USER_ID, 1);
@@ -105,8 +97,7 @@ public class Login extends FragmentActivity {
 		} catch (SQLException e) {
 			Log.e("ERROR", e.getStackTrace().toString());
 		} 
-		
-		if (savedInstanceState == null) {
+		if (savedInstanceState == null) {
 	        // Add the fragment on initial activity setup
 	        mainFragment = new FBConnect();
 	        getSupportFragmentManager()
@@ -120,11 +111,9 @@ public class Login extends FragmentActivity {
 	    }
 		userId = mainFragment.getUserId();
 		Log.i(TAG, "User ID in login screen: " + userId);
-		setContentView(R.layout.activity_carnnecting_main);		
-	}
-	
-	@Override
+		setContentView(R.layout.activity_carnnecting_main);			}
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		return true;
 	}
-}
+}

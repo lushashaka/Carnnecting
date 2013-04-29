@@ -12,8 +12,11 @@ import com.carnnecting.entities.EventDataSource;
 import com.carnnecting.entities.FavoriteDataSource;
 import com.carnnecting.entities.HomeItemModel;
 import com.carnnecting.entities.RSVPDataSource;
+import com.carnnecting.entities.ReadEventDataSource;
 import com.carnnecting.entities.SubscribeDataSource;
+import com.carnnecting.event.CreateEvent;
 import com.carnnecting.event.EventDetail;
+import com.carnnecting.event.Favorites;
 import com.carnnecting.event.MyEvents;
 import com.carnnecting.home.Home;
 import com.carnnecting.widget.ExpandListAdapter;
@@ -23,6 +26,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,7 +35,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ExpandableListView;
@@ -51,9 +57,36 @@ public class CategoryDetail extends ListActivity {
 	private EventDataSource eventDAO;
 	private FavoriteDataSource favDAO;
 	private RSVPDataSource RSVPDAO;
+	private ReadEventDataSource	readEventDao;
+	private static HashSet<Integer> readEventIds;
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_category_detail);
+
+
+		
+		Button ficon1 = (Button) findViewById(R.id.ficon1);
+		Button ficon2 = (Button) findViewById(R.id.ficon2);
+		
+		ficon1.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(CategoryDetail.this, CreateEvent.class);
+				startActivity(intent);
+			}
+		});
+		
+		ficon2.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(CategoryDetail.this, Favorites.class);
+				startActivity(intent);
+			}
+		});
+		
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		
@@ -64,10 +97,14 @@ public class CategoryDetail extends ListActivity {
 		favDAO.open();
 		RSVPDAO = new RSVPDataSource(this.getApplication());
 		RSVPDAO.open();
+		readEventDao = new ReadEventDataSource(this.getApplication());
+		readEventDao.open();
 		changedFavoriteEventIds = new HashMap<Integer, Boolean>();
 		changedRSVPEventIds	= new HashMap<Integer, Boolean>();
 		userId = -1;
 		categoryId = -1;
+		
+				
 		if (intent != null && intent.getExtras() != null) {
 			
 			userId = intent.getExtras().getInt("userId");
@@ -142,6 +179,11 @@ public class CategoryDetail extends ListActivity {
 			
 			holder.subjectTextView.setText(eventItems.get(position).getSubject());
 			holder.subjectTextView.setTypeface(Typeface.DEFAULT_BOLD, 0);
+
+			if (!readEventIds.contains(eventItems.get(position).getEventId()))
+				holder.subjectTextView.setTextColor(Color.WHITE);
+			else
+				holder.subjectTextView.setTextColor(Color.GRAY);
 			
 			holder.RSVPCheckBox.setOnCheckedChangeListener(null);
 			holder.RSVPCheckBox.setChecked(eventItems.get(position).isRSVP());
@@ -308,6 +350,7 @@ public class CategoryDetail extends ListActivity {
 				}
 			}
 			
+			readEventIds = readEventDao.getReadEventIdsByUserId(userId);
 			
 			// Sort the Events by their startDates
 			Collections.sort(eventItems, new Comparator<HomeItemModel>(){

@@ -46,7 +46,7 @@ import com.carnnecting.home.Home;
 import com.cmu.carnnecting.R;
 
 import java.util.*;
-public class Favorite extends ListActivity {
+public class Favorites extends ListActivity {
 	
 	private Long							lastDatabaseLoadTimestamp = null;
 	private HomeAdapter						homeAdapter; 
