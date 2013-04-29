@@ -32,8 +32,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.carnnecting.category.CategoryDetail;
 import com.carnnecting.category.CategoryMenu;
 import com.carnnecting.entities.CarnnectingContract;
+import com.carnnecting.event.CreateEvent;
 import com.carnnecting.event.Favorites;
 import com.carnnecting.event.MyEvents;
 import com.carnnecting.entities.Category;
@@ -101,6 +103,29 @@ public class Home extends ListActivity {
 		Log.e("INFO", "Before entering loadHomeItems()");
 		loadHomeItems();
 
+
+		Button ficon1 = (Button) findViewById(R.id.ficon1);
+		Button ficon2 = (Button) findViewById(R.id.ficon2);
+		
+		ficon1.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(Home.this, CreateEvent.class);
+				startActivity(intent);
+			}
+		});
+		
+		ficon2.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(Home.this, Favorites.class);
+				startActivity(intent);
+			}
+		});
+		
+		/*
 		// FIXME: To be removed:
 		((Button)findViewById(R.id.testFavoriteButton)).setOnClickListener(new OnClickListener(){
 
@@ -113,6 +138,7 @@ public class Home extends ListActivity {
 			}
 
 		});
+		*/
 
 		homeAdapter = new HomeAdapter();
 		setListAdapter(homeAdapter);

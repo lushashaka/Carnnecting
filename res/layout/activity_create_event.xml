@@ -7,6 +7,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
+              
+          <Button
+              android:id="@+id/selectCategory"
+              style="?android:attr/buttonStyleSmall"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@string/category" />
          <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
@@ -20,33 +27,46 @@
           android:ems="10" />
 	
       <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/textView3_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/datetime" />
-      <EditText
-          android:id="@+id/editText3"
+        android:text="@string/start" />
+<EditText
+          android:id="@+id/editText3_1"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:ems="10"
           android:hint="@string/date"
-          android:inputType="date" >
-          <requestFocus />
-      </EditText>
-      <EditText
-          android:id="@+id/editText6"
+          android:inputType="date" />
+<EditText
+          android:id="@+id/editText6_1"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:ems="10"
-          android:hint="@string/start_time"
+          android:hint="@string/time"
           android:inputType="time" />
-      <EditText
-          android:id="@+id/editText7"
+      
+            <TextView
+        android:id="@+id/textView3_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/end" />
+            <EditText
+          android:id="@+id/editText3_2"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:ems="10"
-          android:hint="@string/end_time"
+          android:hint="@string/date"
+          android:inputType="date" />
+            <EditText
+          android:id="@+id/editText6_2"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:ems="10"
+          android:hint="@string/time"
           android:inputType="time" />
+            
+      
       <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
@@ -124,5 +144,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/upload" />
+     
 </LinearLayout>
 </ScrollView>
