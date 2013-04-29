@@ -34,7 +34,7 @@ import android.widget.Toast;
 
 import com.carnnecting.category.CategoryMenu;
 import com.carnnecting.entities.CarnnectingContract;
-import com.carnnecting.event.Favorite;
+import com.carnnecting.event.Favorites;
 import com.carnnecting.event.MyEvents;
 import com.carnnecting.entities.Category;
 import com.carnnecting.entities.CategoryDataSource;
@@ -106,7 +106,7 @@ public class Home extends ListActivity {
 
 			@Override
 			public void onClick(View v) {
-				Intent favoriteIntent = new Intent(v.getContext(), Favorite.class);
+				Intent favoriteIntent = new Intent(v.getContext(), Favorites.class);
 				// FIXME: the userId variable is now hardcoded
 				favoriteIntent.putExtra("userId", userId);
 				startActivity(favoriteIntent);
