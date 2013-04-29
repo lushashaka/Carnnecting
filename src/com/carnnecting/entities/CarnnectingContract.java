@@ -67,6 +67,13 @@ public class CarnnectingContract {
 		public static final String COLUMN_NAME_EVENT_ID				= "event_id";
 	}
 	
+	// Photo table
+	public static abstract class Image {
+		public static final String TABLE_NAME						= "image";
+		public static final String COLUMN_NAME_EVENT_ID				= "event_id";
+		public static final String COLUMN_NAME_IMAGE				= "image";
+	}
+	
 	/*
 	 * The timestamp when the database was last changed (CUD of CRUD).
 	 * We maintain this to minimize access to database. That is, if database was not changed since last load, we don't need to reload.
