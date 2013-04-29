@@ -51,13 +51,14 @@ public class FBShare extends Fragment {
 
 	        Request.Callback callback= new Request.Callback() {
 	            public void onCompleted(Response response) {
-	                JSONObject graphResponse = response
-	                                           .getGraphObject()
-	                                           .getInnerJSONObject();
+	                JSONObject graphResponse; 
 	                String postId = null;
 	                try {
+	                	graphResponse = response
+                                .getGraphObject()
+                                .getInnerJSONObject();
 	                    postId = graphResponse.getString("id");
-	                } catch (JSONException e) {
+	                } catch (Exception e) {
 	                    Log.i(TAG,
 	                        "JSON error "+ e.getMessage());
 	                }
