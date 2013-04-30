@@ -14,17 +14,15 @@ import com.carnnecting.entities.FavoriteDataSource;
 import com.carnnecting.entities.HomeItemModel;
 import com.carnnecting.entities.RSVPDataSource;
 import com.carnnecting.entities.ReadEventDataSource;
-import com.carnnecting.entities.SubscribeDataSource;
 import com.carnnecting.event.CreateEvent;
 import com.carnnecting.event.EventDetail;
 import com.carnnecting.event.Favorites;
 import com.carnnecting.event.MyEvents;
 import com.carnnecting.home.Home;
-import com.carnnecting.widget.ExpandListAdapter;
 import com.cmu.carnnecting.R;
 
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -36,12 +34,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -61,6 +56,7 @@ public class CategoryDetail extends ListActivity {
 	private ReadEventDataSource	readEventDao;
 	private static HashSet<Integer> readEventIds;
 	
+	@SuppressLint("UseSparseArrays")
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_category_detail);

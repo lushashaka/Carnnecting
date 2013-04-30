@@ -1,26 +1,16 @@
 package com.carnnecting.category;
 
 import android.os.Bundle;
-import android.app.ActionBar;
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ExpandableListActivity;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.View.OnClickListener;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.carnnecting.home.Home;
 import com.carnnecting.util.*;
@@ -28,26 +18,14 @@ import com.carnnecting.widget.*;
 import com.cmu.carnnecting.R;
 import com.carnnecting.entities.*;
 import com.carnnecting.event.CreateEvent;
-import com.carnnecting.event.EventDetail;
 import com.carnnecting.event.Favorites;
 import com.carnnecting.event.MyEvents;
 import com.carnnecting.account.Logout;
 import com.carnnecting.category.CategoryDetail;
 
-import android.database.SQLException;
-
-
-// FIXME: To-Be-Removed. These are just to create the db and do bulk-populate in the first time. Using ADB shell is also feasible
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Typeface;
-
 // FIXME: To-Be-Removed. These are to demo how to use DataSoruce classes
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 
 
 
@@ -58,12 +36,12 @@ public class CategoryMenu extends Activity {
 	private ExpandableListView ExpandList;
 	private CategoryDataSource categoryDAO;
 	private SubscribeDataSource subscribeDAO;
-	private Long lastDatabaseLoadTimestamp = null;
 	
 	private HashMap<Integer, Boolean> changedSubscribedCatIds;
 	
 	private int	userId;
 	
+	@SuppressLint("UseSparseArrays")
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_category_menu);
@@ -73,7 +51,6 @@ public class CategoryMenu extends Activity {
 			userId = intent.getExtras().getInt("userId");
 		}
 		
-		ActionBar actionBar = getActionBar();
 		ExpandList = (ExpandableListView) findViewById(R.id.categoryListView);
 		changedSubscribedCatIds = new HashMap<Integer, Boolean>();
 		subscribeDAO = new SubscribeDataSource(this.getApplication());
