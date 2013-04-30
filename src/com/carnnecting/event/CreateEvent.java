@@ -46,7 +46,7 @@ import android.widget.Toast;
 public class CreateEvent extends Activity {
 	static int REQUEST_PICTURE = 1;
 	static int REQUEST_PHOTO_ALBUM = 2;
-	static String SAMPLEIMG = "sample_img.png";
+	static String SAMPLEIMG = "thumbnail.png";
 
 	private FBShare share = new FBShare();
 	private String FBmessage;
