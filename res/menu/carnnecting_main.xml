@@ -12,6 +12,15 @@
           android:title="@string/news_feed"
           android:showAsAction="ifRoom|withText" />
     
+    <item android:id="@+id/favourites"
+          android:title="@string/favorites"
+          android:showAsAction="ifRoom|withText" />
+    
+    <item android:id="@+id/create_event"
+          android:title="@string/create_event"
+          android:showAsAction="ifRoom|withText" />
+    
+    
     <item android:id="@+id/logout"
           android:title="@string/logout"
           android:showAsAction="ifRoom|withText" />
