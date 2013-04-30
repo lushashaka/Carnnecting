@@ -32,6 +32,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -53,11 +54,11 @@ public class CreateEvent extends Activity {
 
 	private int cyear, cmonth, cday, chour, cmin, csec;
 	private int catId = 1;
-	private String fmDate, fmStime, fmEtime;
-	// private SimpleDateFormat fmTime = new SimpleDateFormat("HH:mm:ss");
+	private String fmDate, fmStime, fmEtime, sec;
 
-	private Button takephotos, getphotos, upload, selCategory, date, sTime,
-			eTime;
+	private Button takephotos, getphotos, upload, selCategory;
+	private Button date, sTime,	eTime;
+	private TextView showDate, showStime, showEtime;
 	private EditText title, addr, org, dscr;
 
 	/** Called when the activity is first created. */
@@ -83,6 +84,10 @@ public class CreateEvent extends Activity {
 		date = (Button) findViewById(R.id.date);
 		sTime = (Button) findViewById(R.id.selStime);
 		eTime = (Button) findViewById(R.id.selEtime);
+		
+		showDate = (TextView) findViewById(R.id.showDate);
+		showStime = (TextView) findViewById(R.id.showStime);
+		showEtime = (TextView) findViewById(R.id.showEtime);
 
 		title = (EditText) findViewById(R.id.editText1);
 		addr = (EditText) findViewById(R.id.editText4);
@@ -276,6 +281,8 @@ public class CreateEvent extends Activity {
 					fmDate = cyear + "-" + cmonth + "-0" + cday;
 				else
 					fmDate = cyear + "-" + cmonth + "-" + cday;
+				
+				updateDisplay();
 
 				Toast.makeText(CreateEvent.this, "Selected Date is " + fmDate,
 						Toast.LENGTH_SHORT).show();
@@ -292,6 +299,11 @@ public class CreateEvent extends Activity {
 		chour = c.get(Calendar.HOUR_OF_DAY);
 		cmin = c.get(Calendar.MINUTE);
 		csec = c.get(Calendar.SECOND);
+		
+		if (csec < 10)
+			sec = "0" + csec;	
+		else
+			sec = String.valueOf(csec);
 
 		TimePickerDialog.OnTimeSetListener mTimeSetListener1 = new TimePickerDialog.OnTimeSetListener() {
 			@Override
@@ -300,14 +312,16 @@ public class CreateEvent extends Activity {
 				chour = hourOfDay;
 				cmin = minute;
 
-				if (chour < 10)
-					fmStime = "0" + chour + ":" + cmin + ":" + csec;
-				else if (cmin < 10)
-					fmStime = chour + ":0" + cmin + ":" + csec;
-				else if (csec < 10)
-					fmStime = chour + ":" + cmin + ":0" + csec;
+				if (hourOfDay < 10 && minute <10)
+					fmStime = "0" + chour + ":0" + cmin + ":" + sec;				
+				else if (hourOfDay < 10 && minute >= 10)
+					fmStime = "0" + chour + ":" + cmin + ":" + sec;
+				else if (hourOfDay >= 10 && minute < 10)
+					fmStime = chour + ":0" + cmin + ":" + sec;
 				else
-					fmStime = chour + ":" + cmin + ":" + csec;
+					fmStime = chour + ":" + cmin + ":" + sec;
+				
+				updateDisplayS();
 
 				Toast.makeText(CreateEvent.this, "Start time is " + fmStime,
 						Toast.LENGTH_SHORT).show();
@@ -323,6 +337,12 @@ public class CreateEvent extends Activity {
 		Calendar c = Calendar.getInstance();
 		chour = c.get(Calendar.HOUR_OF_DAY);
 		cmin = c.get(Calendar.MINUTE);
+		csec = c.get(Calendar.SECOND);
+		
+		if (csec < 10)
+			sec = "0" + csec;	
+		else
+			sec = String.valueOf(csec);
 
 		TimePickerDialog.OnTimeSetListener mTimeSetListener2 = new TimePickerDialog.OnTimeSetListener() {
 			@Override
@@ -331,14 +351,16 @@ public class CreateEvent extends Activity {
 				chour = hourOfDay;
 				cmin = minute;
 
-				if (chour < 10)
-					fmEtime = "0" + chour + ":" + cmin + ":" + csec;
-				else if (cmin < 10)
-					fmEtime = chour + ":0" + cmin + ":" + csec;
-				else if (csec < 10)
-					fmEtime = chour + ":" + cmin + ":0" + csec;
+				if (hourOfDay < 10 && minute <10)
+					fmEtime = "0" + chour + ":0" + cmin + ":" + sec;				
+				else if (hourOfDay < 10 && minute >= 10)
+					fmEtime = "0" + chour + ":" + cmin + ":" + sec;
+				else if (hourOfDay >= 10 && minute < 10)
+					fmEtime = chour + ":0" + cmin + ":" + sec;
 				else
-					fmEtime = chour + ":" + cmin + ":" + csec;
+					fmEtime = chour + ":" + cmin + ":" + sec;
+				
+				updateDisplayE();
 
 				Toast.makeText(CreateEvent.this, "End time is " + fmEtime,
 						Toast.LENGTH_SHORT).show();
@@ -348,5 +370,17 @@ public class CreateEvent extends Activity {
 		TimePickerDialog alert2 = new TimePickerDialog(this, mTimeSetListener2,
 				chour, csec, false);
 		alert2.show();
+	}
+	
+	private void updateDisplay() {
+	     showDate.setText(new StringBuilder().append(fmDate));
+	}
+	
+	private void updateDisplayS() {
+	     showStime.setText(new StringBuilder().append(fmStime));
+	}
+	
+	private void updateDisplayE() {
+	     showEtime.setText(new StringBuilder().append(fmEtime));
 	}
 }
