@@ -1,160 +1,194 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
- android:id="@+id/imagescroll"
- android:layout_height="fill_parent"
- android:layout_width="fill_parent">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
-              
-          <Button
-              android:id="@+id/selectCategory"
-              style="?android:attr/buttonStyleSmall"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:text="@string/category" />
-         <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/title" />
-	<EditText
-          android:id="@+id/editText1"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:hint="@string/title"
-          android:ems="10" />
-	  <TextView
-        android:id="@+id/loccc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/host" />
-	<EditText
-          android:id="@+id/edit_host"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:hint="@string/host"
-          android:ems="10" />
-	
-      <TextView
-        android:id="@+id/textView3_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/start" />
-<EditText
-          android:id="@+id/editText3_1"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:ems="10"
-          android:hint="@string/date"
-          android:inputType="date" />
-<EditText
-          android:id="@+id/editText6_1"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:ems="10"
-          android:hint="@string/time"
-          android:inputType="time" />
-      
-            <TextView
-        android:id="@+id/textView3_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/end" />
-            <EditText
-          android:id="@+id/editText3_2"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:ems="10"
-          android:hint="@string/date"
-          android:inputType="date" />
-            <EditText
-          android:id="@+id/editText6_2"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:ems="10"
-          android:hint="@string/time"
-          android:inputType="time" />
-            
-      
-      <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/loc" />
-      <EditText
-          android:id="@+id/editText4"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:ems="10"
-          android:hint="@string/addr"
-          android:inputType="textPostalAddress" />
-    
-       <TextView
-        android:id="@+id/textView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/des" />
-       <EditText
-           android:id="@+id/editText5"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:ems="10"
-           android:hint="@string/des"
-           android:inputType="textMultiLine" />
-           
-              <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/pic" />
-    <RelativeLayout   
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin" >
+    android:id="@+id/imagescroll"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
 
-          <Button
-              android:id="@+id/takePhotos"
-              style="?android:attr/buttonStyleSmall"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_alignParentLeft="true"
-              android:layout_centerVertical="true"
-              android:text="@string/camera" />
-
-          <Button
-              android:id="@+id/getPhotos"
-              style="?android:attr/buttonStyleSmall"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_alignBaseline="@+id/takePhotos"
-              android:layout_alignBottom="@+id/takePhotos"
-              android:layout_marginLeft="50dp"
-              android:layout_toRightOf="@+id/takePhotos"
-              android:text="@string/album" />
-
-      </RelativeLayout>
-      <ImageView
-	    android:id="@+id/imgView"
-	    android:src="@drawable/ic_launcher"
-	    android:layout_width="match_parent"
-	    android:layout_height="match_parent"  />
-      
-      <CheckBox
-          android:id="@+id/checkBox1"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/share" />
-      
-     <Button
-        android:id="@+id/upload"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/upload" />
-     
-</LinearLayout>
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/selectCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/category" />
+
+            <Button
+                android:id="@+id/upload"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/upload" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title" />
+
+        <EditText
+            android:id="@+id/editText1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/title" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/host"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/host" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/loc" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal" >
+
+            <EditText
+                android:id="@+id/edit_host"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="@string/host" />
+
+            <EditText
+                android:id="@+id/editText4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="@string/addr"
+                android:inputType="textPostalAddress" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView3_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Edate" />
+
+        <Button
+            android:id="@+id/date"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/selEdate" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/sTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/Stime" />
+
+            <TextView
+                android:id="@+id/eTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/Etime" />
+        </LinearLayout>
+        
+         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/selStime"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/selStime" />
+
+            <Button
+                android:id="@+id/selEtime"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/selEtime" />
+        </LinearLayout>
+        
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/des" />
+
+        <EditText
+            android:id="@+id/editText5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/des"
+            android:inputType="textMultiLine" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pic" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/takePhotos"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/camera" />
+
+            <Button
+                android:id="@+id/getPhotos"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/album" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imgView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_launcher" />
+    </LinearLayout>
+
 </ScrollView>

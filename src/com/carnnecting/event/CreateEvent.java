@@ -2,18 +2,20 @@ package com.carnnecting.event;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import com.carnnecting.entities.Category;
 import com.carnnecting.entities.CategoryDataSource;
 import com.carnnecting.entities.EventDataSource;
 import com.carnnecting.entities.ImageDataSource;
+import com.carnnecting.ws.FBShare;
 import com.cmu.carnnecting.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -27,165 +29,324 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 public class CreateEvent extends Activity {
 	static int REQUEST_PICTURE = 1;
 	static int REQUEST_PHOTO_ALBUM = 2;
 	static String SAMPLEIMG = "sample_img.png";
-	EventDataSource eventDao;
-	CategoryDataSource categoryDao;
-	ImageDataSource imgDao;
-	HashMap<String, Integer> catName2Id = new HashMap<String, Integer>();
-    int catId = 1;
-    Bitmap bmp;
-	
-	Context mContext = this;
-	ImageView iv;
-	Dialog dialog;
-	
+
+	private FBShare share = new FBShare();
+	private String FBmessage;
+
+	private EventDataSource eventDao;
+	private CategoryDataSource categoryDao;
+	private ImageDataSource imgDao;
+	private HashMap<String, Integer> catName2Id = new HashMap<String, Integer>();
+
+	private Bitmap bmp;
+	private ImageView iv;
+
+	private int cyear, cmonth, cday, chour, cmin, csec;
+	private int catId = 1;
+	private String fmDate, fmStime, fmEtime;
+	// private SimpleDateFormat fmTime = new SimpleDateFormat("HH:mm:ss");
+
+	private Button takephotos, getphotos, upload, selCategory, date, sTime,
+			eTime;
+	private EditText title, addr, org, dscr;
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-	    super.onCreate(savedInstanceState);
-	    setContentView(R.layout.activity_create_event);
-	    
-	    eventDao  = new EventDataSource(this.getApplication());
-	    eventDao.open();
-	    categoryDao = new CategoryDataSource(this.getApplication());
-	    categoryDao.open();
-	    imgDao = new ImageDataSource(this.getApplication());
-	    imgDao.open();
-	    
-	    bmp = null;
-	    
-	    ArrayList<Category> categories= categoryDao.getAllCategories();
-	    final String[] items = new String[categories.size()];
-	    
-	    for (int i = 0; i < items.length; i++) {
-	    	items[i] = categories.get(i).getName();
-	    	catName2Id.put(categories.get(i).getName(), categories.get(i).getId());
-	    	
-	    }
-	    
-	    
-	    // final String[] items = {"Category1", "Category2", "Category3", "Category4", "Category5", "Category6", "Category7", "Category8", "Category9", "Category10"};
-	    
-	    
-	    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_create_event);
+
+		eventDao = new EventDataSource(this.getApplication());
+		eventDao.open();
+		categoryDao = new CategoryDataSource(this.getApplication());
+		categoryDao.open();
+		imgDao = new ImageDataSource(this.getApplication());
+		imgDao.open();
+
+		bmp = null;
+		iv = (ImageView) findViewById(R.id.imgView);
+
+		takephotos = (Button) findViewById(R.id.takePhotos);
+		getphotos = (Button) findViewById(R.id.getPhotos);
+		upload = (Button) findViewById(R.id.upload);
+		selCategory = (Button) findViewById(R.id.selectCategory);
+		date = (Button) findViewById(R.id.date);
+		sTime = (Button) findViewById(R.id.selStime);
+		eTime = (Button) findViewById(R.id.selEtime);
+
+		title = (EditText) findViewById(R.id.editText1);
+		addr = (EditText) findViewById(R.id.editText4);
+		org = (EditText) findViewById(R.id.edit_host);
+		dscr = (EditText) findViewById(R.id.editText5);
+
+		// TODO Auto-generated method stub
+		ArrayList<Category> categories = categoryDao.getAllCategories();
+		final String[] items = new String[categories.size()];
+
+		for (int i = 0; i < items.length; i++) {
+			items[i] = categories.get(i).getName();
+			catName2Id.put(categories.get(i).getName(), categories.get(i)
+					.getId());
+		}
+
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Select Category");
-		builder.setItems(items, new DialogInterface.OnClickListener()
-		{
+		builder.setItems(items, new DialogInterface.OnClickListener() {
 			@Override
-			public void onClick(DialogInterface dialog, int which)
-			{
+			public void onClick(DialogInterface dialog, int which) {
 				catId = catName2Id.get(items[which]);
-				Toast.makeText(CreateEvent.this, "You selected " + items[which], Toast.LENGTH_SHORT).show();
+				Toast.makeText(CreateEvent.this,
+						"You selected " + items[which], Toast.LENGTH_SHORT)
+						.show();
 			}
 		});
-		
 		builder.create();
-		
-		    // TODO Auto-generated method stub
-		    iv = (ImageView) findViewById(R.id.imgView);
-		    
-		    Button takephotos = (Button) findViewById(R.id.takePhotos);
-		    Button getphotos = (Button) findViewById(R.id.getPhotos);
-		    Button upload = (Button) findViewById(R.id.upload);
-		    Button selCategory = (Button) findViewById(R.id.selectCategory);
-		         	    
-		    final EditText title = (EditText) findViewById(R.id.editText1);
-		    final EditText startD = (EditText) findViewById(R.id.editText3_1);
-		    final EditText startT = (EditText) findViewById(R.id.editText6_1);
-		    final EditText endD = (EditText) findViewById(R.id.editText3_2);
-		    final EditText endT = (EditText) findViewById(R.id.editText6_2);
-		    final EditText addr = (EditText) findViewById(R.id.editText4);
-		    final EditText org = (EditText) findViewById(R.id.edit_host);
-		    final EditText dscr = (EditText) findViewById(R.id.editText5);
-		    		    
-		    selCategory.setOnClickListener(new OnClickListener()
-			{
-				@Override
-				public void onClick(View v)
-				{
-					builder.show();
+
+		date.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				DialogDatePicker();
+			}
+		});
+
+		sTime.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				DialogTimePicker1();
+			}
+		});
+
+		eTime.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				DialogTimePicker2();
+			}
+		});
+
+		selCategory.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				builder.show();
+			}
+		});
+
+		takephotos.setOnClickListener(new OnClickListener() {
+			public void onClick(View v1) {
+				// takePicture();
+				Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+				File file = new File(Environment.getExternalStorageDirectory(),
+						SAMPLEIMG);
+				intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+				startActivityForResult(intent, REQUEST_PICTURE);
+			}
+		});
+
+		getphotos.setOnClickListener(new OnClickListener() {
+			public void onClick(View v2) {
+				// photoAlbum();
+				Intent intent = new Intent(Intent.ACTION_PICK);
+				intent.setType(Images.Media.CONTENT_TYPE);
+				intent.setData(Images.Media.EXTERNAL_CONTENT_URI);
+				startActivityForResult(intent, REQUEST_PHOTO_ALBUM);
+			}
+		});
+
+		upload.setOnClickListener(new OnClickListener() {
+			public void onClick(View v3) {
+				String subject = title.getText().toString();
+				String startTime = fmDate + " " + fmStime;
+				String endTime = fmDate + " " + fmEtime;
+				String location = addr.getText().toString();
+				String host = org.getText().toString();
+				String description = dscr.getText().toString();
+
+				int categoryId = catId;
+				int eventId = eventDao.createEvent(0, subject, startTime,
+						endTime, location, host, description, categoryId);
+
+				FBmessage = "Event: " + subject;
+				FBmessage += "\nHost: " + host;
+				FBmessage += "\nLocation: " + location;
+				FBmessage += "\nWhen: " + startTime + "~" + endTime;
+				FBmessage += "\nDescription: " + description;
+				FBmessage += "\nRSVP to this event by downloading the 'Carnnecting' app!";
+
+				DialogFBShare();
+
+				// Log.e("INFO", subject + " " + startTime +" " + endTime + " "
+				// + location + " " + host + " " + description + " " +
+				// categoryId);
+
+				if (bmp != null) {
+					if (imgDao.createImage(eventId, bmp) == false)
+						Log.e("ERROR", "Cannot insert image");
+					else
+						Log.e("INFO", "image inserted");
 				}
-			});
-		    
-		    //registerForContextMenu(selCategory);
-		    
-		    takephotos.setOnClickListener(new OnClickListener() {
-		    	public void onClick(View v) {
-		    		//takePicture();
-		      		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		      		File file = new File(Environment.getExternalStorageDirectory(), SAMPLEIMG);
-		      		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-		      		startActivityForResult(intent, REQUEST_PICTURE);
-		    	}
-		    });
-		    
-		    getphotos.setOnClickListener(new OnClickListener() {
-		    	public void onClick(View v) {
-		    		//photoAlbum();
-		      		Intent intent = new Intent(Intent.ACTION_PICK);  		
-		      		intent.setType(Images.Media.CONTENT_TYPE);
-		      		intent.setData(Images.Media.EXTERNAL_CONTENT_URI);
-		      		startActivityForResult(intent, REQUEST_PHOTO_ALBUM);	    		
-		    	}
-		    });
-		    
-		    upload.setOnClickListener(new OnClickListener() {
-		    	public void onClick(View v) {
-		    		
-		    		String subject = title.getText().toString();
-				    String startTime = startD.getText().toString() + " " + startT.getText().toString();
-				    String endTime = endD.getText().toString() + " " + endT.getText().toString();
-				    String location = addr.getText().toString();
-				    String host = org.getText().toString();
-				    String description = dscr.getText().toString();
-		    	    int categoryId = catId;
-		    	    
-		    	    
-		    	    Log.e("INFO", subject + " " + startTime +" " + endTime + " " + location + " " + host + " " + description + " " + categoryId);
-		    	    
-		    	    int eventId = eventDao.createEvent(0/*not used*/, subject, startTime, endTime, location, host, description, categoryId);
-		    	    if (bmp != null) {
-		    	    	if(imgDao.createImage(eventId, bmp) == false) 
-		    	    		Log.e("ERROR", "Cannot insert image");
-		    	    	else
-		    	    		Log.e("INFO", "image inserted");
-		    	    }
-		    	    
-		    	    Toast.makeText(CreateEvent.this, "Your event is uploaded", Toast.LENGTH_SHORT).show();
-		    	    finish();
-		    	}
-		    });
+			}
+		});
 	}
-			
-		Bitmap loadPicture() {
-	  		File file = new File(Environment.getExternalStorageDirectory(), SAMPLEIMG);
-	  		BitmapFactory.Options option = new BitmapFactory.Options();
-	  		option.inSampleSize = 4;
-	  		return BitmapFactory.decodeFile(file.getAbsolutePath(), option);
-	  	}
-		
-	  	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-	  		// TODO Auto-generated method stub
-	  		super.onActivityResult(requestCode, resultCode, data);
-	  		
-	  		if(resultCode != RESULT_OK)
-	  			return;
-	  		
-	  		if(requestCode == REQUEST_PICTURE) {
-	  			bmp = loadPicture();
-	  			iv.setImageBitmap(bmp);
-	  			
-	  		}
-	  		
-	  		if(requestCode == REQUEST_PHOTO_ALBUM) {
-	  			iv.setImageURI(data.getData());
-	  		}
-	  	}
+
+	private Bitmap loadPicture() {
+		File file = new File(Environment.getExternalStorageDirectory(),
+				SAMPLEIMG);
+		BitmapFactory.Options option = new BitmapFactory.Options();
+		option.inSampleSize = 4;
+		return BitmapFactory.decodeFile(file.getAbsolutePath(), option);
 	}
+
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (resultCode != RESULT_OK)
+			return;
+
+		if (requestCode == REQUEST_PICTURE) {
+			bmp = loadPicture();
+			iv.setImageBitmap(bmp);
+		}
+
+		if (requestCode == REQUEST_PHOTO_ALBUM) {
+			iv.setImageURI(data.getData());
+		}
+	}
+
+	private void DialogFBShare() {
+		AlertDialog.Builder alt_bld = new AlertDialog.Builder(this);
+		alt_bld.setMessage("Do you want to share your event on Facebook?")
+				.setCancelable(true)
+				.setPositiveButton("No", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int id) {
+						// TODO Auto-generated method stub
+						// action for no
+						Toast.makeText(CreateEvent.this,
+								"Your event is created", Toast.LENGTH_SHORT)
+								.show();
+						finish();
+					}
+				})
+				.setNegativeButton("Yes",
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								// action for yes
+								share.shareEvent(FBmessage);
+								Toast.makeText(CreateEvent.this,
+										"Your event is created and shared",
+										Toast.LENGTH_SHORT).show();
+								finish();
+							}
+						});
+		AlertDialog alert = alt_bld.create();
+		alert.show();
+	}
+
+	private void DialogDatePicker() {
+		Calendar c = Calendar.getInstance();
+		cyear = c.get(Calendar.YEAR);
+		cmonth = c.get(Calendar.MONTH);
+		cday = c.get(Calendar.DAY_OF_MONTH);
+
+		DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+			@Override
+			public void onDateSet(DatePicker view, int year, int monthOfYear,
+					int dayOfMonth) {
+				// TODO Auto-generated method stub
+				cyear = year;
+				cmonth = monthOfYear + 1;
+				cday = dayOfMonth;
+
+				if (cmonth < 10)
+					fmDate = cyear + "-0" + cmonth + "-" + cday;
+				else if (cday < 10)
+					fmDate = cyear + "-" + cmonth + "-0" + cday;
+				else
+					fmDate = cyear + "-" + cmonth + "-" + cday;
+
+				Toast.makeText(CreateEvent.this, "Selected Date is " + fmDate,
+						Toast.LENGTH_SHORT).show();
+			}
+		};
+
+		DatePickerDialog alert = new DatePickerDialog(this, mDateSetListener,
+				cyear, cmonth, cday);
+		alert.show();
+	}
+
+	private void DialogTimePicker1() {
+		Calendar c = Calendar.getInstance();
+		chour = c.get(Calendar.HOUR_OF_DAY);
+		cmin = c.get(Calendar.MINUTE);
+		csec = c.get(Calendar.SECOND);
+
+		TimePickerDialog.OnTimeSetListener mTimeSetListener1 = new TimePickerDialog.OnTimeSetListener() {
+			@Override
+			public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+				// TODO Auto-generated method stub
+				chour = hourOfDay;
+				cmin = minute;
+
+				if (chour < 10)
+					fmStime = "0" + chour + ":" + cmin + ":" + csec;
+				else if (cmin < 10)
+					fmStime = chour + ":0" + cmin + ":" + csec;
+				else if (csec < 10)
+					fmStime = chour + ":" + cmin + ":0" + csec;
+				else
+					fmStime = chour + ":" + cmin + ":" + csec;
+
+				Toast.makeText(CreateEvent.this, "Start time is " + fmStime,
+						Toast.LENGTH_SHORT).show();
+			}
+		};
+
+		TimePickerDialog alert1 = new TimePickerDialog(this, mTimeSetListener1,
+				chour, csec, false);
+		alert1.show();
+	}
+
+	private void DialogTimePicker2() {
+		Calendar c = Calendar.getInstance();
+		chour = c.get(Calendar.HOUR_OF_DAY);
+		cmin = c.get(Calendar.MINUTE);
+
+		TimePickerDialog.OnTimeSetListener mTimeSetListener2 = new TimePickerDialog.OnTimeSetListener() {
+			@Override
+			public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+				// TODO Auto-generated method stub
+				chour = hourOfDay;
+				cmin = minute;
+
+				if (chour < 10)
+					fmEtime = "0" + chour + ":" + cmin + ":" + csec;
+				else if (cmin < 10)
+					fmEtime = chour + ":0" + cmin + ":" + csec;
+				else if (csec < 10)
+					fmEtime = chour + ":" + cmin + ":0" + csec;
+				else
+					fmEtime = chour + ":" + cmin + ":" + csec;
+
+				Toast.makeText(CreateEvent.this, "End time is " + fmEtime,
+						Toast.LENGTH_SHORT).show();
+			}
+		};
+
+		TimePickerDialog alert2 = new TimePickerDialog(this, mTimeSetListener2,
+				chour, csec, false);
+		alert2.show();
+	}
+}
