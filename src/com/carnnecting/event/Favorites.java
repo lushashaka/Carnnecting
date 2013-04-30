@@ -71,7 +71,6 @@ public class Favorites extends ListActivity {
 		setContentView(R.layout.activity_favorite);
 		
 		ActionBar actionBar = getActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
 		
 		userId = -1;
 		Intent intent = getIntent();

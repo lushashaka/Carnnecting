@@ -49,7 +49,6 @@ public class MyEvents extends Activity {
 		setContentView(R.layout.activity_my_events);
 		
 		ActionBar actionBar = getActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
 		ExpandList = (ExpandableListView) findViewById(R.id.myEventListView);
 		changedRSVPIds = new HashMap<Integer, Boolean>();
 		changedFavIds = new HashMap<Integer, Boolean>();

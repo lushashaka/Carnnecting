@@ -74,7 +74,6 @@ public class CategoryMenu extends Activity {
 		}
 		
 		ActionBar actionBar = getActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
 		ExpandList = (ExpandableListView) findViewById(R.id.categoryListView);
 		changedSubscribedCatIds = new HashMap<Integer, Boolean>();
 		subscribeDAO = new SubscribeDataSource(this.getApplication());
@@ -200,11 +199,6 @@ public class CategoryMenu extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent;
 	    switch (item.getItemId()) {
-	    	case android.R.id.home:
-	    		intent = new Intent(this, Home.class);
-	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	            startActivity(intent);
-	            return true;
 	        case R.id.news_feed:
 	            // app icon in action bar clicked; go home
 	            intent = new Intent(this, Home.class);
