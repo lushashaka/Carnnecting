@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import com.carnnecting.account.Logout;
 import com.carnnecting.entities.CarnnectingContract;
 import com.carnnecting.entities.EventDataSource;
 import com.carnnecting.entities.FavoriteDataSource;
@@ -83,12 +84,14 @@ public class CategoryDetail extends ListActivity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(CategoryDetail.this, Favorites.class);
+				intent.putExtra("userId", userId);
 				startActivity(intent);
 			}
 		});
 		
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
+		
 		
 		Intent intent  = getIntent();
 		eventDAO = new EventDataSource(this.getApplication());
@@ -268,6 +271,12 @@ public class CategoryDetail extends ListActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent;
 	    switch (item.getItemId()) {
+	    	case android.R.id.home:
+	    		intent = new Intent(this, CategoryMenu.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        	intent.putExtra("userId", userId);
+	        	startActivity(intent);
+	        	return true;
 	        case R.id.news_feed:
 	            // app icon in action bar clicked; go home
 	            intent = new Intent(this, Home.class);
@@ -286,7 +295,12 @@ public class CategoryDetail extends ListActivity {
 	        	intent.putExtra("userId", userId);
 	        	startActivity(intent);
 	        	return true;
-	        //TODO: add more cases for action bar
+	        case R.id.logout:
+	        	System.out.println("***LOGOUT***");
+	        	Logout logout = new Logout();
+	        	logout.FBLogout();
+	        	finish();
+	        	return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }

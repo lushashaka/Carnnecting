@@ -32,6 +32,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.carnnecting.account.Logout;
 import com.carnnecting.category.CategoryMenu;
 import com.carnnecting.entities.CarnnectingContract;
 import com.carnnecting.entities.Category;
@@ -338,6 +339,12 @@ public class Favorites extends ListActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent;
 	    switch (item.getItemId()) {
+	    	case android.R.id.home:
+	    		intent = new Intent(this, Home.class);
+	    		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	    		intent.putExtra("userId", userId);
+	    		startActivity(intent);
+	    		return true;
 	        case R.id.news_feed:
 	            // app icon in action bar clicked; go home
 	            intent = new Intent(this, Home.class);
@@ -356,6 +363,13 @@ public class Favorites extends ListActivity {
 	        	intent.putExtra("userId", userId);
 	        	startActivity(intent);
 	        	return true;
+	        	
+	        case R.id.logout:
+	        	System.out.println("***LOGOUT***");
+	        	Logout logout = new Logout();
+	        	logout.FBLogout();
+	        	finish();
+	        	return true;	
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }

@@ -20,6 +20,7 @@ import com.carnnecting.widget.*;
 import com.cmu.carnnecting.R;
 import com.carnnecting.entities.*;
 import com.carnnecting.event.EventDetail;
+import com.carnnecting.account.Logout;
 import com.carnnecting.category.CategoryDetail;
 import com.carnnecting.category.CategoryMenu;
 import java.util.ArrayList;
@@ -56,6 +57,7 @@ public class MyEvents extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(MyEvents.this, CreateEvent.class);
+				intent.putExtra("userId", userId);
 				startActivity(intent);
 			}
 		});
@@ -243,6 +245,12 @@ public class MyEvents extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent;
 	    switch (item.getItemId()) {
+	    	case android.R.id.home:
+	    		intent = new Intent(this, Home.class);
+	    		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	    		intent.putExtra("userId", userId);
+	    		startActivity(intent);
+	    		return true;
 	        case R.id.news_feed:
 	            // app icon in action bar clicked; go home
 	            intent = new Intent(this, Home.class);
@@ -261,7 +269,13 @@ public class MyEvents extends Activity {
 	        	intent.putExtra("userId", userId);
 	        	startActivity(intent);
 	        	return true;
-	        //TODO: add more cases for action bar
+	        	
+	        case R.id.logout:
+	        	System.out.println("***LOGOUT***");
+	        	Logout logout = new Logout();
+	        	logout.FBLogout();
+	        	finish();
+	        	return true;	
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }

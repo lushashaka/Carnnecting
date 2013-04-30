@@ -4,12 +4,16 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.carnnecting.account.Logout;
+import com.carnnecting.category.CategoryMenu;
 import com.carnnecting.entities.Category;
 import com.carnnecting.entities.CategoryDataSource;
 import com.carnnecting.entities.EventDataSource;
 import com.carnnecting.entities.ImageDataSource;
+import com.carnnecting.home.Home;
 import com.cmu.carnnecting.R;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -24,6 +28,9 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -35,6 +42,7 @@ public class CreateEvent extends Activity {
 	static int REQUEST_PICTURE = 1;
 	static int REQUEST_PHOTO_ALBUM = 2;
 	static String SAMPLEIMG = "sample_img.png";
+	private int userId;
 	EventDataSource eventDao;
 	CategoryDataSource categoryDao;
 	ImageDataSource imgDao;
@@ -60,6 +68,12 @@ public class CreateEvent extends Activity {
 	    imgDao.open();
 	    
 	    bmp = null;
+	    Intent intent = getIntent();
+	    userId = -1;
+	    if (intent != null && intent.getExtras() != null) {
+			userId = intent.getExtras().getInt("userId");
+		}
+	    ActionBar actionBar = getActionBar();
 	    
 	    ArrayList<Category> categories= categoryDao.getAllCategories();
 	    final String[] items = new String[categories.size()];
@@ -188,4 +202,46 @@ public class CreateEvent extends Activity {
 	  			iv.setImageURI(data.getData());
 	  		}
 	  	}
+	  	
+	  	@Override
+		public boolean onCreateOptionsMenu(Menu menu) {
+		    MenuInflater inflater = getMenuInflater();
+		    inflater.inflate(R.menu.carnnecting_main, menu);
+		    return true;
+		}
+		
+		@Override
+		public boolean onOptionsItemSelected(MenuItem item) {
+			Intent intent;
+		    switch (item.getItemId()) {
+		        case R.id.news_feed:
+		            // app icon in action bar clicked; go home
+		            intent = new Intent(this, Home.class);
+		            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		            startActivity(intent);
+		            return true;
+		        case R.id.categories:
+		        	intent = new Intent(this, CategoryMenu.class);
+		        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		        	intent.putExtra("userId", userId);
+		        	Log.i("CREATE EVENT TO CAT", "userId is " + userId);
+		        	startActivity(intent);
+		        	return true;
+		        case R.id.my_events:
+		        	intent = new Intent(this, MyEvents.class);
+		        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		        	intent.putExtra("userId", userId);
+		        	startActivity(intent);
+		        	return true;
+		        	
+		        case R.id.logout:
+		        	System.out.println("***LOGOUT***");
+		        	Logout logout = new Logout();
+		        	logout.FBLogout();
+		        	finish();
+		        	return true;	
+		        default:
+		            return super.onOptionsItemSelected(item);
+		    }
+		}
 	}

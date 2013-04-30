@@ -76,7 +76,7 @@ public class Home extends ListActivity {
 		setContentView(R.layout.activity_home);
 
 		ActionBar actionBar = getActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
+		//actionBar.setDisplayHomeAsUpEnabled(true);
 
 		// View footerView = getLayoutInflater().inflate(R.layout.footer, null, false);
 		// this.getListView().addFooterView(footerView);
@@ -111,6 +111,7 @@ public class Home extends ListActivity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(Home.this, CreateEvent.class);
+				intent.putExtra("userId", userId);
 				startActivity(intent);
 			}
 		});

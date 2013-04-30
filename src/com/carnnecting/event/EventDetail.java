@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import android.graphics.Bitmap;
 import android.view.Gravity;
@@ -30,6 +31,8 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.carnnecting.account.Logout;
+import com.carnnecting.category.CategoryMenu;
 import com.carnnecting.entities.EventDataSource;
 import com.carnnecting.entities.ImageDataSource;
 import com.carnnecting.entities.RSVPDataSource;
@@ -38,6 +41,7 @@ import com.carnnecting.entities.Event;
 import com.carnnecting.entities.RSVP;
 import com.carnnecting.entities.Favorite;
 import com.carnnecting.entities.ReadEventDataSource;
+import com.carnnecting.home.Home;
 import com.carnnecting.ws.FBShare;
 import com.cmu.carnnecting.R;
 
@@ -93,6 +97,7 @@ public class EventDetail extends Activity {
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
 					Intent intent = new Intent(EventDetail.this, CreateEvent.class);
+					intent.putExtra("userId", userId);
 					startActivity(intent);
 				}
 			});
@@ -107,7 +112,7 @@ public class EventDetail extends Activity {
 			});
 
 			ActionBar actionBar = getActionBar();
-			actionBar.setDisplayHomeAsUpEnabled(true);
+			//actionBar.setDisplayHomeAsUpEnabled(true);
 
 			favoriteCheckBox = (CheckBox)	findViewById(R.id.eventDetailFavoriteCheckBox);
 			subjectTextView = (TextView)	findViewById(R.id.eventDetailSubjectTextView);
@@ -256,5 +261,46 @@ public class EventDetail extends Activity {
 				}
 			}
 		}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.carnnecting_main, menu);
+	    return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent intent;
+	    switch (item.getItemId()) {
+	        case R.id.news_feed:
+	            // app icon in action bar clicked; go home
+	            intent = new Intent(this, Home.class);
+	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	            startActivity(intent);
+	            return true;
+	        case R.id.categories:
+	        	intent = new Intent(this, CategoryMenu.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        	intent.putExtra("userId", userId);
+	        	startActivity(intent);
+	        	return true;
+	        case R.id.my_events:
+	        	intent = new Intent(this, MyEvents.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        	intent.putExtra("userId", userId);
+	        	startActivity(intent);
+	        	return true;
+	        	
+	        case R.id.logout:
+	        	System.out.println("***LOGOUT***");
+	        	Logout logout = new Logout();
+	        	logout.FBLogout();
+	        	finish();
+	        	return true;	
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
 
 }
