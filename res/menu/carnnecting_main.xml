@@ -2,30 +2,33 @@
 
     <item android:id="@+id/categories"
           android:title="@string/categories"
-          android:showAsAction="ifRoom|withText" />
+          android:icon="@drawable/red_category"
+          android:showAsAction="ifRoom" />
     
     <item android:id="@+id/my_events"
           android:title="@string/my_events"
-          android:showAsAction="ifRoom|withText" />
+          android:icon="@drawable/red_myevent"
+          android:showAsAction="ifRoom" />
     
     <item android:id="@+id/news_feed"
           android:title="@string/news_feed"
-          android:icon="@drawable/icon_home"
-          android:showAsAction="always" />
+          android:icon="@drawable/red_home"
+          android:showAsAction="ifRoom" />
     
     <item android:id="@+id/favorites"
           android:title="@string/favorites"
-          android:icon="@drawable/icon_fvrite"
-          android:showAsAction="always" />
+          android:icon="@drawable/red_favorite"
+          android:showAsAction="ifRoom" />
     
     <item android:id="@+id/create_event"
           android:title="@string/create_event"
-          android:icon="@drawable/add_event"
-          android:showAsAction="always" />
+          android:icon="@drawable/red_event"
+          android:showAsAction="ifRoom" />
     
     
     <item android:id="@+id/logout"
           android:title="@string/logout"
-          android:showAsAction="ifRoom|withText" />
+          android:icon="@drawable/red_logout"
+          android:showAsAction="ifRoom" />
 
 </menu>
