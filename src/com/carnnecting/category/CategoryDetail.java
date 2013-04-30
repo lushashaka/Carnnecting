@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import com.carnnecting.account.Logout;
 import com.carnnecting.entities.CarnnectingContract;
 import com.carnnecting.entities.EventDataSource;
 import com.carnnecting.entities.FavoriteDataSource;
@@ -63,32 +64,10 @@ public class CategoryDetail extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_category_detail);
-
-
-		
-		Button ficon1 = (Button) findViewById(R.id.ficon1);
-		Button ficon2 = (Button) findViewById(R.id.ficon2);
-		
-		ficon1.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Intent intent = new Intent(CategoryDetail.this, CreateEvent.class);
-				startActivity(intent);
-			}
-		});
-		
-		ficon2.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Intent intent = new Intent(CategoryDetail.this, Favorites.class);
-				startActivity(intent);
-			}
-		});
 		
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
+		
 		
 		Intent intent  = getIntent();
 		eventDAO = new EventDataSource(this.getApplication());
@@ -268,6 +247,12 @@ public class CategoryDetail extends ListActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent;
 	    switch (item.getItemId()) {
+	    	case android.R.id.home:
+	    		intent = new Intent(this, CategoryMenu.class);
+	    		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	    		intent.putExtra("userId", userId);
+	    		startActivity(intent);
+	    		return true;
 	        case R.id.news_feed:
 	            // app icon in action bar clicked; go home
 	            intent = new Intent(this, Home.class);
@@ -286,7 +271,24 @@ public class CategoryDetail extends ListActivity {
 	        	intent.putExtra("userId", userId);
 	        	startActivity(intent);
 	        	return true;
-	        //TODO: add more cases for action bar
+	        case R.id.favorites:
+	        	intent = new Intent(this, Favorites.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        	intent.putExtra("userId", userId);
+				startActivity(intent);
+				return true;
+	        case R.id.create_event:
+	        	intent = new Intent(this, CreateEvent.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				intent.putExtra("userId", userId);
+				startActivity(intent);
+				return true;
+	        case R.id.logout:
+	        	System.out.println("***LOGOUT***");
+	        	Logout logout = new Logout();
+	        	logout.FBLogout();
+	        	finish();
+	        	return true;	
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
@@ -300,22 +302,12 @@ public class CategoryDetail extends ListActivity {
 	}
 	
 	private void loadEventItems() {
-		/* Always sync to newest in databases since last updates */
-		
-		/*Log.e("INFO", "Entering loadHomeItems()");
-		Log.e("INFO", "lastDatabaseLoadTimeStamp="+lastDatabaseLoadTimestamp);
-		Log.e("INFO", "databaseLastUpdateTimestamp="+CarnnectingContract.getDatabaseLastUpdateTimestamp());*/
 		if (lastDatabaseLoadTimestamp == null || 
 			lastDatabaseLoadTimestamp < CarnnectingContract.getDatabaseLastUpdateTimestamp()) 
 		{
 			lastDatabaseLoadTimestamp = new Date().getTime();
 			
 			eventItems = new ArrayList<HomeItemModel>();
-			
-			//
-			// FIXME: should we discard those past-due events?
-			//
-		
 			
 			// Get events general
 			Log.e("INFO", "Before get event generals");

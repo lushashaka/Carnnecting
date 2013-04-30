@@ -5,13 +5,17 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
+import com.carnnecting.account.Logout;
+import com.carnnecting.category.CategoryMenu;
 import com.carnnecting.entities.Category;
 import com.carnnecting.entities.CategoryDataSource;
 import com.carnnecting.entities.EventDataSource;
 import com.carnnecting.entities.ImageDataSource;
 import com.carnnecting.ws.FBShare;
+import com.carnnecting.home.Home;
 import com.cmu.carnnecting.R;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -26,6 +30,9 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -54,6 +61,7 @@ public class CreateEvent extends Activity {
 
 	private int cyear, cmonth, cday, chour, cmin, csec;
 	private int catId = 1;
+	private int userId;
 	private String fmDate, fmStime, fmEtime, sec;
 
 	private Button takephotos, getphotos, upload, selCategory;
@@ -66,7 +74,13 @@ public class CreateEvent extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create_event);
-
+		ActionBar actionBar = getActionBar();
+		Intent intent  = getIntent();
+		userId = -1;
+		if (intent != null && intent.getExtras() != null) {
+			userId = intent.getExtras().getInt("userId");
+		}
+		
 		eventDao = new EventDataSource(this.getApplication());
 		eventDao.open();
 		categoryDao = new CategoryDataSource(this.getApplication());
@@ -382,5 +396,57 @@ public class CreateEvent extends Activity {
 	
 	private void updateDisplayE() {
 	     showEtime.setText(new StringBuilder().append(fmEtime));
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.carnnecting_main, menu);
+	    return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent intent;
+	    switch (item.getItemId()) {
+	        case R.id.news_feed:
+	            // app icon in action bar clicked; go home
+	            intent = new Intent(this, Home.class);
+	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	            startActivity(intent);
+	            return true;
+	        case R.id.categories:
+	        	intent = new Intent(this, CategoryMenu.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        	intent.putExtra("userId", userId);
+	        	startActivity(intent);
+	        	return true;
+	        case R.id.my_events:
+	        	intent = new Intent(this, MyEvents.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        	intent.putExtra("userId", userId);
+	        	startActivity(intent);
+	        	return true;
+	        case R.id.favorites:
+	        	intent = new Intent(this, Favorites.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        	intent.putExtra("userId", userId);
+				startActivity(intent);
+				return true;
+	        case R.id.create_event:
+	        	intent = new Intent(this, CreateEvent.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				intent.putExtra("userId", userId);
+				startActivity(intent);
+				return true;
+	        case R.id.logout:
+	        	System.out.println("***LOGOUT***");
+	        	Logout logout = new Logout();
+	        	logout.FBLogout();
+	        	finish();
+	        	return true;	
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
 	}
 }

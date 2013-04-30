@@ -20,6 +20,7 @@ import com.carnnecting.widget.*;
 import com.cmu.carnnecting.R;
 import com.carnnecting.entities.*;
 import com.carnnecting.event.EventDetail;
+import com.carnnecting.account.Logout;
 import com.carnnecting.category.CategoryDetail;
 import com.carnnecting.category.CategoryMenu;
 import java.util.ArrayList;
@@ -46,29 +47,6 @@ public class MyEvents extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_my_events);
-		
-
-		Button ficon1 = (Button) findViewById(R.id.ficon1);
-		Button ficon2 = (Button) findViewById(R.id.ficon2);
-		
-		ficon1.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Intent intent = new Intent(MyEvents.this, CreateEvent.class);
-				startActivity(intent);
-			}
-		});
-		
-		ficon2.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Intent intent = new Intent(MyEvents.this, Favorites.class);
-				startActivity(intent);
-			}
-		});
-		
 		
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
@@ -261,7 +239,24 @@ public class MyEvents extends Activity {
 	        	intent.putExtra("userId", userId);
 	        	startActivity(intent);
 	        	return true;
-	        //TODO: add more cases for action bar
+	        case R.id.favorites:
+	        	intent = new Intent(this, Favorites.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        	intent.putExtra("userId", userId);
+				startActivity(intent);
+				return true;
+	        case R.id.create_event:
+	        	intent = new Intent(this, CreateEvent.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				intent.putExtra("userId", userId);
+				startActivity(intent);
+				return true;
+	        case R.id.logout:
+	        	System.out.println("***LOGOUT***");
+	        	Logout logout = new Logout();
+	        	logout.FBLogout();
+	        	finish();
+	        	return true;	
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }

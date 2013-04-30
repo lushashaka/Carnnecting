@@ -76,7 +76,7 @@ public class Home extends ListActivity {
 		setContentView(R.layout.activity_home);
 
 		ActionBar actionBar = getActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
+		//actionBar.setDisplayHomeAsUpEnabled(true);
 
 		// View footerView = getLayoutInflater().inflate(R.layout.footer, null, false);
 		// this.getListView().addFooterView(footerView);
@@ -97,47 +97,8 @@ public class Home extends ListActivity {
 
 		changedFavoriteEventIds = new HashMap<Integer, Boolean>();
 		changedRSVPEventIds	= new HashMap<Integer, Boolean>();
-
-
-		Log.e("INFO", "Before entering loadHomeItems()");
+		
 		loadHomeItems();
-
-
-		Button ficon1 = (Button) findViewById(R.id.ficon1);
-		Button ficon2 = (Button) findViewById(R.id.ficon2);
-		
-		ficon1.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Intent intent = new Intent(Home.this, CreateEvent.class);
-				startActivity(intent);
-			}
-		});
-		
-		ficon2.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Intent intent = new Intent(Home.this, Favorites.class);
-				startActivity(intent);
-			}
-		});
-		
-		/*
-		// FIXME: To be removed:
-		((Button)findViewById(R.id.testFavoriteButton)).setOnClickListener(new OnClickListener(){
-
-			@Override
-			public void onClick(View v) {
-				Intent favoriteIntent = new Intent(v.getContext(), Favorites.class);
-				// FIXME: the userId variable is now hardcoded
-				favoriteIntent.putExtra("userId", userId);
-				startActivity(favoriteIntent);
-			}
-
-		});
-		*/
 
 		homeAdapter = new HomeAdapter();
 		setListAdapter(homeAdapter);
@@ -176,9 +137,6 @@ public class Home extends ListActivity {
 	private void loadHomeItems() {
 		/* Always sync to newest in databases since last updates */
 
-		Log.e("INFO", "Entering loadHomeItems()");
-		Log.e("INFO", "lastDatabaseLoadTimeStamp="+lastDatabaseLoadTimestamp);
-		Log.e("INFO", "databaseLastUpdateTimestamp="+CarnnectingContract.getDatabaseLastUpdateTimestamp());
 		if (lastDatabaseLoadTimestamp == null || 
 			lastDatabaseLoadTimestamp < CarnnectingContract.getDatabaseLastUpdateTimestamp()) 
 		{
@@ -428,7 +386,18 @@ public class Home extends ListActivity {
 	        	intent.putExtra("userId", userId);
 	        	startActivity(intent);
 	        	return true;
-	        		        case R.id.logout:	        	System.out.println("***LOGOUT***");	        	Logout logout = new Logout();	        	logout.FBLogout();	        	finish();	        	return true;		        default:
+	        case R.id.favorites:
+	        	intent = new Intent(this, Favorites.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        	intent.putExtra("userId", userId);
+				startActivity(intent);
+				return true;
+	        case R.id.create_event:
+	        	intent = new Intent(this, CreateEvent.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				intent.putExtra("userId", userId);
+				startActivity(intent);
+				return true;	        case R.id.logout:	        	System.out.println("***LOGOUT***");	        	Logout logout = new Logout();	        	logout.FBLogout();	        	finish();	        	return true;		        default:
 	            return super.onOptionsItemSelected(item);
 	    }
 	}

@@ -14,17 +14,4 @@
     </ExpandableListView>
 </LinearLayout>
 
-<Button 
-            android:layout_height="wrap_content" 
-            android:drawable="@drawable/add_event"
-            android:layout_width="wrap_content" 
-            android:id="@+id/ficon1"
-            android:layout_gravity="left|bottom"></Button>
-    <Button
-        android:id="@+id/ficon2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawable="@drawable/icon_fvrite"
-        android:layout_gravity="right|bottom" />
-
 </FrameLayout> 
