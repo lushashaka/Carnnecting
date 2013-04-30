@@ -62,11 +62,11 @@ public class CreateEvent extends Activity {
 	private int cyear, cmonth, cday, chour, cmin, csec;
 	private int catId = 1;
 	private int userId;
-	private String fmDate, fmStime, fmEtime, sec;
+	private String fmDate, fmStime, fmEtime, sec, cMsg;
 
 	private Button takephotos, getphotos, upload, selCategory;
 	private Button date, sTime,	eTime;
-	private TextView showDate, showStime, showEtime;
+	private TextView showDate, showStime, showEtime, showCategory;
 	private EditText title, addr, org, dscr;
 
 	/** Called when the activity is first created. */
@@ -102,6 +102,7 @@ public class CreateEvent extends Activity {
 		showDate = (TextView) findViewById(R.id.showDate);
 		showStime = (TextView) findViewById(R.id.showStime);
 		showEtime = (TextView) findViewById(R.id.showEtime);
+		showCategory = (TextView) findViewById(R.id.showCategory);
 
 		title = (EditText) findViewById(R.id.editText1);
 		addr = (EditText) findViewById(R.id.editText4);
@@ -124,6 +125,8 @@ public class CreateEvent extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				catId = catName2Id.get(items[which]);
+				cMsg = "Your event will be included in " + items[which];
+				updateDisplayC();
 				Toast.makeText(CreateEvent.this,
 						"You selected " + items[which], Toast.LENGTH_SHORT)
 						.show();
@@ -288,10 +291,12 @@ public class CreateEvent extends Activity {
 				cyear = year;
 				cmonth = monthOfYear + 1;
 				cday = dayOfMonth;
-
-				if (cmonth < 10)
+				
+				if (cmonth < 10 && cday < 10)
+					fmDate = cyear + "-0" + cmonth + "-0" + cday;
+				else if (cmonth < 10 && cday >= 10)
 					fmDate = cyear + "-0" + cmonth + "-" + cday;
-				else if (cday < 10)
+				else if (cmonth >= 10 && cday < 10)
 					fmDate = cyear + "-" + cmonth + "-0" + cday;
 				else
 					fmDate = cyear + "-" + cmonth + "-" + cday;
@@ -387,7 +392,7 @@ public class CreateEvent extends Activity {
 	}
 	
 	private void updateDisplay() {
-	     showDate.setText(new StringBuilder().append(fmDate));
+	     showDate.setText(new StringBuilder().append("Your event will be held at ").append(fmDate));
 	}
 	
 	private void updateDisplayS() {
@@ -397,6 +402,11 @@ public class CreateEvent extends Activity {
 	private void updateDisplayE() {
 	     showEtime.setText(new StringBuilder().append(fmEtime));
 	}
+	
+	private void updateDisplayC() {
+		showCategory.setText(new StringBuilder().append(cMsg));
+	}
+	
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

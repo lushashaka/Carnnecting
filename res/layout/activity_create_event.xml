@@ -15,25 +15,19 @@
             android:layout_height="wrap_content"
             android:text="" />
 
-        <LinearLayout
+        <Button
+            android:id="@+id/selectCategory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:layout_gravity="center_vertical"
+            android:text="@string/category" />
 
-            <Button
-                android:id="@+id/selectCategory"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/category" />
-
-            <Button
-                android:id="@+id/upload"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/upload" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/showCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="" />
 
         <TextView
             android:id="@+id/space2"
@@ -109,25 +103,12 @@
             android:layout_height="wrap_content"
             android:text="" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/textView3_1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal" >
-
-            <TextView
-                android:id="@+id/textView3_1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/Edate" />
-
-            <TextView
-                android:id="@+id/showDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="" />
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/Edate" />
 
         <Button
             android:id="@+id/date"
@@ -136,6 +117,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/selEdate" />
+
+        <TextView
+            android:id="@+id/showDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="" />
 
         <TextView
             android:id="@+id/space5"
@@ -194,6 +182,8 @@
                 android:id="@+id/showStime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center"
                 android:layout_weight="1"
                 android:text="" />
 
@@ -201,6 +191,8 @@
                 android:id="@+id/showEtime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:layout_weight="1"
                 android:text="" />
         </LinearLayout>
@@ -264,6 +256,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/ic_launcher" />
+
+        <Button
+            android:id="@+id/upload"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/upload" />
     </LinearLayout>
 
 </ScrollView>
