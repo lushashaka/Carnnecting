@@ -210,7 +210,7 @@ public class CreateEvent extends Activity {
 		    return true;
 		}
 		
-		@Override
+	  	@Override
 		public boolean onOptionsItemSelected(MenuItem item) {
 			Intent intent;
 		    switch (item.getItemId()) {
@@ -224,7 +224,6 @@ public class CreateEvent extends Activity {
 		        	intent = new Intent(this, CategoryMenu.class);
 		        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		        	intent.putExtra("userId", userId);
-		        	Log.i("CREATE EVENT TO CAT", "userId is " + userId);
 		        	startActivity(intent);
 		        	return true;
 		        case R.id.my_events:
@@ -233,7 +232,18 @@ public class CreateEvent extends Activity {
 		        	intent.putExtra("userId", userId);
 		        	startActivity(intent);
 		        	return true;
-		        	
+		        case R.id.favorites:
+		        	intent = new Intent(this, Favorites.class);
+		        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		        	intent.putExtra("userId", userId);
+					startActivity(intent);
+					return true;
+		        case R.id.create_event:
+		        	intent = new Intent(this, CreateEvent.class);
+		        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					intent.putExtra("userId", userId);
+					startActivity(intent);
+					return true;
 		        case R.id.logout:
 		        	System.out.println("***LOGOUT***");
 		        	Logout logout = new Logout();

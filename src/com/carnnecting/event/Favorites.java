@@ -73,10 +73,11 @@ public class Favorites extends ListActivity {
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		
-		// View footerView = getLayoutInflater().inflate(R.layout.footer, null, false);
-		// this.getListView().addFooterView(footerView);
-		
-		userId = getIntent().getIntExtra("USERID", 1);
+		userId = -1;
+		Intent intent = getIntent();
+		if (intent != null && intent.getExtras() != null) {
+			userId = intent.getExtras().getInt("userId");
+		}
 		Log.i("Favorite", "Received user id: " + userId);
 		
 		eventDao = new EventDataSource(this.getApplication());
@@ -157,11 +158,6 @@ public class Favorites extends ListActivity {
 				}
 			}
 			
-			/*
-			for (int i = 0; i < homeItems.size(); i++) {
-				Log.e("INFO", homeItems.get(i).toString());
-			}
-			*/
 			
 			// Sort the Events by their startDates
 			Collections.sort(homeItems, new Comparator<HomeItemModel>(){
@@ -186,9 +182,6 @@ public class Favorites extends ListActivity {
 		super.onPause();
 		
 		// FIXME: Maybe we could move the db commit code to onStop()? 
-		Log.e("INFO", "in onPause");
-		Log.e("INFO", "favChanged size = "+changedFavoriteEventIds.size());
-		Log.e("INFO", "RSVPChanged size = "+changedRSVPEventIds.size());
 		
 		for (int eventId : changedFavoriteEventIds.keySet()){
 			boolean isFavoriteNow = changedFavoriteEventIds.get(eventId);
@@ -227,7 +220,6 @@ public class Favorites extends ListActivity {
 	}
 	
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		// Toast.makeText(Home.this, homeItems.get(position).getSubject(), Toast.LENGTH_SHORT).show();
 		Intent eventDetailIntent = new Intent(v.getContext(), EventDetail.class);
 		// FIXME: the userId variable is now hardcoded
 		eventDetailIntent.putExtra("userId", userId);
@@ -339,12 +331,6 @@ public class Favorites extends ListActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent;
 	    switch (item.getItemId()) {
-	    	case android.R.id.home:
-	    		intent = new Intent(this, Home.class);
-	    		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	    		intent.putExtra("userId", userId);
-	    		startActivity(intent);
-	    		return true;
 	        case R.id.news_feed:
 	            // app icon in action bar clicked; go home
 	            intent = new Intent(this, Home.class);
@@ -363,7 +349,18 @@ public class Favorites extends ListActivity {
 	        	intent.putExtra("userId", userId);
 	        	startActivity(intent);
 	        	return true;
-	        	
+	        case R.id.favorites:
+	        	intent = new Intent(this, Favorites.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        	intent.putExtra("userId", userId);
+				startActivity(intent);
+				return true;
+	        case R.id.create_event:
+	        	intent = new Intent(this, CreateEvent.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				intent.putExtra("userId", userId);
+				startActivity(intent);
+				return true;
 	        case R.id.logout:
 	        	System.out.println("***LOGOUT***");
 	        	Logout logout = new Logout();

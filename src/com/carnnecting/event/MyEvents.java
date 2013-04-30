@@ -48,30 +48,6 @@ public class MyEvents extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_my_events);
 		
-
-		Button ficon1 = (Button) findViewById(R.id.ficon1);
-		Button ficon2 = (Button) findViewById(R.id.ficon2);
-		
-		ficon1.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Intent intent = new Intent(MyEvents.this, CreateEvent.class);
-				intent.putExtra("userId", userId);
-				startActivity(intent);
-			}
-		});
-		
-		ficon2.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Intent intent = new Intent(MyEvents.this, Favorites.class);
-				startActivity(intent);
-			}
-		});
-		
-		
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		ExpandList = (ExpandableListView) findViewById(R.id.myEventListView);
@@ -245,12 +221,6 @@ public class MyEvents extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent;
 	    switch (item.getItemId()) {
-	    	case android.R.id.home:
-	    		intent = new Intent(this, Home.class);
-	    		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	    		intent.putExtra("userId", userId);
-	    		startActivity(intent);
-	    		return true;
 	        case R.id.news_feed:
 	            // app icon in action bar clicked; go home
 	            intent = new Intent(this, Home.class);
@@ -269,7 +239,18 @@ public class MyEvents extends Activity {
 	        	intent.putExtra("userId", userId);
 	        	startActivity(intent);
 	        	return true;
-	        	
+	        case R.id.favorites:
+	        	intent = new Intent(this, Favorites.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        	intent.putExtra("userId", userId);
+				startActivity(intent);
+				return true;
+	        case R.id.create_event:
+	        	intent = new Intent(this, CreateEvent.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				intent.putExtra("userId", userId);
+				startActivity(intent);
+				return true;
 	        case R.id.logout:
 	        	System.out.println("***LOGOUT***");
 	        	Logout logout = new Logout();

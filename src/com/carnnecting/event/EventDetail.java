@@ -88,31 +88,8 @@ public class EventDetail extends Activity {
 				userId = savedInstanceState.getInt(USER_ID);
 				eventId = savedInstanceState.getInt(EVENT_ID);
 			}
-			
-			Button ficon1 = (Button) findViewById(R.id.ficon1);
-			Button ficon2 = (Button) findViewById(R.id.ficon2);
-
-			ficon1.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					Intent intent = new Intent(EventDetail.this, CreateEvent.class);
-					intent.putExtra("userId", userId);
-					startActivity(intent);
-				}
-			});
-
-			ficon2.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					Intent intent = new Intent(EventDetail.this, Favorites.class);
-					startActivity(intent);
-				}
-			});
 
 			ActionBar actionBar = getActionBar();
-			//actionBar.setDisplayHomeAsUpEnabled(true);
 
 			favoriteCheckBox = (CheckBox)	findViewById(R.id.eventDetailFavoriteCheckBox);
 			subjectTextView = (TextView)	findViewById(R.id.eventDetailSubjectTextView);
@@ -135,8 +112,6 @@ public class EventDetail extends Activity {
 		    });
 			// Share event on Facebook - End
 			
-			// favoriteCheckBox.setText("   ");
-			// RSVPCheckBox.setText("   ");
 
 			eventDao = new EventDataSource(this.getApplication());
 			eventDao.open();
@@ -291,7 +266,18 @@ public class EventDetail extends Activity {
 	        	intent.putExtra("userId", userId);
 	        	startActivity(intent);
 	        	return true;
-	        	
+	        case R.id.favorites:
+	        	intent = new Intent(this, Favorites.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        	intent.putExtra("userId", userId);
+				startActivity(intent);
+				return true;
+	        case R.id.create_event:
+	        	intent = new Intent(this, CreateEvent.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				intent.putExtra("userId", userId);
+				startActivity(intent);
+				return true;
 	        case R.id.logout:
 	        	System.out.println("***LOGOUT***");
 	        	Logout logout = new Logout();

@@ -10,15 +10,18 @@
     
     <item android:id="@+id/news_feed"
           android:title="@string/news_feed"
-          android:showAsAction="ifRoom|withText" />
+          android:icon="@drawable/icon_home"
+          android:showAsAction="always" />
     
-    <item android:id="@+id/favourites"
+    <item android:id="@+id/favorites"
           android:title="@string/favorites"
-          android:showAsAction="ifRoom|withText" />
+          android:icon="@drawable/icon_fvrite"
+          android:showAsAction="always" />
     
     <item android:id="@+id/create_event"
           android:title="@string/create_event"
-          android:showAsAction="ifRoom|withText" />
+          android:icon="@drawable/add_event"
+          android:showAsAction="always" />
     
     
     <item android:id="@+id/logout"

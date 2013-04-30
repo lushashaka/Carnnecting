@@ -18,17 +18,5 @@
                android:layout_weight="1"
                android:drawSelectorOnTop="false"/>
  </LinearLayout>
-     <Button 
-            android:layout_height="wrap_content" 
-            android:text="@string/f1"
-            android:layout_width="wrap_content" 
-            android:id="@+id/ficon1"
-            android:layout_gravity="left|bottom"></Button>
-    <Button
-        android:id="@+id/ficon2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/f2"
-        android:layout_gravity="right|bottom" />
  
 </FrameLayout>

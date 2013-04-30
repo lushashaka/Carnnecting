@@ -73,28 +73,6 @@ public class CategoryMenu extends Activity {
 			userId = intent.getExtras().getInt("userId");
 		}
 		
-		Button ficon1 = (Button) findViewById(R.id.ficon1);
-		Button ficon2 = (Button) findViewById(R.id.ficon2);
-		
-		ficon1.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Intent intent = new Intent(CategoryMenu.this, CreateEvent.class);
-				intent.putExtra("userId", userId);
-				startActivity(intent);
-			}
-		});
-		
-		ficon2.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Intent intent = new Intent(CategoryMenu.this, Favorites.class);
-				startActivity(intent);
-			}
-		});
-		
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		ExpandList = (ExpandableListView) findViewById(R.id.categoryListView);
@@ -224,10 +202,9 @@ public class CategoryMenu extends Activity {
 	    switch (item.getItemId()) {
 	    	case android.R.id.home:
 	    		intent = new Intent(this, Home.class);
-	    		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	    		intent.putExtra("userId", userId);
-	    		startActivity(intent);
-	    		return true;
+	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	            startActivity(intent);
+	            return true;
 	        case R.id.news_feed:
 	            // app icon in action bar clicked; go home
 	            intent = new Intent(this, Home.class);
@@ -246,12 +223,24 @@ public class CategoryMenu extends Activity {
 	        	intent.putExtra("userId", userId);
 	        	startActivity(intent);
 	        	return true;
+	        case R.id.favorites:
+	        	intent = new Intent(this, Favorites.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        	intent.putExtra("userId", userId);
+				startActivity(intent);
+				return true;
+	        case R.id.create_event:
+	        	intent = new Intent(this, CreateEvent.class);
+	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				intent.putExtra("userId", userId);
+				startActivity(intent);
+				return true;
 	        case R.id.logout:
 	        	System.out.println("***LOGOUT***");
 	        	Logout logout = new Logout();
 	        	logout.FBLogout();
 	        	finish();
-	        	return true;
+	        	return true;	
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
