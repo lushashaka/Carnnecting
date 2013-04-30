@@ -5,30 +5,19 @@ package com.carnnecting.event;
 import android.os.Bundle;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-
-import android.graphics.Bitmap;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.widget.Button;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.carnnecting.account.Logout;
@@ -88,8 +77,6 @@ public class EventDetail extends Activity {
 				userId = savedInstanceState.getInt(USER_ID);
 				eventId = savedInstanceState.getInt(EVENT_ID);
 			}
-
-			ActionBar actionBar = getActionBar();
 
 			favoriteCheckBox = (CheckBox)	findViewById(R.id.eventDetailFavoriteCheckBox);
 			subjectTextView = (TextView)	findViewById(R.id.eventDetailSubjectTextView);

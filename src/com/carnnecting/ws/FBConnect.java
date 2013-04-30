@@ -28,6 +28,7 @@ public class FBConnect extends Fragment {
 	private FBShare share = new FBShare();
 	
 	private LoginButton authButton;
+	@SuppressWarnings("unused")
 	private Button shareButton;
 	private int userId;
 	private boolean firstLaunch = true;
@@ -44,14 +45,6 @@ public class FBConnect extends Fragment {
 	    	share.pendingPublishReauthorization = 
 	    			savedInstanceState.getBoolean(share.PENDING_PUBLISH_KEY, false);
 	    }
-	    
-//	    shareButton = (Button) view.findViewById(R.id.shareButton);
-//	    shareButton.setOnClickListener(new View.OnClickListener() {
-//	        @Override
-//	        public void onClick(View v) {
-//	            share.shareEvent();        
-//	        }
-//	    });
 
 	    return view;
 	}

@@ -15,7 +15,6 @@ import com.carnnecting.ws.FBShare;
 import com.carnnecting.home.Home;
 import com.cmu.carnnecting.R;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -74,7 +73,6 @@ public class CreateEvent extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create_event);
-		ActionBar actionBar = getActionBar();
 		Intent intent  = getIntent();
 		userId = -1;
 		if (intent != null && intent.getExtras() != null) {

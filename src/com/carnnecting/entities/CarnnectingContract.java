@@ -1,11 +1,11 @@
 package com.carnnecting.entities;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 
+@SuppressLint("UseValueOf")
 public class CarnnectingContract {
 	// To prevent the contract class from being instantiated
 	private CarnnectingContract() {}
@@ -81,6 +81,7 @@ public class CarnnectingContract {
 	 * Note that I don't know where to put this. Here is the best place so far.
 	 */
 	private static Long databaseLastUpdateTimestamp = null;
+	@SuppressLint("UseValueOf")
 	public static synchronized Long getDatabaseLastUpdateTimestamp() {
 		// FIXME: Is the code robust enough even given the possibility that android will destroy random objects w/o notice?
 		if (databaseLastUpdateTimestamp == null) {
@@ -91,6 +92,7 @@ public class CarnnectingContract {
 		return new Long(databaseLastUpdateTimestamp.longValue());
 	}
 	
+	@SuppressLint("UseValueOf")
 	public static synchronized void setNowDatabaseLastUpdateTimestamp() {
 		databaseLastUpdateTimestamp = new Long(new Date().getTime());
 	}

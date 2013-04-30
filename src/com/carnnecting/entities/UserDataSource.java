@@ -1,7 +1,5 @@
 package com.carnnecting.entities;
 
-import java.util.ArrayList;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;

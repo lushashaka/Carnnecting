@@ -6,6 +6,7 @@ import java.util.HashMap;
 import com.carnnecting.util.*;
 import com.cmu.carnnecting.R;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
 	
 	private static class ViewHolder {
 		public CheckBox subscribeCheckBox;
+		@SuppressWarnings("unused")
 		public TextView subjectTextView;
 	}
 	
@@ -38,7 +40,7 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
 		this.context = context;
 		this.groups = groups;
 		this.changedSubscribedCatIds = changedSubscribedCatIds;
-		this.userId = userId;
+		this.setUserId(userId);
 	}
 	
 	public void addItem(ExpandListChild item, ExpandListGroup group) {
@@ -61,6 +63,8 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
 		return childPosition;
 	}
 
+	@SuppressLint("CutPasteId")
+	@SuppressWarnings("static-access")
 	public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View view,
 			ViewGroup parent) {
 		final ExpandListChild child = (ExpandListChild) getChild(groupPosition, childPosition);
@@ -133,7 +137,7 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
 			ViewGroup parent) {
 		ExpandListGroup group = (ExpandListGroup) getGroup(groupPosition);
 		if (view == null) {
-			LayoutInflater inf = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+			LayoutInflater inf = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			view = inf.inflate(R.layout.expandlist_group_item, null);
 		}
 		TextView tv = (TextView) view.findViewById(R.id.tvGroup);
@@ -154,6 +158,14 @@ public class ExpandListAdapter extends BaseExpandableListAdapter {
 	
 	public HashMap<Integer, Boolean> getSubscribedCatIds(){
 		return changedSubscribedCatIds;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 	
 

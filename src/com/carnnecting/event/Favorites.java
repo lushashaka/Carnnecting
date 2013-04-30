@@ -5,38 +5,27 @@ package com.carnnecting.event;
 import android.annotation.SuppressLint;
 import android.app.ListActivity;
 import android.os.Bundle;
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.text.Editable;
-import android.text.TextWatcher;
 
 
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.carnnecting.account.Logout;
 import com.carnnecting.category.CategoryMenu;
 import com.carnnecting.entities.CarnnectingContract;
-import com.carnnecting.entities.Category;
-import com.carnnecting.entities.CategoryDataSource;
 import com.carnnecting.entities.EventDataSource;
 import com.carnnecting.entities.FavoriteDataSource;
 import com.carnnecting.entities.HomeItemModel;
@@ -65,12 +54,10 @@ public class Favorites extends ListActivity {
 	// FIXME: this should be passed using intent
 	private int							userId;
 
-	@SuppressLint("NewApi")
+	@SuppressLint({ "NewApi", "UseSparseArrays" })
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_favorite);
-		
-		ActionBar actionBar = getActionBar();
 		
 		userId = -1;
 		Intent intent = getIntent();
@@ -107,6 +94,7 @@ public class Favorites extends ListActivity {
 	}
 	
 	
+	@SuppressLint("UseSparseArrays")
 	private void loadHomeItems() {
 		/* Always sync to newest in databases since last updates */
 		

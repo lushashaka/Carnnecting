@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.Bundle;
@@ -52,7 +51,8 @@ public class FBShare extends Fragment {
 	        Request.Callback callback= new Request.Callback() {
 	            public void onCompleted(Response response) {
 	                JSONObject graphResponse; 
-	                String postId = null;
+	                @SuppressWarnings("unused")
+					String postId = null;
 	                try {
 	                	graphResponse = response
                                 .getGraphObject()

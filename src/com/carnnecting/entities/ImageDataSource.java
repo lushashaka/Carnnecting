@@ -1,8 +1,6 @@
 package com.carnnecting.entities;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -10,7 +8,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 public class ImageDataSource {
 	// Database fields
