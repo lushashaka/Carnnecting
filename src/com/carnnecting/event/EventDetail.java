@@ -19,6 +19,15 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.os.AsyncTask;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import com.carnnecting.account.Logout;
 import com.carnnecting.category.CategoryMenu;
@@ -33,6 +42,10 @@ import com.carnnecting.entities.ReadEventDataSource;
 import com.carnnecting.home.Home;
 import com.carnnecting.ws.FBShare;
 import com.cmu.carnnecting.R;
+
+import java.io.*;
+import java.net.*;
+import java.util.concurrent.ExecutionException;
 
 public class EventDetail extends Activity {
 
@@ -54,6 +67,9 @@ public class EventDetail extends Activity {
 	private RSVPDataSource RSVPDao;
 	private ReadEventDataSource readEventDao;
 	private ImageDataSource imageDao;
+	private GoogleMap map;
+	static final LatLng HAMBURG = new LatLng(53.558, 9.927);
+	
 
 	private static final String USER_ID = "USER_ID";
 	private static final String EVENT_ID = "EVENT_ID";
@@ -179,7 +195,32 @@ public class EventDetail extends Activity {
 				} else {
 					Log.e("ERROR", "EventDetail: cannot add read event id:"+eventId);
 				}
+				
+				map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+				Marker hamburg = map.addMarker(new MarkerOptions().position(HAMBURG)
+						.title(event.getSubject())
+						.snippet("Come to Join US!")
+						);
+				// Move the camera instantly to hamburg with a zoom of 15.
+				map.moveCamera(CameraUpdateFactory.newLatLngZoom(HAMBURG, 15));
 
+				// Zoom in, animating the camera.
+				map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+				
+				// Get latitude, longitude
+				
+				// FIXME: formattedAddress
+				try {
+					LatiLongi latilongi = new GecodingAsyncTask().execute("").get();
+					Log.e("INFO", latilongi.latitude);
+					Log.e("INFI", latilongi.longitude);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					Log.e("ERROR", e.toString());
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					Log.e("ERROR", e.toString());
+				}
 			} else {
 				favoriteCheckBox.setEnabled(false);
 				RSVPCheckBox.setEnabled(false);
@@ -274,6 +315,65 @@ public class EventDetail extends Activity {
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
+	}
+	
+	private class GecodingAsyncTask extends AsyncTask<String, Void, LatiLongi> {
+
+		@Override
+		protected LatiLongi doInBackground(String... formattedAddress) {
+			String latitude = null;
+			String longitude = null;
+			
+			try {
+				String charset = "UTF-8";
+				String url = "https://maps.googleapis.com/maps/api/geocode/xml";
+				// String address = event.getLocation()
+				// FIXME: replace this with the formattedAddress
+				String address = "1600+Amphitheatre+Parkway,+Mountain+View,+CA";
+				String sensor = "false";
+				String paraList = "";
+			
+				paraList = String.format("address=%s&sensor=%s", URLEncoder.encode(address, charset),
+					URLEncoder.encode(sensor, charset));
+				String wholeUrl = url +"?"+paraList;
+				URLConnection connection = new URL(wholeUrl).openConnection();
+				connection.setRequestProperty("Accept-Charset", charset);
+				InputStream respStream = connection.getInputStream();
+				String output = "";
+				BufferedReader br = new BufferedReader(new InputStreamReader(respStream));
+				String line;
+				while ((line = br.readLine()) != null) {
+					output += (line.trim());
+				}
+				// Log.e("INFO", output);
+				int idx = 0;
+				if ((idx = output.indexOf("<location><lat>")) != -1) {
+					String temp = output.substring(idx);
+					temp = temp.substring(15);
+					latitude = temp.substring(0, temp.indexOf('<'));
+					temp = temp.substring(temp.indexOf("<lng>")).substring(5);
+					longitude = temp.substring(0, temp.indexOf('<'));
+					
+				}
+				
+			} catch (Exception e) {
+				Log.e("ERROR", e.toString());
+				Log.e("ERROR", e.getStackTrace().toString());
+			}
+			
+			return new LatiLongi(latitude, longitude);
+		}
+		
+	}
+	
+	private class LatiLongi {
+		public String latitude = null;
+		public String longitude = null;
+		
+		public LatiLongi(String lati, String longi) {
+			latitude = lati;
+			longitude = longi;
+		}
 	}
 
 }
