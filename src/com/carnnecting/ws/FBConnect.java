@@ -53,15 +53,6 @@ public class FBConnect extends Fragment {
 	    if (state.isOpened()) {
 	        Log.i(TAG, "Success: Logged in...");
 	        // Request user data and show the results
-	        
-//	        // shareButton.setVisibility(View.VISIBLE);
-//	        
-//	        if (share.pendingPublishReauthorization && 
-//	                state.equals(SessionState.OPENED_TOKEN_UPDATED)) {
-//	            share.pendingPublishReauthorization = false;
-//	            share.shareEvent();
-//	        }
-	        
 	        Request.executeMeRequestAsync(session, new Request.GraphUserCallback() {
 
 				@Override
@@ -94,7 +85,7 @@ public class FBConnect extends Fragment {
 	        });	        
 	    } else if (state.isClosed()) {
 	        Log.i(TAG, "Success: Logged out...");
-	        //shareButton.setVisibility(View.INVISIBLE);
+	        firstLaunch = true;
 	    }
 	}
 	
@@ -107,6 +98,7 @@ public class FBConnect extends Fragment {
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		Log.i(TAG, "Create");
 	    super.onCreate(savedInstanceState);
 	    context = this.getActivity().getApplicationContext();
 	    uiHelper = new UiLifecycleHelper(getActivity(), callback);
@@ -116,14 +108,15 @@ public class FBConnect extends Fragment {
 	@Override
 	public void onResume() {
 	    super.onResume();
-
+		Log.i(TAG, "Resume");
 	    // For scenarios where the main activity is launched and user
 	    // session is not null, the session state change notification
 	    // may not be triggered. Trigger it if it's open/closed.
 	    Session session = Session.getActiveSession();
 	    if (session != null &&
-	           (session.isOpened())) {
-	        		   //|| session.isClosed()) ) {
+	           ((session.isOpened())
+	        	|| session.isClosed()) ) {
+			Log.i(TAG, "Resume: Before status change");
 	        onSessionStateChange(session, session.getState(), null);
 	    }
 	    uiHelper.onResume();
