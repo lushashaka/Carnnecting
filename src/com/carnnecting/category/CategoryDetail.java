@@ -61,9 +61,6 @@ public class CategoryDetail extends ListActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_category_detail);
 		
-		ActionBar actionBar = getActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
-		
 		
 		Intent intent  = getIntent();
 		eventDAO = new EventDataSource(this.getApplication());
