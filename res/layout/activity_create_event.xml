@@ -15,27 +15,6 @@
             android:layout_height="wrap_content"
             android:text="" />
 
-        <Button
-            android:id="@+id/selectCategory"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="@string/category" />
-
-        <TextView
-            android:id="@+id/showCategory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:textSize="20dp"
-            android:text="" />
-
-        <TextView
-            android:id="@+id/space2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="" />
-
         <TextView
             android:id="@+id/textView1"
             android:layout_width="wrap_content"
@@ -48,6 +27,28 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="@string/title" />
+
+        <TextView
+            android:id="@+id/space2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="" />
+
+        <Button
+            android:id="@+id/selectCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/category" />
+
+        <TextView
+            android:id="@+id/showCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:freezesText="true"
+            android:text=""
+            android:textSize="20dp" />
 
         <TextView
             android:id="@+id/space3"
@@ -88,15 +89,23 @@
                 android:ems="10"
                 android:hint="@string/host" />
 
-            <EditText
-                android:id="@+id/editText4"
+            <Button
+                android:id="@+id/addr"
+                style="?android:attr/buttonStyleSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:ems="10"
-                android:hint="@string/addr"
-                android:inputType="textPostalAddress" />
+                android:text="@string/getAd" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/getAddr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:freezesText="true"
+            android:text=""
+            android:textSize="20dp" />
 
         <TextView
             android:id="@+id/space4"
@@ -123,8 +132,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:textSize="20dp"
-            android:text="" />
+            android:freezesText="true"
+            android:text=""
+            android:textSize="20dp" />
 
         <TextView
             android:id="@+id/space5"
@@ -185,9 +195,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
+                android:freezesText="true"
                 android:gravity="center"
-                android:textSize="20dp"
-                android:text="" />
+                android:text=""
+                android:textSize="20dp" />
 
             <TextView
                 android:id="@+id/showEtime"
@@ -195,9 +206,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
+                android:freezesText="true"
                 android:gravity="center"
-                android:textSize="20dp"
-                android:text="" />
+                android:text=""
+                android:textSize="20dp" />
         </LinearLayout>
 
         <TextView

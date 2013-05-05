@@ -1,9 +1,12 @@
 package com.carnnecting.event;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 import com.carnnecting.account.Logout;
 import com.carnnecting.category.CategoryMenu;
@@ -20,10 +23,16 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -43,7 +52,13 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-public class CreateEvent extends Activity {
+public class CreateEvent extends Activity implements LocationListener {
+	private LocationManager locManager;
+	Geocoder geoCoder;
+	private Location myLocation = null;
+	double latPoint = 0;
+	double lngPoint = 0;
+
 	static int REQUEST_PICTURE = 1;
 	static int REQUEST_PHOTO_ALBUM = 2;
 	static String SAMPLEIMG = "thumbnail.png";
@@ -64,9 +79,9 @@ public class CreateEvent extends Activity {
 	private int userId;
 	private String fmDate, fmStime, fmEtime, sec, cMsg;
 
-	private Button takephotos, getphotos, upload, selCategory;
-	private Button date, sTime,	eTime;
-	private TextView showDate, showStime, showEtime, showCategory;
+	private Button takephotos, getphotos, upload, selCategory, getLoc;
+	private Button date, sTime, eTime;
+	private TextView showDate, showStime, showEtime, showCategory, jusoText;
 	private EditText title, addr, org, dscr;
 
 	/** Called when the activity is first created. */
@@ -74,13 +89,14 @@ public class CreateEvent extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create_event);
+
 		ActionBar actionBar = getActionBar();
-		Intent intent  = getIntent();
+		Intent intent = getIntent();
 		userId = -1;
 		if (intent != null && intent.getExtras() != null) {
 			userId = intent.getExtras().getInt("userId");
 		}
-		
+
 		eventDao = new EventDataSource(this.getApplication());
 		eventDao.open();
 		categoryDao = new CategoryDataSource(this.getApplication());
@@ -91,6 +107,14 @@ public class CreateEvent extends Activity {
 		bmp = null;
 		iv = (ImageView) findViewById(R.id.imgView);
 
+		locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,
+				5, this);
+		locManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+				1000, 5, this);
+
+		geoCoder = new Geocoder(this, Locale.ENGLISH);
+
 		takephotos = (Button) findViewById(R.id.takePhotos);
 		getphotos = (Button) findViewById(R.id.getPhotos);
 		upload = (Button) findViewById(R.id.upload);
@@ -98,14 +122,15 @@ public class CreateEvent extends Activity {
 		date = (Button) findViewById(R.id.date);
 		sTime = (Button) findViewById(R.id.selStime);
 		eTime = (Button) findViewById(R.id.selEtime);
-		
+		getLoc = (Button) findViewById(R.id.addr);
+
 		showDate = (TextView) findViewById(R.id.showDate);
 		showStime = (TextView) findViewById(R.id.showStime);
 		showEtime = (TextView) findViewById(R.id.showEtime);
 		showCategory = (TextView) findViewById(R.id.showCategory);
+		jusoText = (TextView) findViewById(R.id.getAddr);
 
 		title = (EditText) findViewById(R.id.editText1);
-		addr = (EditText) findViewById(R.id.editText4);
 		org = (EditText) findViewById(R.id.edit_host);
 		dscr = (EditText) findViewById(R.id.editText5);
 
@@ -133,6 +158,16 @@ public class CreateEvent extends Activity {
 			}
 		});
 		builder.create();
+
+		getLoc.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				GetLocations();
+				Log.d("location", "button pressed");
+			}
+
+		});
 
 		date.setOnClickListener(new OnClickListener() {
 			@Override
@@ -291,7 +326,7 @@ public class CreateEvent extends Activity {
 				cyear = year;
 				cmonth = monthOfYear + 1;
 				cday = dayOfMonth;
-				
+
 				if (cmonth < 10 && cday < 10)
 					fmDate = cyear + "-0" + cmonth + "-0" + cday;
 				else if (cmonth < 10 && cday >= 10)
@@ -300,7 +335,7 @@ public class CreateEvent extends Activity {
 					fmDate = cyear + "-" + cmonth + "-0" + cday;
 				else
 					fmDate = cyear + "-" + cmonth + "-" + cday;
-				
+
 				updateDisplay();
 
 				Toast.makeText(CreateEvent.this, "Selected Date is " + fmDate,
@@ -318,9 +353,9 @@ public class CreateEvent extends Activity {
 		chour = c.get(Calendar.HOUR_OF_DAY);
 		cmin = c.get(Calendar.MINUTE);
 		csec = c.get(Calendar.SECOND);
-		
+
 		if (csec < 10)
-			sec = "0" + csec;	
+			sec = "0" + csec;
 		else
 			sec = String.valueOf(csec);
 
@@ -331,15 +366,15 @@ public class CreateEvent extends Activity {
 				chour = hourOfDay;
 				cmin = minute;
 
-				if (hourOfDay < 10 && minute <10)
-					fmStime = "0" + chour + ":0" + cmin + ":" + sec;				
+				if (hourOfDay < 10 && minute < 10)
+					fmStime = "0" + chour + ":0" + cmin + ":" + sec;
 				else if (hourOfDay < 10 && minute >= 10)
 					fmStime = "0" + chour + ":" + cmin + ":" + sec;
 				else if (hourOfDay >= 10 && minute < 10)
 					fmStime = chour + ":0" + cmin + ":" + sec;
 				else
 					fmStime = chour + ":" + cmin + ":" + sec;
-				
+
 				updateDisplayS();
 
 				Toast.makeText(CreateEvent.this, "Start time is " + fmStime,
@@ -357,9 +392,9 @@ public class CreateEvent extends Activity {
 		chour = c.get(Calendar.HOUR_OF_DAY);
 		cmin = c.get(Calendar.MINUTE);
 		csec = c.get(Calendar.SECOND);
-		
+
 		if (csec < 10)
-			sec = "0" + csec;	
+			sec = "0" + csec;
 		else
 			sec = String.valueOf(csec);
 
@@ -370,15 +405,15 @@ public class CreateEvent extends Activity {
 				chour = hourOfDay;
 				cmin = minute;
 
-				if (hourOfDay < 10 && minute <10)
-					fmEtime = "0" + chour + ":0" + cmin + ":" + sec;				
+				if (hourOfDay < 10 && minute < 10)
+					fmEtime = "0" + chour + ":0" + cmin + ":" + sec;
 				else if (hourOfDay < 10 && minute >= 10)
 					fmEtime = "0" + chour + ":" + cmin + ":" + sec;
 				else if (hourOfDay >= 10 && minute < 10)
 					fmEtime = chour + ":0" + cmin + ":" + sec;
 				else
 					fmEtime = chour + ":" + cmin + ":" + sec;
-				
+
 				updateDisplayE();
 
 				Toast.makeText(CreateEvent.this, "End time is " + fmEtime,
@@ -390,73 +425,116 @@ public class CreateEvent extends Activity {
 				chour, csec, false);
 		alert2.show();
 	}
-	
+
 	private void updateDisplay() {
-	     showDate.setText(new StringBuilder().append("Your event will be held at ").append(fmDate));
+		showDate.setText(new StringBuilder().append(
+				"Your event will be held at ").append(fmDate));
 	}
-	
+
 	private void updateDisplayS() {
-	     showStime.setText(new StringBuilder().append(fmStime));
+		showStime.setText(new StringBuilder().append(fmStime));
 	}
-	
+
 	private void updateDisplayE() {
-	     showEtime.setText(new StringBuilder().append(fmEtime));
+		showEtime.setText(new StringBuilder().append(fmEtime));
 	}
-	
+
 	private void updateDisplayC() {
 		showCategory.setText(new StringBuilder().append(cMsg));
 	}
-	
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.carnnecting_main, menu);
-	    return true;
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.carnnecting_main, menu);
+		return true;
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent;
-	    switch (item.getItemId()) {
-	        case R.id.news_feed:
-	            // app icon in action bar clicked; go home
-	            intent = new Intent(this, Home.class);
-	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	            startActivity(intent);
-	            return true;
-	        case R.id.categories:
-	        	intent = new Intent(this, CategoryMenu.class);
-	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	        	intent.putExtra("userId", userId);
-	        	startActivity(intent);
-	        	return true;
-	        case R.id.my_events:
-	        	intent = new Intent(this, MyEvents.class);
-	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	        	intent.putExtra("userId", userId);
-	        	startActivity(intent);
-	        	return true;
-	        case R.id.favorites:
-	        	intent = new Intent(this, Favorites.class);
-	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	        	intent.putExtra("userId", userId);
-				startActivity(intent);
-				return true;
-	        case R.id.create_event:
-	        	intent = new Intent(this, CreateEvent.class);
-	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				intent.putExtra("userId", userId);
-				startActivity(intent);
-				return true;
-	        case R.id.logout:
-	        	System.out.println("***LOGOUT***");
-	        	Logout logout = new Logout();
-	        	logout.FBLogout();
-	        	finish();
-	        	return true;	
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
+		switch (item.getItemId()) {
+		case R.id.news_feed:
+			// app icon in action bar clicked; go home
+			intent = new Intent(this, Home.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(intent);
+			return true;
+		case R.id.categories:
+			intent = new Intent(this, CategoryMenu.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			intent.putExtra("userId", userId);
+			startActivity(intent);
+			return true;
+		case R.id.my_events:
+			intent = new Intent(this, MyEvents.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			intent.putExtra("userId", userId);
+			startActivity(intent);
+			return true;
+		case R.id.favorites:
+			intent = new Intent(this, Favorites.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			intent.putExtra("userId", userId);
+			startActivity(intent);
+			return true;
+		case R.id.create_event:
+			intent = new Intent(this, CreateEvent.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			intent.putExtra("userId", userId);
+			startActivity(intent);
+			return true;
+		case R.id.logout:
+			System.out.println("***LOGOUT***");
+			Logout logout = new Logout();
+			logout.FBLogout();
+			finish();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	public void GetLocations() {
+
+		StringBuffer juso = new StringBuffer();
+		if (myLocation != null) {
+			latPoint = myLocation.getLatitude();
+			lngPoint = myLocation.getLongitude();
+			try {
+				List<Address> addresses;
+				addresses = geoCoder.getFromLocation(latPoint, lngPoint, 1);
+				for (Address addr : addresses) {
+					int index = addr.getMaxAddressLineIndex();
+					for (int i = 0; i <= index; i++) {
+						juso.append(addr.getAddressLine(i));
+						juso.append(" ");
+						juso.append(addr.getCountryName()).append("\n");
+						juso.append(addr.getPostalCode()).append("\n");
+						juso.append(addr.getLocality()).append("\n");
+						juso.append(addr.getThoroughfare()).append("\n");
+						juso.append(addr.getFeatureName()).append("\n\n");
+					}
+					juso.append("\n");
+				}
+				jusoText.setText(String.valueOf(juso));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void onLocationChanged(Location location) {
+		Log.d("location", "location changed");
+		myLocation = location;
+	}
+
+	public void onProviderDisabled(String s) {
+	}
+
+	public void onProviderEnabled(String s) {
+	}
+
+	public void onStatusChanged(String s, int i, Bundle bundle) {
 	}
 }
