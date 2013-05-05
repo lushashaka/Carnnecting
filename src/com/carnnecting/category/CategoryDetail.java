@@ -22,7 +22,6 @@ import com.carnnecting.home.Home;
 import com.cmu.carnnecting.R;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -60,9 +59,6 @@ public class CategoryDetail extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_category_detail);
-		
-		ActionBar actionBar = getActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
 		
 		
 		Intent intent  = getIntent();
