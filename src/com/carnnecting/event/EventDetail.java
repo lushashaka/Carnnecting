@@ -68,7 +68,7 @@ public class EventDetail extends Activity {
 	private ReadEventDataSource readEventDao;
 	private ImageDataSource imageDao;
 	private GoogleMap map;
-	static final LatLng HAMBURG = new LatLng(53.558, 9.927);
+	// static final LatLng HAMBURG = new LatLng(53.558, 9.927);
 	
 
 	private static final String USER_ID = "USER_ID";
@@ -196,22 +196,13 @@ public class EventDetail extends Activity {
 					Log.e("ERROR", "EventDetail: cannot add read event id:"+eventId);
 				}
 				
-				map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-				Marker hamburg = map.addMarker(new MarkerOptions().position(HAMBURG)
-						.title(event.getSubject())
-						.snippet("Come to Join US!")
-						);
-				// Move the camera instantly to hamburg with a zoom of 15.
-				map.moveCamera(CameraUpdateFactory.newLatLngZoom(HAMBURG, 15));
-
-				// Zoom in, animating the camera.
-				map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
-				
+								
 				// Get latitude, longitude
 				
 				// FIXME: formattedAddress
+				LatiLongi latilongi = null;
 				try {
-					LatiLongi latilongi = new GecodingAsyncTask().execute("").get();
+					latilongi = new GecodingAsyncTask().execute(event.getLocation().trim().replace(' ', '+')).get();
 					Log.e("INFO", latilongi.latitude);
 					Log.e("INFI", latilongi.longitude);
 				} catch (InterruptedException e) {
@@ -221,6 +212,25 @@ public class EventDetail extends Activity {
 					// TODO Auto-generated catch block
 					Log.e("ERROR", e.toString());
 				}
+				if (latilongi.latitude != null && latilongi.longitude != null) {
+
+					try {
+						map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+						LatLng eventLatLong = new LatLng(Double.parseDouble(latilongi.latitude), 
+								Double.parseDouble(latilongi.longitude));
+						Marker hamburg = map.addMarker(new MarkerOptions().position(eventLatLong)
+							.title(event.getSubject())
+							.snippet("Come to Join US!")
+							);
+						// Move the camera instantly to hamburg with a zoom of 15.
+						map.moveCamera(CameraUpdateFactory.newLatLngZoom(eventLatLong, 15));
+						// Zoom in, animating the camera.
+						map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+					} catch (Exception e) {
+						Log.e("ERROR", e.toString());
+					}
+				}
+				
 			} else {
 				favoriteCheckBox.setEnabled(false);
 				RSVPCheckBox.setEnabled(false);
@@ -329,7 +339,9 @@ public class EventDetail extends Activity {
 				String url = "https://maps.googleapis.com/maps/api/geocode/xml";
 				// String address = event.getLocation()
 				// FIXME: replace this with the formattedAddress
-				String address = "1600+Amphitheatre+Parkway,+Mountain+View,+CA";
+				// String address = "1600+Amphitheatre+Parkway,+Mountain+View,+CA";
+				String address = formattedAddress[0];
+				
 				String sensor = "false";
 				String paraList = "";
 			
