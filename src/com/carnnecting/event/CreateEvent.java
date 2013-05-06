@@ -24,6 +24,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -68,7 +69,8 @@ public class CreateEvent extends Activity {
 	private Button date, sTime,	eTime;
 	private TextView showDate, showStime, showEtime, showCategory;
 	private EditText title, addr, org, dscr;
-	private SoundEffect eventCreatedSound = new SoundEffect(this);
+	private MediaPlayer mediaPlayer;
+	private SoundEffect eventCreatedSound = new SoundEffect(this, mediaPlayer);
 
 	/** Called when the activity is first created. */
 	@Override
@@ -223,6 +225,14 @@ public class CreateEvent extends Activity {
 			}
 		});
 	}
+	
+	@Override
+	protected void onDestroy()
+	{
+	       	super.onDestroy();
+	       	killMediaPlayer();
+	}
+	
 
 	private Bitmap loadPicture() {
 		File file = new File(Environment.getExternalStorageDirectory(),
@@ -408,6 +418,21 @@ public class CreateEvent extends Activity {
 	private void updateDisplayC() {
 		showCategory.setText(new StringBuilder().append(cMsg));
 	}
+	
+	private void killMediaPlayer()
+	{
+	   	if(mediaPlayer!=null)
+	   	{
+	       	try
+	       	{
+	       		mediaPlayer.release();
+	        }
+	        catch(Exception e)
+	        {
+	        	e.printStackTrace();
+	        }
+	    }
+	 }
 	
 	
 	@Override
