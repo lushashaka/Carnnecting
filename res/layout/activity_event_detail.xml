@@ -36,14 +36,26 @@
     
     </LinearLayout>
    
-    
+    <TextView
+        android:id="@+id/eventDetailWhen"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:textSize="25dip"
+        android:text="@string/when"/>"
         
     <TextView
         android:id="@+id/eventDetailEventTimeTextView"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
         android:textSize="25dip" />
-	  
+	
+    <TextView
+        android:id="@+id/eventDetailWhere"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:textSize="25dip"
+        android:text="@string/where"/>
+    
 	<TextView
         android:id="@+id/eventDetailLocationTextView"
         android:layout_height="wrap_content"
@@ -51,12 +63,24 @@
         android:textSize="25dip" />
 	
 	<TextView
+        android:id="@+id/eventDetailHost"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:textSize="25dip"
+        android:text="@string/host"/>
+	
+	<TextView
         android:id="@+id/eventDetailHostTextView"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
         android:textSize="25dip" />
 	  
-	
+	<TextView
+        android:id="@+id/eventDetailDescription"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:textSize="25dip"
+        android:text="@string/description"/>
 	   
     <TextView
         android:id="@+id/eventDetailDescriptionTextView"
