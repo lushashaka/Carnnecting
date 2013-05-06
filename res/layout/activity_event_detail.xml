@@ -48,13 +48,13 @@
         android:id="@+id/eventDetailLocationTextView"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
-        android:textSize="25dip" />
+         />
 	
 	<TextView
         android:id="@+id/eventDetailHostTextView"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
-        android:textSize="25dip" />
+         />
 	  
 	
 	   
@@ -62,18 +62,27 @@
         android:id="@+id/eventDetailDescriptionTextView"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:textSize="25dip" />
+         />
     
 
     <ImageView	android:id="@+id/eventImageView"       
         	android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
  
+      
     <fragment
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         class="com.google.android.gms.maps.MapFragment" />
+        
+        <!--    
+        <fragment
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        class="com.google.android.gms.maps.SupportMapFragment" />
+        -->
     
          <Button
 	    android:id="@+id/shareButton"

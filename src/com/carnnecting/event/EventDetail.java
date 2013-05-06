@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
@@ -19,11 +20,14 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.os.AsyncTask;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -68,6 +72,7 @@ public class EventDetail extends Activity {
 	private ReadEventDataSource readEventDao;
 	private ImageDataSource imageDao;
 	private GoogleMap map;
+	private Marker hamburg;
 	// static final LatLng HAMBURG = new LatLng(53.558, 9.927);
 	
 
@@ -185,11 +190,15 @@ public class EventDetail extends Activity {
 				Bitmap bmp = imageDao.getAnImageByEventId(eventId);
 				if (bmp != null) {
 					eventImageView.setImageBitmap(bmp);
+					Log.e("INFO", "There is a image");
+				} else {
+					Log.e("INFO", "No image found");
 				}
 				
-
+				// Event has been loaded
 				Log.e("INFO", event.toString());
 
+				// Insert into read event table
 				if (readEventDao.createReadEvent(userId, eventId)) {
 					Log.e("INFO", "EventDetail: added read event id:"+eventId);
 				} else {
@@ -203,8 +212,8 @@ public class EventDetail extends Activity {
 				LatiLongi latilongi = null;
 				try {
 					latilongi = new GecodingAsyncTask().execute(event.getLocation().trim().replace(' ', '+')).get();
-					Log.e("INFO", latilongi.latitude);
-					Log.e("INFI", latilongi.longitude);
+					// Log.e("INFO", latilongi.latitude);
+					// Log.e("INFI", latilongi.longitude);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					Log.e("ERROR", e.toString());
@@ -218,7 +227,7 @@ public class EventDetail extends Activity {
 						map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 						LatLng eventLatLong = new LatLng(Double.parseDouble(latilongi.latitude), 
 								Double.parseDouble(latilongi.longitude));
-						Marker hamburg = map.addMarker(new MarkerOptions().position(eventLatLong)
+						hamburg = map.addMarker(new MarkerOptions().position(eventLatLong)
 							.title(event.getSubject())
 							.snippet("Come to Join US!")
 							);
@@ -226,9 +235,24 @@ public class EventDetail extends Activity {
 						map.moveCamera(CameraUpdateFactory.newLatLngZoom(eventLatLong, 15));
 						// Zoom in, animating the camera.
 						map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+						/*
+						map.setOnMarkerClickListener(new OnMarkerClickListener(){
+
+							@Override
+							public boolean onMarkerClick(Marker arg0) {
+								if (arg0 == hamburg) { // Should always be true
+									Log.e("INFO", "Clicked");
+								}
+								return true;
+							}
+							
+						});
+						*/
 					} catch (Exception e) {
 						Log.e("ERROR", e.toString());
 					}
+				} else {
+					// FIXME: TODO: Hide the map if no location?
 				}
 				
 			} else {
