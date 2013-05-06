@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -145,7 +146,7 @@ public class EventDetail extends Activity {
 			// FIXME: save userId and eventId? onSavedInstance
 
 			if (userId != -1 && eventId != -1) {
-				Event event = eventDao.getAnEventByEventId(eventId);
+				final Event event = eventDao.getAnEventByEventId(eventId);
 				Favorite favorite = favoriteDao.getAnFavoriteByUserIdAndEventId(userId, eventId);
 				RSVP rsvp = RSVPDao.getAnRSVPByUserIdAndEventId(userId, eventId);
 
@@ -173,6 +174,7 @@ public class EventDetail extends Activity {
 						});
 
 				subjectTextView.setText(event.getSubject());
+				subjectTextView.setTextColor(Color.WHITE);
 
 				RSVPCheckBox.setOnCheckedChangeListener(null);
 				RSVPCheckBox.setChecked(rsvp!=null);
@@ -188,9 +190,13 @@ public class EventDetail extends Activity {
 						});
 
 				eventTimeTextView.setText(Event.dateFormat.format(event.getStartTime()) + "~" + Event.dateFormat.format(event.getEndTime()));
+				eventTimeTextView.setTextColor(Color.WHITE);
 				locationTextView.setText(event.getLocation());
+				locationTextView.setTextColor(Color.WHITE);
 				hostTextView.setText(event.getHost());
+				hostTextView.setTextColor(Color.WHITE);
 				descriptionTextView.setText(event.getDescription());
+				descriptionTextView.setTextColor(Color.WHITE);
 				Bitmap bmp = imageDao.getAnImageByEventId(eventId);
 				if (bmp != null) {
 					eventImageView.setImageBitmap(bmp);
@@ -242,8 +248,8 @@ public class EventDetail extends Activity {
 
 							@Override
 							public void onInfoWindowClick(Marker arg0) {
-								if (latilongi != null && arg0 == hamburg) { // Should always be true as we only have one marker and latilongi has to be non-null to get here 
-									Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:"+latilongi.latitude+","+latilongi.longitude+"?q="+latilongi.latitude+","+latilongi.longitude+"(Label+Name)"));
+								if (latilongi != null) { // Should always be true as we only have one marker and latilongi has to be non-null to get here 
+									Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:"+latilongi.latitude+","+latilongi.longitude+"?q="+latilongi.latitude+","+latilongi.longitude+"("+event.getSubject()+")"));
 									startActivity(intent);
 								}								
 							}	
