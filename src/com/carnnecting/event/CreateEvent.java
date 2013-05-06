@@ -1,6 +1,7 @@
 package com.carnnecting.event;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,6 +15,7 @@ import com.carnnecting.entities.Category;
 import com.carnnecting.entities.CategoryDataSource;
 import com.carnnecting.entities.EventDataSource;
 import com.carnnecting.entities.ImageDataSource;
+import com.carnnecting.util.SoundEffect;
 import com.carnnecting.ws.FBShare;
 import com.carnnecting.home.Home;
 import com.cmu.carnnecting.R;
@@ -87,7 +89,10 @@ public class CreateEvent extends Activity implements LocationListener {
 	private Button takephotos, getphotos, upload, selCategory, getLoc;
 	private Button date, sTime, eTime;
 	private TextView showDate, showStime, showEtime, showCategory;
+
 	private EditText title, org, dscr, editLoc;
+	private SoundEffect eventCreatedSound = new SoundEffect(this);
+
 
 	/** Called when the activity is first created. */
 	@Override
@@ -96,7 +101,8 @@ public class CreateEvent extends Activity implements LocationListener {
 		setContentView(R.layout.activity_create_event);
 
 		ActionBar actionBar = getActionBar();
-		Intent intent = getIntent();
+		Intent intent  = getIntent();
+
 		userId = -1;
 		checkEdit = false;
 		locFlag = false;
@@ -273,6 +279,12 @@ public class CreateEvent extends Activity implements LocationListener {
 				int categoryId = catId;
 				int eventId = eventDao.createEvent(0, subject, startTime,
 						endTime, location, host, description, categoryId);
+				
+				try {
+					eventCreatedSound.playSubscribeSound();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
 				FBmessage = "Event: " + subject;
 				FBmessage += "\nHost: " + host;
@@ -282,10 +294,6 @@ public class CreateEvent extends Activity implements LocationListener {
 				FBmessage += "\nRSVP to this event by downloading the 'Carnnecting' app!";
 
 				DialogFBShare();
-
-				// Log.e("INFO", subject + " " + startTime +" " + endTime + " "
-				// + location + " " + host + " " + description + " " +
-				// categoryId);
 
 				if (bmp != null) {
 					if (imgDao.createImage(eventId, bmp) == false)
@@ -333,7 +341,16 @@ public class CreateEvent extends Activity implements LocationListener {
 		}
 
 		if (requestCode == REQUEST_PHOTO_ALBUM) {
-			iv.setImageURI(data.getData());
+			Uri imageUri = data.getData();
+			iv.setImageURI(imageUri);
+			try {
+				bmp = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+			} catch (FileNotFoundException e) {
+				Log.e("ERROR", e.toString());
+			} catch (IOException e) {
+				Log.e("ERROR", e.toString());
+			}
+			
 		}
 	}
 

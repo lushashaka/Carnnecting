@@ -2,12 +2,10 @@ package com.carnnecting.entities;
 
 import java.util.*;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 
 public class CategoryDataSource {
@@ -119,6 +117,15 @@ public class CategoryDataSource {
 		  }
 		  
 		  return otherCategories;
+	  }
+	  
+	  public Category getACatByCatId(int catId) {
+		  Cursor cursor = db.rawQuery(" SELECT * FROM "+CarnnectingContract.Category.TABLE_NAME+" WHERE "+
+				  			CarnnectingContract.Category.COLUMN_NAME_ID+" = "+catId, null);
+
+		  cursor.moveToFirst();
+		  // We should have just one record returned
+		  return cursorToCategory(cursor);
 	  }
 
 	  private Category cursorToCategory(Cursor cursor) {

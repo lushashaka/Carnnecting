@@ -1,7 +1,7 @@
 package com.carnnecting.event;
 
 import android.os.Bundle;
-import android.app.ActionBar;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
@@ -9,8 +9,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 
@@ -21,7 +19,6 @@ import com.cmu.carnnecting.R;
 import com.carnnecting.entities.*;
 import com.carnnecting.event.EventDetail;
 import com.carnnecting.account.Logout;
-import com.carnnecting.category.CategoryDetail;
 import com.carnnecting.category.CategoryMenu;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,18 +34,17 @@ public class MyEvents extends Activity {
 	private FavoriteDataSource favDAO;
 	private RSVPDataSource RSVPDAO;
 	private EventDataSource eventDAO;
-	private Long lastDatabaseLoadTimestamp = null;
 	
 	private HashMap<Integer, Boolean> changedRSVPIds;
 	private HashMap<Integer, Boolean> changedFavIds;
 	
 	private int	userId;
 	
+	@SuppressLint("UseSparseArrays")
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_my_events);
 		
-		ActionBar actionBar = getActionBar();
 		ExpandList = (ExpandableListView) findViewById(R.id.myEventListView);
 		changedRSVPIds = new HashMap<Integer, Boolean>();
 		changedFavIds = new HashMap<Integer, Boolean>();

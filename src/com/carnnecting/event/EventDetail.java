@@ -2,34 +2,39 @@
 package com.carnnecting.event;
 
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.view.Gravity;
+import android.graphics.Color;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-
-import android.graphics.Bitmap;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.widget.Button;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.os.AsyncTask;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import com.carnnecting.account.Logout;
 import com.carnnecting.category.CategoryMenu;
@@ -44,6 +49,10 @@ import com.carnnecting.entities.ReadEventDataSource;
 import com.carnnecting.home.Home;
 import com.carnnecting.ws.FBShare;
 import com.cmu.carnnecting.R;
+
+import java.io.*;
+import java.net.*;
+import java.util.concurrent.ExecutionException;
 
 public class EventDetail extends Activity {
 
@@ -65,6 +74,12 @@ public class EventDetail extends Activity {
 	private RSVPDataSource RSVPDao;
 	private ReadEventDataSource readEventDao;
 	private ImageDataSource imageDao;
+	
+	private GoogleMap map;
+	private Marker hamburg;
+	LatiLongi latilongi = null;
+	// static final LatLng HAMBURG = new LatLng(53.558, 9.927);
+	
 
 	private static final String USER_ID = "USER_ID";
 	private static final String EVENT_ID = "EVENT_ID";
@@ -88,8 +103,6 @@ public class EventDetail extends Activity {
 				userId = savedInstanceState.getInt(USER_ID);
 				eventId = savedInstanceState.getInt(EVENT_ID);
 			}
-
-			ActionBar actionBar = getActionBar();
 
 			favoriteCheckBox = (CheckBox)	findViewById(R.id.eventDetailFavoriteCheckBox);
 			subjectTextView = (TextView)	findViewById(R.id.eventDetailSubjectTextView);
@@ -133,7 +146,7 @@ public class EventDetail extends Activity {
 			// FIXME: save userId and eventId? onSavedInstance
 
 			if (userId != -1 && eventId != -1) {
-				Event event = eventDao.getAnEventByEventId(eventId);
+				final Event event = eventDao.getAnEventByEventId(eventId);
 				Favorite favorite = favoriteDao.getAnFavoriteByUserIdAndEventId(userId, eventId);
 				RSVP rsvp = RSVPDao.getAnRSVPByUserIdAndEventId(userId, eventId);
 
@@ -161,6 +174,7 @@ public class EventDetail extends Activity {
 						});
 
 				subjectTextView.setText(event.getSubject());
+				subjectTextView.setTextColor(Color.WHITE);
 
 				RSVPCheckBox.setOnCheckedChangeListener(null);
 				RSVPCheckBox.setChecked(rsvp!=null);
@@ -176,23 +190,79 @@ public class EventDetail extends Activity {
 						});
 
 				eventTimeTextView.setText(Event.dateFormat.format(event.getStartTime()) + "~" + Event.dateFormat.format(event.getEndTime()));
+				eventTimeTextView.setTextColor(Color.WHITE);
 				locationTextView.setText(event.getLocation());
+				locationTextView.setTextColor(Color.WHITE);
 				hostTextView.setText(event.getHost());
+				hostTextView.setTextColor(Color.WHITE);
 				descriptionTextView.setText(event.getDescription());
+				descriptionTextView.setTextColor(Color.WHITE);
 				Bitmap bmp = imageDao.getAnImageByEventId(eventId);
 				if (bmp != null) {
 					eventImageView.setImageBitmap(bmp);
+					Log.e("INFO", "There is a image");
+				} else {
+					Log.e("INFO", "No image found");
 				}
 				
-
+				// Event has been loaded
 				Log.e("INFO", event.toString());
 
+				// Insert into read event table
 				if (readEventDao.createReadEvent(userId, eventId)) {
 					Log.e("INFO", "EventDetail: added read event id:"+eventId);
 				} else {
 					Log.e("ERROR", "EventDetail: cannot add read event id:"+eventId);
 				}
+				
+								
+				// Get latitude, longitude
+				
+				// FIXME: formattedAddress
+				try {
+					latilongi = new GecodingAsyncTask().execute(event.getLocation().trim().replace(' ', '+')).get();
+					// Log.e("INFO", latilongi.latitude);
+					// Log.e("INFI", latilongi.longitude);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					Log.e("ERROR", e.toString());
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					Log.e("ERROR", e.toString());
+				}
+				if (latilongi.latitude != null && latilongi.longitude != null) {
 
+					try {
+						map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+						LatLng eventLatLong = new LatLng(Double.parseDouble(latilongi.latitude), 
+								Double.parseDouble(latilongi.longitude));
+						hamburg = map.addMarker(new MarkerOptions().position(eventLatLong)
+							.title(event.getSubject())
+							.snippet("Come to Join US!")
+							);
+						// Move the camera instantly to hamburg with a zoom of 15.
+						map.moveCamera(CameraUpdateFactory.newLatLngZoom(eventLatLong, 15));
+						// Zoom in, animating the camera.
+						map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+						map.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
+
+							@Override
+							public void onInfoWindowClick(Marker arg0) {
+								if (latilongi != null) { // Should always be true as we only have one marker and latilongi has to be non-null to get here 
+									Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:"+latilongi.latitude+","+latilongi.longitude+"?q="+latilongi.latitude+","+latilongi.longitude+"("+event.getSubject()+")"));
+									startActivity(intent);
+								}								
+							}	
+						});
+							
+						
+					} catch (Exception e) {
+						Log.e("ERROR", e.toString());
+					}
+				} else {
+					// FIXME: TODO: Hide the map if no location?
+				}
+				
 			} else {
 				favoriteCheckBox.setEnabled(false);
 				RSVPCheckBox.setEnabled(false);
@@ -287,6 +357,67 @@ public class EventDetail extends Activity {
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
+	}
+	
+	private class GecodingAsyncTask extends AsyncTask<String, Void, LatiLongi> {
+
+		@Override
+		protected LatiLongi doInBackground(String... formattedAddress) {
+			String latitude = null;
+			String longitude = null;
+			
+			try {
+				String charset = "UTF-8";
+				String url = "https://maps.googleapis.com/maps/api/geocode/xml";
+				// String address = event.getLocation()
+				// FIXME: replace this with the formattedAddress
+				// String address = "1600+Amphitheatre+Parkway,+Mountain+View,+CA";
+				String address = formattedAddress[0];
+				
+				String sensor = "false";
+				String paraList = "";
+			
+				paraList = String.format("address=%s&sensor=%s", URLEncoder.encode(address, charset),
+					URLEncoder.encode(sensor, charset));
+				String wholeUrl = url +"?"+paraList;
+				URLConnection connection = new URL(wholeUrl).openConnection();
+				connection.setRequestProperty("Accept-Charset", charset);
+				InputStream respStream = connection.getInputStream();
+				String output = "";
+				BufferedReader br = new BufferedReader(new InputStreamReader(respStream));
+				String line;
+				while ((line = br.readLine()) != null) {
+					output += (line.trim());
+				}
+				// Log.e("INFO", output);
+				int idx = 0;
+				if ((idx = output.indexOf("<location><lat>")) != -1) {
+					String temp = output.substring(idx);
+					temp = temp.substring(15);
+					latitude = temp.substring(0, temp.indexOf('<'));
+					temp = temp.substring(temp.indexOf("<lng>")).substring(5);
+					longitude = temp.substring(0, temp.indexOf('<'));
+					
+				}
+				
+			} catch (Exception e) {
+				Log.e("ERROR", e.toString());
+				Log.e("ERROR", e.getStackTrace().toString());
+			}
+			
+			return new LatiLongi(latitude, longitude);
+		}
+		
+	}
+	
+	private class LatiLongi {
+		public String latitude = null;
+		public String longitude = null;
+		
+		public LatiLongi(String lati, String longi) {
+			latitude = lati;
+			longitude = longi;
+		}
 	}
 
 }

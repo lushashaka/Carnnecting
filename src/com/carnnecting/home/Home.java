@@ -5,39 +5,27 @@ package com.carnnecting.home;
 import android.annotation.SuppressLint;
 import android.app.ListActivity;
 import android.os.Bundle;
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.text.Editable;
-import android.text.TextWatcher;
 
 
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.carnnecting.category.CategoryDetail;import com.carnnecting.account.Logout;import com.carnnecting.category.CategoryMenu;
+import android.widget.TextView;import com.carnnecting.account.Logout;import com.carnnecting.category.CategoryMenu;
 import com.carnnecting.entities.CarnnectingContract;
 import com.carnnecting.event.CreateEvent;
 import com.carnnecting.event.Favorites;
 import com.carnnecting.event.MyEvents;
-import com.carnnecting.entities.Category;
 import com.carnnecting.entities.CategoryDataSource;
 import com.carnnecting.entities.EventDataSource;
 import com.carnnecting.entities.FavoriteDataSource;
@@ -70,16 +58,10 @@ public class Home extends ListActivity {
 
 	private static HashSet<Integer> 	readEventIds;
 
-	@SuppressLint("NewApi")
+	@SuppressLint({ "NewApi", "UseSparseArrays" })
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
-
-		ActionBar actionBar = getActionBar();
-		//actionBar.setDisplayHomeAsUpEnabled(true);
-
-		// View footerView = getLayoutInflater().inflate(R.layout.footer, null, false);
-		// this.getListView().addFooterView(footerView);
 
 		userId = getIntent().getIntExtra("USERID", 1);
 		Log.i("HOME", "Received user id: " + userId);

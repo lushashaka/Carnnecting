@@ -1,13 +1,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <item android:id="@+id/categories"
-          android:title="@string/categories"
-          android:icon="@drawable/red_category"
+	<item android:id="@+id/create_event"
+          android:title="@string/create_event"
+          android:icon="@drawable/red_event"
           android:showAsAction="ifRoom" />
     
-    <item android:id="@+id/my_events"
+	<item android:id="@+id/my_events"
           android:title="@string/my_events"
           android:icon="@drawable/red_myevent"
+          android:showAsAction="ifRoom" />
+	
+	<item android:id="@+id/categories"
+          android:title="@string/categories"
+          android:icon="@drawable/red_category"
           android:showAsAction="ifRoom" />
     
     <item android:id="@+id/news_feed"
@@ -19,12 +24,6 @@
           android:title="@string/favorites"
           android:icon="@drawable/red_favorite"
           android:showAsAction="ifRoom" />
-    
-    <item android:id="@+id/create_event"
-          android:title="@string/create_event"
-          android:icon="@drawable/red_event"
-          android:showAsAction="ifRoom" />
-    
     
     <item android:id="@+id/logout"
           android:title="@string/logout"

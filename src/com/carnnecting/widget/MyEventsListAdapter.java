@@ -7,6 +7,7 @@ import com.carnnecting.entities.HomeItemModel;
 import com.carnnecting.util.*;
 import com.cmu.carnnecting.R;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,10 +25,12 @@ public class MyEventsListAdapter extends BaseExpandableListAdapter {
 	private ArrayList<ExpandEventListGroup> groups;
 	private HashMap<Integer, Boolean> changedFavIds;
 	private HashMap<Integer, Boolean> changedRSVPIds;
+	@SuppressWarnings("unused")
 	private int userId;
 	
 	private static class ViewHolder {
 		public CheckBox favoriteCheckBox;
+		@SuppressWarnings("unused")
 		public TextView subjectTextView;
 		public CheckBox RSVPCheckBox;
 	}
@@ -68,6 +71,8 @@ public class MyEventsListAdapter extends BaseExpandableListAdapter {
 		return childPosition;
 	}
 
+	@SuppressLint("CutPasteId")
+	@SuppressWarnings("static-access")
 	public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View view,
 			ViewGroup parent) {
 		final HomeItemModel child = (HomeItemModel) getChild(groupPosition, childPosition);
@@ -164,6 +169,7 @@ public class MyEventsListAdapter extends BaseExpandableListAdapter {
 			ViewGroup parent) {
 		ExpandEventListGroup group = (ExpandEventListGroup) getGroup(groupPosition);
 		if (view == null) {
+			@SuppressWarnings("static-access")
 			LayoutInflater inf = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
 			view = inf.inflate(R.layout.expandlist_group_item, null);
 		}

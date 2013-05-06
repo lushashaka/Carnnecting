@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.Bundle;
@@ -30,58 +29,60 @@ public class FBShare extends Fragment {
 	    Session session = Session.getActiveSession();
 
 	    if (session != null){
-
-	        // Check for publish permissions    
-	        List<String> permissions = session.getPermissions();
-	        if (!isSubsetOf(PERMISSIONS, permissions)) {
-	            pendingPublishReauthorization = true;
-	            Session.NewPermissionsRequest newPermissionsRequest = new Session
-	                    .NewPermissionsRequest(this, PERMISSIONS);
-	        session.requestNewPublishPermissions(newPermissionsRequest);
-	            return;
-	        }
-
-	        Bundle postParams = new Bundle();
-//	        postParams.putString("name", "Facebook SDK for Android");
-//	        postParams.putString("caption", "Build great social apps and get more installs.");
-//	        postParams.putString("description", "The Facebook SDK for Android makes it easier and faster to develop Facebook integrated Android apps.");
-	        //postParams.putString("link", "https://developers.facebook.com/android");
-	        //postParams.putString("picture", "https://raw.github.com/fbsamples/ios-3.x-howtos/master/Images/iossdk_logo.png");
-	        postParams.putString("message", event);
-
-	        Request.Callback callback= new Request.Callback() {
-	            public void onCompleted(Response response) {
-	                JSONObject graphResponse; 
-	                String postId = null;
-	                try {
-	                	graphResponse = response
-                                .getGraphObject()
-                                .getInnerJSONObject();
-	                    postId = graphResponse.getString("id");
-	                } catch (Exception e) {
-	                    Log.i(TAG,
-	                        "JSON error "+ e.getMessage());
-	                }
-	                FacebookRequestError error = response.getError();
-	                if (error != null) {
-	                    Toast.makeText(FBConnect.context,
-	                         error.getErrorMessage(),
-	                         Toast.LENGTH_SHORT).show();
-	                    } else {
-	                        Toast.makeText(FBConnect.context, 
-	                             "Event shared",
-	                             Toast.LENGTH_LONG).show();
-	                        
-	                        Log.i(TAG, "Event shared");
-	                }
-	            }
-	        };
-
-	        Request request = new Request(session, "me/feed", postParams, 
-	                              HttpMethod.POST, callback);
-
-	        RequestAsyncTask task = new RequestAsyncTask(request);
-	        task.execute();
+	    	try {
+		        // Check for publish permissions    
+		        List<String> permissions = session.getPermissions();
+		        if (!isSubsetOf(PERMISSIONS, permissions)) {
+		            pendingPublishReauthorization = true;
+		            Session.NewPermissionsRequest newPermissionsRequest = new Session
+		                    .NewPermissionsRequest(this, PERMISSIONS);
+		        session.requestNewPublishPermissions(newPermissionsRequest);
+		            return;
+		        }
+	
+		        Bundle postParams = new Bundle();
+		        postParams.putString("message", event);
+	
+		        Request.Callback callback= new Request.Callback() {
+		            public void onCompleted(Response response) {
+		                JSONObject graphResponse; 
+		                @SuppressWarnings("unused")
+						String postId = null;
+		                try {
+		                	graphResponse = response
+	                                .getGraphObject()
+	                                .getInnerJSONObject();
+		                    postId = graphResponse.getString("id");
+		                } catch (Exception e) {
+		                    Log.i(TAG,
+		                        "JSON error "+ e.getMessage());
+		                }
+		                FacebookRequestError error = response.getError();
+		                if (error != null) {
+		                    Toast.makeText(FBConnect.context,
+		                         error.getErrorMessage(),
+		                         Toast.LENGTH_SHORT).show();
+		                    } else {
+		                        Toast.makeText(FBConnect.context, 
+		                             "Event shared",
+		                             Toast.LENGTH_LONG).show();
+		                        
+		                        Log.i(TAG, "Event shared");
+		                }
+		            }
+		        };
+	
+		        Request request = new Request(session, "me/feed", postParams, 
+		                              HttpMethod.POST, callback);
+	
+		        RequestAsyncTask task = new RequestAsyncTask(request);
+		        task.execute();
+	    	} catch(Exception e) {
+	    		Log.i(TAG, "Exception: " + e.getMessage());
+	    		Toast.makeText(FBConnect.context, 
+                        "Facebook exception: " + e.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+	    	}
 	    }
 
 	}
