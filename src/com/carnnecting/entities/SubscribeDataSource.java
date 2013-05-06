@@ -88,6 +88,17 @@ public class SubscribeDataSource {
 		  return subscribedCatIds;
 	  }
 	  
+	  public Subscribe getAnCatByUserIdAndCatId(int userId, int catId) {
+			Cursor cursor = db.rawQuery("SELECT * FROM "+CarnnectingContract.Subscribe.TABLE_NAME + " WHERE " + 
+						CarnnectingContract.Subscribe.COLUMN_NAME_USER_ID+" = "+userId+" AND "+ 
+						CarnnectingContract.Subscribe.COLUMN_NAME_CATEGORY_ID+" = "+catId, null);
+			if (cursor!= null && cursor.getCount() > 0) {
+				// return cursorToRSVP(); FIXME: lets implement this method later
+				return new Subscribe(userId, catId);
+			} else 
+				return null;
+		}
+	  
 	  private Subscribe cursorToSubscribe(Cursor cursor) {
 		  // TODO: don't hardcode 0, 1. Instead, define them in contract class.
 		  return new Subscribe(cursor.getInt(0), cursor.getInt(1));

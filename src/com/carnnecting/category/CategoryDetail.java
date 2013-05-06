@@ -16,6 +16,8 @@ import com.carnnecting.entities.FavoriteDataSource;
 import com.carnnecting.entities.HomeItemModel;
 import com.carnnecting.entities.RSVPDataSource;
 import com.carnnecting.entities.ReadEventDataSource;
+import com.carnnecting.entities.Subscribe;
+import com.carnnecting.entities.SubscribeDataSource;
 import com.carnnecting.event.CreateEvent;
 import com.carnnecting.event.EventDetail;
 import com.carnnecting.event.Favorites;
@@ -46,7 +48,9 @@ public class CategoryDetail extends ListActivity {
 	private Long lastDatabaseLoadTimestamp = null;
 	private CategoryDetailAdapter categoryDetailAdapter;
 	private TextView descriptionTextView;
+	private CheckBox SubscribeCheckBox;
 	private Category cat;
+	private Subscribe sub;
 	
 	private ArrayList<HomeItemModel> eventItems;
 	private HashMap<Integer, Boolean> changedFavoriteEventIds;
@@ -58,13 +62,19 @@ public class CategoryDetail extends ListActivity {
 	private RSVPDataSource RSVPDAO;
 	private ReadEventDataSource	readEventDao;
 	private CategoryDataSource catDAO;
+	private SubscribeDataSource subDAO;
 	private static HashSet<Integer> readEventIds;
+	
+	boolean isSubChanged = false;
+	boolean currentSubValIfChanged = false; // If isSubChanged is false then this value should be ignored
+	
 	
 	@SuppressLint("UseSparseArrays")
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_category_detail);
 		descriptionTextView = (TextView)findViewById(R.id.catDetailDescriptionTextView);
+		SubscribeCheckBox = (CheckBox)findViewById(R.id.sub_checkbox);
 		
 		
 		Intent intent  = getIntent();
@@ -78,6 +88,8 @@ public class CategoryDetail extends ListActivity {
 		readEventDao.open();
 		catDAO = new CategoryDataSource(this.getApplication());
 		catDAO.open();
+		subDAO = new SubscribeDataSource(this.getApplication());
+		subDAO.open();
 		changedFavoriteEventIds = new HashMap<Integer, Boolean>();
 		changedRSVPEventIds	= new HashMap<Integer, Boolean>();
 		userId = -1;
@@ -88,14 +100,28 @@ public class CategoryDetail extends ListActivity {
 			
 			userId = intent.getExtras().getInt("userId");
 			categoryId = intent.getExtras().getInt("categoryId");
+			cat = catDAO.getACatByCatId(categoryId);
+			sub = subDAO.getAnCatByUserIdAndCatId(userId, categoryId);
 			Log.i("In Category Detail", "userId is "+ userId + " categoryId is " + categoryId);
 			
 		}
 		loadEventItems();
-		cat = catDAO.getACatByCatId(categoryId);
 		descriptionTextView.setText(cat.getDescription());
 		categoryDetailAdapter = new CategoryDetailAdapter();
 		setListAdapter(categoryDetailAdapter);
+		
+		SubscribeCheckBox.setOnCheckedChangeListener(null);
+		SubscribeCheckBox.setChecked(sub!=null);
+		SubscribeCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				isSubChanged = !isSubChanged;
+				currentSubValIfChanged = isChecked;
+				}
+
+				});
 		
 	}
 	
@@ -227,6 +253,18 @@ public class CategoryDetail extends ListActivity {
 			} else {
 				if(!RSVPDAO.deleteRSVP(userId, eventId)) {
 					Log.e("ERROR", "Error deleting a new RSVP entry");
+				}
+			}
+		}
+		
+		if (isSubChanged) {
+			if (currentSubValIfChanged == true) {
+				if (!subDAO.createSubscribe(userId, categoryId)) {
+					Log.e("ERROR", "Error creating a new Subscribe entry");
+				}
+			} else {
+				if(!subDAO.deleteSubscribe(userId, categoryId)) {
+					Log.e("ERROR", "Error deleting a new Subscribe entry");
 				}
 			}
 		}

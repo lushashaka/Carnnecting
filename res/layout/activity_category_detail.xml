@@ -1,33 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-    android:layout_width="fill_parent" 
-    android:layout_height="fill_parent"> 
     
- <LinearLayout
-         android:orientation="vertical"
+ <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     android:orientation="vertical"
+     android:paddingLeft="8dp"
+     android:paddingRight="8dp" >
+
+         <TextView
+             android:id="@+id/catDetailDescriptionTextView"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:textSize="25sp" />
+
+     <ListView
+         android:id="@android:id/list"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
-         android:paddingLeft="8dp"
-         android:paddingRight="8dp">
+         android:layout_alignLeft="@+id/catDetailDescription"
+         android:layout_below="@+id/sub_checkbox"
+         android:layout_weight="1"
+         android:drawSelectorOnTop="false" >
+     </ListView>
+
      <TextView
-        android:id="@+id/catDetailDescription"
-        android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
-        android:textSize="25sp"
-        android:text="@string/description"/>
-	   
-    <TextView
-        android:id="@+id/catDetailDescriptionTextView"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:textSize="25sp" />
-    
-     <ListView android:id="@android:id/list"
-               android:layout_width="match_parent"
-               android:layout_height="match_parent"              
-               android:layout_weight="1"
-               android:drawSelectorOnTop="false"/>
- </LinearLayout>
- 
-</FrameLayout>
+         android:id="@+id/catDetailDescription"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignLeft="@+id/catDetailDescriptionTextView"
+         android:layout_alignParentTop="true"
+         android:text="@string/description"
+         android:textSize="25sp" />
+
+     <CheckBox
+         android:id="@+id/sub_checkbox"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentTop="true"
+         android:layout_alignRight="@android:id/list"
+         android:button="@drawable/btn_check" />
+
+ </RelativeLayout>
