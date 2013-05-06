@@ -218,7 +218,7 @@ public class CreateEvent extends Activity {
 					if (imgDao.createImage(eventId, bmp) == false)
 						Log.e("ERROR", "Cannot insert image");
 					else
-						Log.e("INFO", "image inserted");
+						Log.i("INFO_CreateEvent", "image inserted");
 				}
 			}
 		});

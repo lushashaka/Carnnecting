@@ -76,13 +76,13 @@ public class CarnnectingSQLiteOpenHelper extends SQLiteOpenHelper{
 	}
 
 	public void onCreate(SQLiteDatabase db) {
-		Log.e("INFO", SQL_CREATE_CATEGORY);
-		Log.e("INFO", SQL_CREATE_EVENT);
-		Log.e("INFO", SQL_CREATE_FAVORITE);
-		Log.e("INFO", SQL_CREATE_RSVP);
-		Log.e("INFO", SQL_CREATE_SUBSCRIBE);
-		Log.e("INFO", SQL_CREATE_READ_EVENT);
-		Log.e("INFO", SQL_CREATE_IMAGE);
+		Log.i("INFO_SQL", SQL_CREATE_CATEGORY);
+		Log.i("INFO_SQL", SQL_CREATE_EVENT);
+		Log.i("INFO_SQL", SQL_CREATE_FAVORITE);
+		Log.i("INFO_SQL", SQL_CREATE_RSVP);
+		Log.i("INFO_SQL", SQL_CREATE_SUBSCRIBE);
+		Log.i("INFO_SQL", SQL_CREATE_READ_EVENT);
+		Log.i("INFO_SQL", SQL_CREATE_IMAGE);
 		
 		db.execSQL(SQL_CREATE_CATEGORY);
 		db.execSQL(SQL_CREATE_EVENT);

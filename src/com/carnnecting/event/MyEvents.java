@@ -24,8 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-
-
 public class MyEvents extends Activity {
 
 	private MyEventsListAdapter ExpAdapter;

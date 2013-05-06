@@ -11,6 +11,11 @@ import com.carnnecting.entities.PopulateDB;
 import com.carnnecting.ws.FBConnect;
 import com.cmu.carnnecting.R;
 
+/**
+ * This class is for the Login Screen and populating initial local database contents
+ *
+ */
+
 public class Login extends FragmentActivity {
 
 	private FBConnect mainFragment;
@@ -19,7 +24,8 @@ public class Login extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.i(TAG, "Login Screen");
-		/* Use this code to generate hash for FB
+		/* Uncomment the below code to generate the hash value
+		 * Register this value in the FB account
 		  try {
 	        PackageInfo info = getPackageManager().getPackageInfo(
 	                "com.cmu.carnnecting", 
