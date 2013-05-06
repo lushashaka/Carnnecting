@@ -47,8 +47,10 @@ import com.cmu.carnnecting.R;
 
 import java.io.*;
 import java.net.*;
+import java.text.SimpleDateFormat;
 import java.util.concurrent.ExecutionException;
 
+@SuppressLint("SimpleDateFormat")
 public class EventDetail extends Activity {
 
 	private CheckBox 	favoriteCheckBox;
@@ -183,7 +185,8 @@ public class EventDetail extends Activity {
 
 						});
 
-				eventTimeTextView.setText(Event.dateFormat.format(event.getStartTime()) + "~" + Event.dateFormat.format(event.getEndTime()));
+				SimpleDateFormat minuteFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+				eventTimeTextView.setText(minuteFormat.format(event.getStartTime()) + "~" + minuteFormat.format(event.getEndTime()));
 				eventTimeTextView.setTextColor(Color.WHITE);
 				locationTextView.setText(event.getLocation());
 				locationTextView.setTextColor(Color.WHITE);

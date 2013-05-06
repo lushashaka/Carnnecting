@@ -211,7 +211,7 @@ public class PopulateDB {
 			cal.setTime(d);
 			cal.add(Calendar.HOUR, 1);
 			values.put(CarnnectingContract.Event.COLUMN_NAME_END_TIME, dateFmt.format(cal.getTime()));
-			values.put(CarnnectingContract.Event.COLUMN_NAME_LOCATION, "Yahoo!, West Java Drive, Sunnyvale, CA");
+			values.put(CarnnectingContract.Event.COLUMN_NAME_LOCATION, "West Java Drive, Sunnyvale, CA");
 			values.put(CarnnectingContract.Event.COLUMN_NAME_HOST, "Yahoo!");
 			values.put(CarnnectingContract.Event.COLUMN_NAME_DESCRIPTION, "This session focuses on how you can use Hadoop for faster analysis of data");
 			values.put(CarnnectingContract.Event.COLUMN_NAME_CATEGORY_ID, 3);
