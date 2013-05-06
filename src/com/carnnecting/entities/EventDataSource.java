@@ -3,6 +3,7 @@ package com.carnnecting.entities;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -11,6 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 
+@SuppressLint("SimpleDateFormat")
 public class EventDataSource {
 	// Database fields
 	  private SQLiteDatabase db;
