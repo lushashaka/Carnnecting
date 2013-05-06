@@ -102,7 +102,6 @@
             android:id="@+id/getAddr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
             android:freezesText="true"
             android:text=""
             android:textSize="20dp" />
@@ -270,7 +269,7 @@
             android:id="@+id/imgView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/thumbnail" />
+            android:src="@drawable/thumbnail"/>
 
         <Button
             android:id="@+id/upload"
