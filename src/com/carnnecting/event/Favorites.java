@@ -1,7 +1,5 @@
 package com.carnnecting.event;
 
-
-
 import android.annotation.SuppressLint;
 import android.app.ListActivity;
 import android.os.Bundle;
@@ -36,6 +34,7 @@ import com.carnnecting.home.Home;
 import com.cmu.carnnecting.R;
 
 import java.util.*;
+
 public class Favorites extends ListActivity {
 	
 	private Long							lastDatabaseLoadTimestamp = null;
@@ -79,7 +78,7 @@ public class Favorites extends ListActivity {
 		changedRSVPEventIds	= new HashMap<Integer, Boolean>();
 		
 		
-		Log.e("INFO", "Before entering loadHomeItems()");
+		Log.i("INFO_Favorites", "Before entering loadHomeItems()");
 		loadHomeItems();
 				
 		homeAdapter = new HomeAdapter();
@@ -98,9 +97,9 @@ public class Favorites extends ListActivity {
 	private void loadHomeItems() {
 		/* Always sync to newest in databases since last updates */
 		
-		Log.e("INFO", "Entering Favorite's loadHomeItems()");
-		Log.e("INFO", "lastDatabaseLoadTimeStamp="+lastDatabaseLoadTimestamp);
-		Log.e("INFO", "databaseLastUpdateTimestamp="+CarnnectingContract.getDatabaseLastUpdateTimestamp());
+		Log.i("INFO_Favorites", "Entering Favorite's loadHomeItems()");
+		Log.i("INFO_FavoritesFO", "lastDatabaseLoadTimeStamp="+lastDatabaseLoadTimestamp);
+		Log.i("INFO_Favorites", "databaseLastUpdateTimestamp="+CarnnectingContract.getDatabaseLastUpdateTimestamp());
 		if (lastDatabaseLoadTimestamp == null || 
 			lastDatabaseLoadTimestamp < CarnnectingContract.getDatabaseLastUpdateTimestamp()) 
 		{
@@ -109,11 +108,11 @@ public class Favorites extends ListActivity {
 			homeItems = new ArrayList<HomeItemModel>();
 
 
-			Log.e("INFO", "Before get favorites");
+			Log.i("INFO_Favorites", "Before get favorites");
 			// Get favorites
 			ArrayList<Integer> eventIds = favoriteDao.getFavoriteEventIdsByUserId(userId);
 			
-			Log.e("INFO", "Before get event generals");
+			Log.i("INFO_Favorites", "Before get event generals");
 			eventDao.getHomeItemModelsByFavoriteEventIds(eventIds, homeItems);
 			
 			
@@ -130,13 +129,13 @@ public class Favorites extends ListActivity {
 				}
 			}
 			
-			Log.e("INFO", "Before get RSVPs");
+			Log.i("INFO_Favorites", "Before get RSVPs");
 			// Get RSVPs
 			set.clear();
 			eventIds.clear();
 			eventIds = RSVPDao.getRSVPEventIdsByUserId(userId);
 			for (int i = 0; i < eventIds.size(); i++) {
-				Log.e("INFO", "RSVPed eventIds = "+eventIds.get(i));
+				Log.i("INFO_Favorites", "RSVPed eventIds = "+eventIds.get(i));
 				set.add(eventIds.get(i));
 			}
 			for (int i = 0; i < homeItems.size(); i++) {

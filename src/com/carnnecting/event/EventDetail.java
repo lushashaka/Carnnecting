@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
@@ -22,7 +21,6 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.os.AsyncTask;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -30,8 +28,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -64,7 +60,7 @@ public class EventDetail extends Activity {
 	private TextView 	hostTextView;
 	private TextView 	descriptionTextView;
 	private ImageView	eventImageView;
-	private Button shareButton;
+	private Button 		shareButton;
 	
 	private FBShare share = new FBShare();
 	private String FBmessage;
@@ -200,17 +196,17 @@ public class EventDetail extends Activity {
 				Bitmap bmp = imageDao.getAnImageByEventId(eventId);
 				if (bmp != null) {
 					eventImageView.setImageBitmap(bmp);
-					Log.e("INFO", "There is a image");
+					Log.i("INFO_EventDetail", "There is a image");
 				} else {
-					Log.e("INFO", "No image found");
+					Log.i("INFO_EventDetail", "No image found");
 				}
 				
 				// Event has been loaded
-				Log.e("INFO", event.toString());
+				Log.i("INFO_EventDetail", event.toString());
 
 				// Insert into read event table
 				if (readEventDao.createReadEvent(userId, eventId)) {
-					Log.e("INFO", "EventDetail: added read event id:"+eventId);
+					Log.i("INFO_EventDetail", "EventDetail: added read event id:"+eventId);
 				} else {
 					Log.e("ERROR", "EventDetail: cannot add read event id:"+eventId);
 				}

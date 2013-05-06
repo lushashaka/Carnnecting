@@ -35,6 +35,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -89,10 +90,9 @@ public class CreateEvent extends Activity implements LocationListener {
 	private Button takephotos, getphotos, upload, selCategory, getLoc;
 	private Button date, sTime, eTime;
 	private TextView showDate, showStime, showEtime, showCategory;
-
 	private EditText title, org, dscr, editLoc;
-	private SoundEffect eventCreatedSound = new SoundEffect(this);
-
+	private MediaPlayer mediaPlayer;
+	private SoundEffect eventCreatedSound = new SoundEffect(this, mediaPlayer);
 
 	/** Called when the activity is first created. */
 	@Override
@@ -299,11 +299,19 @@ public class CreateEvent extends Activity implements LocationListener {
 					if (imgDao.createImage(eventId, bmp) == false)
 						Log.e("ERROR", "Cannot insert image");
 					else
-						Log.e("INFO", "image inserted");
+						Log.i("INFO_CreateEvent", "image inserted");
 				}
 			}
 		});
 	}
+	
+	@Override
+	protected void onDestroy()
+	{
+	       	super.onDestroy();
+	       	killMediaPlayer();
+	}
+	
 
 	private void takePicture() {
 		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -566,7 +574,7 @@ public class CreateEvent extends Activity implements LocationListener {
 	private void updateDisplayC() {
 		showCategory.setText(new StringBuilder().append(cMsg));
 	}
-
+	
 	public void GetLocations() {
 		latPoint = locManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLatitude();
 		longPoint = locManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLongitude(); 
@@ -601,6 +609,22 @@ public class CreateEvent extends Activity implements LocationListener {
 		}
 	}
 
+	
+	private void killMediaPlayer()
+	{
+	   	if(mediaPlayer!=null)
+	   	{
+	       	try
+	       	{
+	       		mediaPlayer.release();
+	        }
+	        catch(Exception e)
+	        {
+	        	e.printStackTrace();
+	        }
+	    }
+	 }
+	
 	@Override
 	public void onLocationChanged(Location location) {
 		// TODO Auto-generated method stub

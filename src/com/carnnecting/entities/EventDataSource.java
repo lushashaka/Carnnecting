@@ -107,7 +107,7 @@ public class EventDataSource {
 		  // itemModels must be empty now
 		  for (int i = 0; i < categoryIds.size(); i++) {
 			  int catId = categoryIds.get(i);
-			  Log.e("INFO", "SELECT "+ CarnnectingContract.Event.COLUMN_NAME_ID +","+
+			  Log.i("INFO", "SELECT "+ CarnnectingContract.Event.COLUMN_NAME_ID +","+
 					  CarnnectingContract.Event.COLUMN_NAME_SUBJECT+","+
 					  CarnnectingContract.Event.COLUMN_NAME_START_TIME+" FROM " + CarnnectingContract.Event.TABLE_NAME+
 					  " WHERE "+CarnnectingContract.Event.COLUMN_NAME_CATEGORY_ID + " = " + catId);
@@ -154,7 +154,7 @@ public class EventDataSource {
 		  // itemModels must be empty now
 		  for (int i = 0; i < favoriteEventIds.size(); i++) {
 			  int eventId = favoriteEventIds.get(i);
-			  Log.e("INFO", "SELECT "+ CarnnectingContract.Event.COLUMN_NAME_SUBJECT+","+
+			  Log.i("INFO_SQL", "SELECT "+ CarnnectingContract.Event.COLUMN_NAME_SUBJECT+","+
 					  CarnnectingContract.Event.COLUMN_NAME_START_TIME+","+
 					  CarnnectingContract.Event.COLUMN_NAME_CATEGORY_ID+" FROM " + CarnnectingContract.Event.TABLE_NAME+
 					  " WHERE "+CarnnectingContract.Event.COLUMN_NAME_ID + " = " + eventId);
@@ -237,10 +237,10 @@ public class EventDataSource {
 		  Date today = new Date();
 		  SimpleDateFormat SQLFormat = new SimpleDateFormat("yyyy-MM-dd");
 		  String todaySQLFormat = SQLFormat.format(today);
-		  Log.e("GET TODAY", "SELECT " + CarnnectingContract.Event.COLUMN_NAME_START_TIME + " FROM " + CarnnectingContract.Event.TABLE_NAME);
+		  Log.i("GET TODAY", "SELECT " + CarnnectingContract.Event.COLUMN_NAME_START_TIME + " FROM " + CarnnectingContract.Event.TABLE_NAME);
 		  String todayEnd = todaySQLFormat + " 23:59:59";
 		  String todayStart = todaySQLFormat + " 00:00:00";
-		  Log.e("TODAY DATE", todayEnd);
+		  Log.i("TODAY DATE", todayEnd);
 		  
 		  Cursor cursor = db.rawQuery(
 				  "SELECT "+ CarnnectingContract.Event.COLUMN_NAME_START_TIME 
@@ -261,7 +261,7 @@ public class EventDataSource {
 		  while(!cursor.isAfterLast()) {
 			  int eventId = cursor.getInt(1);
 			  String subject = cursor.getString(2);
-			  Log.e("GET DATE SQL", cursor.getString(0));
+			  Log.i("GET DATE SQL", cursor.getString(0));
 			  String startDate = "01/01/1970";
 			  try {
 				  startDate = dateOnlyFormat.format(Event.dateFormat.parse(cursor.getString(0)));
@@ -295,10 +295,10 @@ public class EventDataSource {
 		  cal.add(Calendar.DATE, 1);
 		  tmrwSQLFormat = SQLFormat.format(cal.getTime());
 		  Log.i("GET TMRW", ""+tmrwSQLFormat);
-		  Log.e("GET TODAY", "SELECT " + CarnnectingContract.Event.COLUMN_NAME_START_TIME + " FROM " + CarnnectingContract.Event.TABLE_NAME);
+		  Log.i("GET TODAY", "SELECT " + CarnnectingContract.Event.COLUMN_NAME_START_TIME + " FROM " + CarnnectingContract.Event.TABLE_NAME);
 		  String tmrwEnd = tmrwSQLFormat + " 23:59:59";
 		  String tmrwStart = tmrwSQLFormat + " 00:00:00";
-		  Log.e("TODAY DATE", tmrwEnd);
+		  Log.i("TODAY DATE", tmrwEnd);
 		  
 		  Cursor cursor = db.rawQuery(
 				  "SELECT "+ CarnnectingContract.Event.COLUMN_NAME_START_TIME 
@@ -319,7 +319,7 @@ public class EventDataSource {
 		  while(!cursor.isAfterLast()) {
 			  int eventId = cursor.getInt(1);
 			  String subject = cursor.getString(2);
-			  Log.e("GET DATE SQL", cursor.getString(0));
+			  Log.i("GET DATE SQL", cursor.getString(0));
 			  String startDate = "01/01/1970";
 			  try {
 				  startDate = dateOnlyFormat.format(Event.dateFormat.parse(cursor.getString(0)));
@@ -353,9 +353,9 @@ public class EventDataSource {
 		  cal.add(Calendar.DATE, 1);
 		  tmrwSQLFormat = SQLFormat.format(cal.getTime());
 		  Log.i("GET TMRW", ""+tmrwSQLFormat);
-		  Log.e("GET TODAY", "SELECT " + CarnnectingContract.Event.COLUMN_NAME_START_TIME + " FROM " + CarnnectingContract.Event.TABLE_NAME);
+		  Log.i("GET TODAY", "SELECT " + CarnnectingContract.Event.COLUMN_NAME_START_TIME + " FROM " + CarnnectingContract.Event.TABLE_NAME);
 		  String tmrwEnd = tmrwSQLFormat + " 23:59:59";
-		  Log.e("TODAY DATE", tmrwEnd);
+		  Log.i("TODAY DATE", tmrwEnd);
 		  
 		  Cursor cursor = db.rawQuery(
 				  "SELECT "+ CarnnectingContract.Event.COLUMN_NAME_START_TIME 
@@ -375,7 +375,7 @@ public class EventDataSource {
 		  while(!cursor.isAfterLast()) {
 			  int eventId = cursor.getInt(1);
 			  String subject = cursor.getString(2);
-			  Log.e("GET DATE SQL", cursor.getString(0));
+			  Log.i("GET DATE SQL", cursor.getString(0));
 			  String startDate = "01/01/1970";
 			  try {
 				  startDate = dateOnlyFormat.format(Event.dateFormat.parse(cursor.getString(0)));
@@ -405,9 +405,9 @@ public class EventDataSource {
 		  SimpleDateFormat SQLFormat = new SimpleDateFormat("yyyy-MM-dd");
 		  String todaySQLFormat = SQLFormat.format(today);
 		  Log.i("GET TMRW", ""+today);
-		  Log.e("GET TODAY", "SELECT " + CarnnectingContract.Event.COLUMN_NAME_START_TIME + " FROM " + CarnnectingContract.Event.TABLE_NAME);
+		  Log.i("GET TODAY", "SELECT " + CarnnectingContract.Event.COLUMN_NAME_START_TIME + " FROM " + CarnnectingContract.Event.TABLE_NAME);
 		  String todayStart = todaySQLFormat + " 00:00:00";
-		  Log.e("TODAY DATE PAST", todayStart);
+		  Log.i("TODAY DATE PAST", todayStart);
 		  
 		  Cursor cursor = db.rawQuery(
 				  "SELECT "+ CarnnectingContract.Event.COLUMN_NAME_START_TIME 
@@ -427,7 +427,7 @@ public class EventDataSource {
 		  while(!cursor.isAfterLast()) {
 			  int eventId = cursor.getInt(1);
 			  String subject = cursor.getString(2);
-			  Log.e("GET DATE SQL", cursor.getString(0));
+			  Log.i("GET DATE SQL", cursor.getString(0));
 			  String startDate = "01/01/1970";
 			  try {
 				  startDate = dateOnlyFormat.format(Event.dateFormat.parse(cursor.getString(0)));
