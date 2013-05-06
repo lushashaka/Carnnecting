@@ -26,7 +26,6 @@ import android.os.AsyncTask;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -72,7 +71,6 @@ public class EventDetail extends Activity {
 	private ImageDataSource imageDao;
 	
 	private GoogleMap map;
-	private Marker hamburg;
 	LatiLongi latilongi = null;
 	// static final LatLng HAMBURG = new LatLng(53.558, 9.927);
 	
@@ -232,7 +230,7 @@ public class EventDetail extends Activity {
 						map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 						LatLng eventLatLong = new LatLng(Double.parseDouble(latilongi.latitude), 
 								Double.parseDouble(latilongi.longitude));
-						hamburg = map.addMarker(new MarkerOptions().position(eventLatLong)
+						map.addMarker(new MarkerOptions().position(eventLatLong)
 							.title(event.getSubject())
 							.snippet("Come to Join US!")
 							);
