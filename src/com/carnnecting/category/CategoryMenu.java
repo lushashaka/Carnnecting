@@ -27,7 +27,11 @@ import com.carnnecting.category.CategoryDetail;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
+/**
+ * 
+ * This class is for CategoryMenu screen
+ *
+ */
 
 public class CategoryMenu extends Activity {
 

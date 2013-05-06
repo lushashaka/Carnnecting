@@ -44,6 +44,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
+/**
+ * This class is for the CategoryDetail screen
+ *
+ */
+
 public class CategoryDetail extends ListActivity {
 	private Long lastDatabaseLoadTimestamp = null;
 	private CategoryDetailAdapter categoryDetailAdapter;
@@ -227,9 +232,9 @@ public class CategoryDetail extends ListActivity {
 		super.onPause();
 		
 		// FIXME: Maybe we could move the db commit code to onStop()? 
-		Log.e("INFO", "in onPause");
-		Log.e("INFO_CAT_DETAIL", "favChanged size = "+changedFavoriteEventIds.size());
-		Log.e("INFO_CAT_DETAIL", "RSVPChanged size = "+changedRSVPEventIds.size());
+		Log.i("INFO_CAT_DETAIL", "in onPause");
+		Log.i("INFO_CAT_DETAIL", "favChanged size = "+changedFavoriteEventIds.size());
+		Log.i("INFO_CAT_DETAIL", "RSVPChanged size = "+changedRSVPEventIds.size());
 		
 		for (int eventId : changedFavoriteEventIds.keySet()){
 			boolean isFavoriteNow = changedFavoriteEventIds.get(eventId);
@@ -350,14 +355,14 @@ public class CategoryDetail extends ListActivity {
 			eventItems = new ArrayList<HomeItemModel>();
 			
 			// Get events general
-			Log.e("INFO", "Before get event generals");
+			Log.i("INFO_CAT_DETAIL", "Before get event generals");
 			eventDAO.getEventsByCategoryIds(categoryId, eventItems);
 			
 			
-			Log.e("INFO_CAT_DETAIL", "Before get favorites");
+			Log.i("INFO_CAT_DETAIL", "Before get favorites");
 			// Get favorites
 			ArrayList<Integer> eventIds = favDAO.getFavoriteEventIdsByCatId(userId, categoryId);
-			Log.e("INFO_CAT_DETAIL", ""+eventIds.size());
+			Log.i("INFO_CAT_DETAIL", ""+eventIds.size());
 			HashSet<Integer> set = new HashSet<Integer>();
 			for (int i = 0; i < eventIds.size(); i++)
 				set.add(eventIds.get(i));
@@ -367,13 +372,13 @@ public class CategoryDetail extends ListActivity {
 				}
 			}
 			
-			Log.e("INFO", "Before get RSVPs");
+			Log.i("INFO_CAT_DETAIL", "Before get RSVPs");
 			// Get RSVPs
 			set.clear();
 			eventIds.clear();
 			eventIds = RSVPDAO.getRSVPEventIdsByCatId(userId, categoryId);
 			for (int i = 0; i < eventIds.size(); i++) {
-				Log.e("INFO", "RSVPed eventIds = "+eventIds.get(i));
+				Log.i("INFO_CAT_DETAIL", "RSVPed eventIds = "+eventIds.get(i));
 				set.add(eventIds.get(i));
 			}
 			for (int i = 0; i < eventItems.size(); i++) {

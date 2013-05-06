@@ -92,11 +92,11 @@ public class Home extends ListActivity {
 		loadHomeItems();
 		homeAdapter.notifyDataSetChanged();
 
-		Log.e("INFO", "dumping read event ids");
+		Log.i("INFO_HOME", "dumping read event ids");
 		Iterator<Integer> it = readEventIds.iterator();
 		while(it.hasNext()) {
 			int eventId = it.next();
-			Log.e("INFO", "read eventId = "+eventId);
+			Log.i("INFO_HOME", "read eventId = "+eventId);
 		}
 	}
 
@@ -132,14 +132,14 @@ public class Home extends ListActivity {
 
 
 			// Get events general
-			Log.e("INFO", "Before get categoryIds");
+			Log.i("INFO_HOME", "Before get categoryIds");
 			ArrayList<Integer> categoryIds = categoryDao.getSubscribedCategoryIdsByUserId(userId);
 
-			Log.e("INFO", "Before get event generals");
+			Log.i("INFO_HOME", "Before get event generals");
 			eventDao.getHomeItemModelsByCategoryIds(categoryIds, homeItems);
 
 
-			Log.e("INFO", "Before get favorites");
+			Log.i("INFO_HOME", "Before get favorites");
 			// Get favorites
 			ArrayList<Integer> eventIds = favoriteDao.getFavoriteEventIdsByUserId(userId);
 			HashSet<Integer> set = new HashSet<Integer>();
@@ -151,13 +151,13 @@ public class Home extends ListActivity {
 				}
 			}
 
-			Log.e("INFO", "Before get RSVPs");
+			Log.i("INFO_HOME", "Before get RSVPs");
 			// Get RSVPs
 			set.clear();
 			eventIds.clear();
 			eventIds = RSVPDao.getRSVPEventIdsByUserId(userId);
 			for (int i = 0; i < eventIds.size(); i++) {
-				Log.e("INFO", "RSVPed eventIds = "+eventIds.get(i));
+				Log.i("INFO_HOME", "RSVPed eventIds = "+eventIds.get(i));
 				set.add(eventIds.get(i));
 			}
 			for (int i = 0; i < homeItems.size(); i++) {
@@ -198,9 +198,9 @@ public class Home extends ListActivity {
 		super.onPause();
 
 		// FIXME: Maybe we could move the db commit code to onStop()? 
-		Log.e("INFO", "in onPause");
-		Log.e("INFO", "favChanged size = "+changedFavoriteEventIds.size());
-		Log.e("INFO", "RSVPChanged size = "+changedRSVPEventIds.size());
+		Log.i("INFO_HOME", "in onPause");
+		Log.i("INFO_HOME", "favChanged size = "+changedFavoriteEventIds.size());
+		Log.i("INFO_HOME", "RSVPChanged size = "+changedRSVPEventIds.size());
 
 		for (int eventId : changedFavoriteEventIds.keySet()){
 			boolean isFavoriteNow = changedFavoriteEventIds.get(eventId);
@@ -379,8 +379,8 @@ public class Home extends ListActivity {
 	        	intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				intent.putExtra("userId", userId);
 				startActivity(intent);
-				return true;	        case R.id.logout:	        	System.out.println("***LOGOUT***");	        	Logout logout = new Logout();	        	logout.FBLogout();	        	finish();	        	return true;		        default:
+				return true;	        case R.id.logout:	        	Log.i("INFO_HOME", "Logged out");	        	Logout logout = new Logout();	        	logout.FBLogout();	        	finish();	        	return true;		        default:
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
-		@Override	public void onBackPressed() {		// do something on back.		finish();		return;	}}
+		@Override	public void onBackPressed() {		finish();		return;	}}
