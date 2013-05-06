@@ -118,6 +118,15 @@ public class CategoryDataSource {
 		  
 		  return otherCategories;
 	  }
+	  
+	  public Category getACatByCatId(int catId) {
+		  Cursor cursor = db.rawQuery(" SELECT * FROM "+CarnnectingContract.Category.TABLE_NAME+" WHERE "+
+				  			CarnnectingContract.Category.COLUMN_NAME_ID+" = "+catId, null);
+
+		  cursor.moveToFirst();
+		  // We should have just one record returned
+		  return cursorToCategory(cursor);
+	  }
 
 	  private Category cursorToCategory(Cursor cursor) {
 		  // TODO: don't hardcode 0, 1, 2, 3... Instead, define them in contract class.

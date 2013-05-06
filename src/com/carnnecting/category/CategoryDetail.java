@@ -9,6 +9,8 @@ import java.util.HashSet;
 
 import com.carnnecting.account.Logout;
 import com.carnnecting.entities.CarnnectingContract;
+import com.carnnecting.entities.Category;
+import com.carnnecting.entities.CategoryDataSource;
 import com.carnnecting.entities.EventDataSource;
 import com.carnnecting.entities.FavoriteDataSource;
 import com.carnnecting.entities.HomeItemModel;
@@ -43,6 +45,8 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 public class CategoryDetail extends ListActivity {
 	private Long lastDatabaseLoadTimestamp = null;
 	private CategoryDetailAdapter categoryDetailAdapter;
+	private TextView descriptionTextView;
+	private Category cat;
 	
 	private ArrayList<HomeItemModel> eventItems;
 	private HashMap<Integer, Boolean> changedFavoriteEventIds;
@@ -53,12 +57,14 @@ public class CategoryDetail extends ListActivity {
 	private FavoriteDataSource favDAO;
 	private RSVPDataSource RSVPDAO;
 	private ReadEventDataSource	readEventDao;
+	private CategoryDataSource catDAO;
 	private static HashSet<Integer> readEventIds;
 	
 	@SuppressLint("UseSparseArrays")
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_category_detail);
+		descriptionTextView = (TextView)findViewById(R.id.catDetailDescriptionTextView);
 		
 		
 		Intent intent  = getIntent();
@@ -70,6 +76,8 @@ public class CategoryDetail extends ListActivity {
 		RSVPDAO.open();
 		readEventDao = new ReadEventDataSource(this.getApplication());
 		readEventDao.open();
+		catDAO = new CategoryDataSource(this.getApplication());
+		catDAO.open();
 		changedFavoriteEventIds = new HashMap<Integer, Boolean>();
 		changedRSVPEventIds	= new HashMap<Integer, Boolean>();
 		userId = -1;
@@ -84,6 +92,8 @@ public class CategoryDetail extends ListActivity {
 			
 		}
 		loadEventItems();
+		cat = catDAO.getACatByCatId(categoryId);
+		descriptionTextView.setText(cat.getDescription());
 		categoryDetailAdapter = new CategoryDetailAdapter();
 		setListAdapter(categoryDetailAdapter);
 		
