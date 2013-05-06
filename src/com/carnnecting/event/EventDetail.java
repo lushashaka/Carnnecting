@@ -2,6 +2,7 @@
 package com.carnnecting.event;
 
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import android.annotation.SuppressLint;
@@ -25,6 +26,7 @@ import android.os.AsyncTask;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -71,8 +73,10 @@ public class EventDetail extends Activity {
 	private RSVPDataSource RSVPDao;
 	private ReadEventDataSource readEventDao;
 	private ImageDataSource imageDao;
+	
 	private GoogleMap map;
 	private Marker hamburg;
+	LatiLongi latilongi = null;
 	// static final LatLng HAMBURG = new LatLng(53.558, 9.927);
 	
 
@@ -209,7 +213,6 @@ public class EventDetail extends Activity {
 				// Get latitude, longitude
 				
 				// FIXME: formattedAddress
-				LatiLongi latilongi = null;
 				try {
 					latilongi = new GecodingAsyncTask().execute(event.getLocation().trim().replace(' ', '+')).get();
 					// Log.e("INFO", latilongi.latitude);
@@ -235,19 +238,18 @@ public class EventDetail extends Activity {
 						map.moveCamera(CameraUpdateFactory.newLatLngZoom(eventLatLong, 15));
 						// Zoom in, animating the camera.
 						map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
-						/*
-						map.setOnMarkerClickListener(new OnMarkerClickListener(){
+						map.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
 
 							@Override
-							public boolean onMarkerClick(Marker arg0) {
-								if (arg0 == hamburg) { // Should always be true
-									Log.e("INFO", "Clicked");
-								}
-								return true;
-							}
-							
+							public void onInfoWindowClick(Marker arg0) {
+								if (latilongi != null && arg0 == hamburg) { // Should always be true as we only have one marker and latilongi has to be non-null to get here 
+									Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:"+latilongi.latitude+","+latilongi.longitude+"?q="+latilongi.latitude+","+latilongi.longitude+"(Label+Name)"));
+									startActivity(intent);
+								}								
+							}	
 						});
-						*/
+							
+						
 					} catch (Exception e) {
 						Log.e("ERROR", e.toString());
 					}
