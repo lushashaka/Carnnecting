@@ -7,18 +7,11 @@
      android:paddingLeft="8dp"
      android:paddingRight="8dp" >
 
-         <TextView
-             android:id="@+id/catDetailDescriptionTextView"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:textSize="25sp" />
-
      <ListView
          android:id="@android:id/list"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
-         android:layout_alignLeft="@+id/catDetailDescription"
-         android:layout_below="@+id/sub_checkbox"
+         android:layout_below="@+id/catDetailDescriptionTextView"
          android:layout_weight="1"
          android:drawSelectorOnTop="false" >
      </ListView>
@@ -27,7 +20,6 @@
          android:id="@+id/catDetailDescription"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_alignLeft="@+id/catDetailDescriptionTextView"
          android:layout_alignParentTop="true"
          android:text="@string/description"
          android:textSize="25sp" />
@@ -37,7 +29,15 @@
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:layout_alignParentTop="true"
-         android:layout_alignRight="@android:id/list"
+         android:layout_alignParentRight="true"
          android:button="@drawable/btn_check" />
 
+       <TextView
+             android:id="@+id/catDetailDescriptionTextView"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_below="@+id/catDetailDescription"
+             android:textSize="25sp" />
+
+     
  </RelativeLayout>

@@ -8,8 +8,9 @@ public class SoundEffect{
 	private MediaPlayer mediaPlayer;
 	private Activity activity;
 	
-	public SoundEffect(Activity activity){
+	public SoundEffect(Activity activity, MediaPlayer mediaPlayer){
 		this.activity = activity;
+		this.mediaPlayer = mediaPlayer;
 	}
 	
 	public void playSubscribeSound() throws Exception 
