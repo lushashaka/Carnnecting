@@ -20,7 +20,6 @@ import com.carnnecting.ws.FBShare;
 import com.carnnecting.home.Home;
 import com.cmu.carnnecting.R;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -59,8 +58,7 @@ import android.widget.Toast;
 
 public class CreateEvent extends Activity implements LocationListener {
 	private LocationManager locManager;
-	Geocoder geoCoder;
-	private Location myLocation = null;
+	private Geocoder geoCoder;
 	double latPoint = 0;
 	double longPoint = 0;
 
@@ -99,8 +97,6 @@ public class CreateEvent extends Activity implements LocationListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create_event);
-
-		ActionBar actionBar = getActionBar();
 		Intent intent  = getIntent();
 
 		userId = -1;
@@ -170,7 +166,6 @@ public class CreateEvent extends Activity implements LocationListener {
 		});
 		builder.create();
 		
-		/*
 		if (locFlag==true) {
 			try {
 				Thread.sleep(3);
@@ -180,8 +175,7 @@ public class CreateEvent extends Activity implements LocationListener {
 			}
 			getLoc.setEnabled(true);
 			locFlag = false;
-		}					
-		 */
+		}
 		
 		getLoc.setOnClickListener(new OnClickListener() {
 			@Override
@@ -578,8 +572,7 @@ public class CreateEvent extends Activity implements LocationListener {
 	public void GetLocations() {
 		latPoint = locManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLatitude();
 		longPoint = locManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLongitude(); 
-		//latPoint = myLocation.getLatitude();
-		//longPoint = myLocation.getLongitude();
+
 		try {
 			List<Address> addresses;
 			addresses = geoCoder.getFromLocation(latPoint, longPoint, 1);
@@ -628,7 +621,6 @@ public class CreateEvent extends Activity implements LocationListener {
 	@Override
 	public void onLocationChanged(Location location) {
 		// TODO Auto-generated method stub
-		myLocation = location;
 		Log.d("location", "locations");
 	}
 
