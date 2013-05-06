@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+<ScrollView 
     android:layout_width="fill_parent" 
-    android:layout_height="fill_parent"> 
+    android:layout_height="0dip"
+    android:layout_weight="0.5"> 
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -92,30 +98,23 @@
     <ImageView	android:id="@+id/eventImageView"       
         	android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
- 
-      
-    <fragment
-        android:id="@+id/map"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        class="com.google.android.gms.maps.MapFragment" />
-        
-        <!--    
-        <fragment
-        android:id="@+id/map"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        class="com.google.android.gms.maps.SupportMapFragment" />
-        -->
-    
-         <Button
+
+    <Button
 	    android:id="@+id/shareButton"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:textStyle="bold"
 	    android:gravity="center"
 	    android:text="@string/share"/>
-    
-    
+        
 </LinearLayout>
 </ScrollView>
+    
+    <fragment
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="0.5"
+        class="com.google.android.gms.maps.MapFragment" />
+    
+</LinearLayout>

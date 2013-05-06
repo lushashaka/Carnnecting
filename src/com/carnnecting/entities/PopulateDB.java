@@ -139,7 +139,7 @@ public class PopulateDB {
 			cal.setTime(d);
 			cal.add(Calendar.HOUR, 1);
 			values.put(CarnnectingContract.Event.COLUMN_NAME_END_TIME, dateFmt.format(cal.getTime()));
-			values.put(CarnnectingContract.Event.COLUMN_NAME_LOCATION, "Moscone Center West 800 Howard St., San Francisco, CA");
+			values.put(CarnnectingContract.Event.COLUMN_NAME_LOCATION, "800 Howard St., San Francisco, CA");
 			values.put(CarnnectingContract.Event.COLUMN_NAME_HOST, "Apps World");
 			values.put(CarnnectingContract.Event.COLUMN_NAME_DESCRIPTION, "All are welcome for a discussion with the panel tackling Android monetization issues");
 			values.put(CarnnectingContract.Event.COLUMN_NAME_CATEGORY_ID, 1);

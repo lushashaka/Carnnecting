@@ -2,12 +2,14 @@
 package com.carnnecting.event;
 
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,6 +25,8 @@ import android.os.AsyncTask;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -66,8 +70,12 @@ public class EventDetail extends Activity {
 	private RSVPDataSource RSVPDao;
 	private ReadEventDataSource readEventDao;
 	private ImageDataSource imageDao;
+	
 	private GoogleMap map;
 	private Marker hamburg;
+	LatiLongi latilongi = null;
+	// static final LatLng HAMBURG = new LatLng(53.558, 9.927);
+	
 
 	private static final String USER_ID = "USER_ID";
 	private static final String EVENT_ID = "EVENT_ID";
@@ -134,7 +142,7 @@ public class EventDetail extends Activity {
 			// FIXME: save userId and eventId? onSavedInstance
 
 			if (userId != -1 && eventId != -1) {
-				Event event = eventDao.getAnEventByEventId(eventId);
+				final Event event = eventDao.getAnEventByEventId(eventId);
 				Favorite favorite = favoriteDao.getAnFavoriteByUserIdAndEventId(userId, eventId);
 				RSVP rsvp = RSVPDao.getAnRSVPByUserIdAndEventId(userId, eventId);
 
@@ -162,6 +170,7 @@ public class EventDetail extends Activity {
 						});
 
 				subjectTextView.setText(event.getSubject());
+				subjectTextView.setTextColor(Color.WHITE);
 
 				RSVPCheckBox.setOnCheckedChangeListener(null);
 				RSVPCheckBox.setChecked(rsvp!=null);
@@ -177,9 +186,13 @@ public class EventDetail extends Activity {
 						});
 
 				eventTimeTextView.setText(Event.dateFormat.format(event.getStartTime()) + "~" + Event.dateFormat.format(event.getEndTime()));
+				eventTimeTextView.setTextColor(Color.WHITE);
 				locationTextView.setText(event.getLocation());
+				locationTextView.setTextColor(Color.WHITE);
 				hostTextView.setText(event.getHost());
+				hostTextView.setTextColor(Color.WHITE);
 				descriptionTextView.setText(event.getDescription());
+				descriptionTextView.setTextColor(Color.WHITE);
 				Bitmap bmp = imageDao.getAnImageByEventId(eventId);
 				if (bmp != null) {
 					eventImageView.setImageBitmap(bmp);
@@ -202,7 +215,6 @@ public class EventDetail extends Activity {
 				// Get latitude, longitude
 				
 				// FIXME: formattedAddress
-				LatiLongi latilongi = null;
 				try {
 					latilongi = new GecodingAsyncTask().execute(event.getLocation().trim().replace(' ', '+')).get();
 					// Log.e("INFO", latilongi.latitude);
@@ -228,19 +240,18 @@ public class EventDetail extends Activity {
 						map.moveCamera(CameraUpdateFactory.newLatLngZoom(eventLatLong, 15));
 						// Zoom in, animating the camera.
 						map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
-						/*
-						map.setOnMarkerClickListener(new OnMarkerClickListener(){
+						map.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
 
 							@Override
-							public boolean onMarkerClick(Marker arg0) {
-								if (arg0 == hamburg) { // Should always be true
-									Log.e("INFO", "Clicked");
-								}
-								return true;
-							}
-							
+							public void onInfoWindowClick(Marker arg0) {
+								if (latilongi != null) { // Should always be true as we only have one marker and latilongi has to be non-null to get here 
+									Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:"+latilongi.latitude+","+latilongi.longitude+"?q="+latilongi.latitude+","+latilongi.longitude+"("+event.getSubject()+")"));
+									startActivity(intent);
+								}								
+							}	
 						});
-						*/
+							
+						
 					} catch (Exception e) {
 						Log.e("ERROR", e.toString());
 					}
