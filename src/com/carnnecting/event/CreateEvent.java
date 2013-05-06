@@ -38,6 +38,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -77,13 +79,15 @@ public class CreateEvent extends Activity implements LocationListener {
 	private int cyear, cmonth, cday, chour, cmin, csec;
 	private int catId = 1;
 	private int userId;
+	private boolean checkEdit, locFlag;
 	private String fmDate, fmStime, fmEtime, sec, cMsg;
-	private String country, city, street;
+	private String zip, state, city, street;
+	private StringBuffer juso = new StringBuffer();
 
 	private Button takephotos, getphotos, upload, selCategory, getLoc;
 	private Button date, sTime, eTime;
-	private TextView showDate, showStime, showEtime, showCategory, jusoText;
-	private EditText title, addr, org, dscr;
+	private TextView showDate, showStime, showEtime, showCategory;
+	private EditText title, org, dscr, editLoc;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -94,6 +98,9 @@ public class CreateEvent extends Activity implements LocationListener {
 		ActionBar actionBar = getActionBar();
 		Intent intent = getIntent();
 		userId = -1;
+		checkEdit = false;
+		locFlag = false;
+		
 		if (intent != null && intent.getExtras() != null) {
 			userId = intent.getExtras().getInt("userId");
 		}
@@ -109,8 +116,8 @@ public class CreateEvent extends Activity implements LocationListener {
 		iv = (ImageView) findViewById(R.id.imgView);
 
 		locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-		locManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0, this);
+		locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5, this);
+		locManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 5, this);
 		geoCoder = new Geocoder(this, Locale.ENGLISH);
 
 		takephotos = (Button) findViewById(R.id.takePhotos);
@@ -126,11 +133,11 @@ public class CreateEvent extends Activity implements LocationListener {
 		showStime = (TextView) findViewById(R.id.showStime);
 		showEtime = (TextView) findViewById(R.id.showEtime);
 		showCategory = (TextView) findViewById(R.id.showCategory);
-		jusoText = (TextView) findViewById(R.id.getAddr);
-
+		
 		title = (EditText) findViewById(R.id.editText1);
 		org = (EditText) findViewById(R.id.edit_host);
 		dscr = (EditText) findViewById(R.id.editText5);
+		editLoc = (EditText) findViewById(R.id.editLoc);
 
 		// TODO Auto-generated method stub
 		ArrayList<Category> categories = categoryDao.getAllCategories();
@@ -156,13 +163,29 @@ public class CreateEvent extends Activity implements LocationListener {
 			}
 		});
 		builder.create();
-
+		
+		/*
+		if (locFlag==true) {
+			try {
+				Thread.sleep(3);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			getLoc.setEnabled(true);
+			locFlag = false;
+		}					
+		 */
+		
 		getLoc.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				GetLocations();
+				locFlag = true;
+				Toast.makeText(CreateEvent.this, "Event place will be " + String.valueOf(juso), Toast.LENGTH_SHORT).show();
 				Log.d("location", "button pressed");
+				getLoc.setEnabled(false);				
 			}
 		});
 
@@ -197,6 +220,30 @@ public class CreateEvent extends Activity implements LocationListener {
 			}
 		});
 
+		editLoc.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				checkEdit = true;
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
+		
 		takephotos.setOnClickListener(new OnClickListener() {
 			public void onClick(View v1) {
 				takePicture();
@@ -214,9 +261,14 @@ public class CreateEvent extends Activity implements LocationListener {
 				String subject = title.getText().toString();
 				String startTime = fmDate + " " + fmStime;
 				String endTime = fmDate + " " + fmEtime;
-				String location = street + ", " + city + ", " + country;
 				String host = org.getText().toString();
 				String description = dscr.getText().toString();
+				
+				String location;
+				if (checkEdit == true)
+					location = editLoc.getText().toString();
+				else
+					location = street + ", " + city + ", " + state;			
 
 				int categoryId = catId;
 				int eventId = eventDao.createEvent(0, subject, startTime,
@@ -499,7 +551,6 @@ public class CreateEvent extends Activity implements LocationListener {
 	}
 
 	public void GetLocations() {
-		StringBuffer juso = new StringBuffer();
 		latPoint = locManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLatitude();
 		longPoint = locManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLongitude(); 
 		//latPoint = myLocation.getLatitude();
@@ -510,13 +561,14 @@ public class CreateEvent extends Activity implements LocationListener {
 			for (Address addr : addresses) {
 				int index = addr.getMaxAddressLineIndex();
 				for (int i = 0; i <= index; i++) {
-					//juso.append(addr.getAddressLine(i));
-					//juso.append(" ");
+					juso.append(addr.getAddressLine(i));
+					juso.append(" ");
 				}
-				//juso.append("\n");
-				country = addr.getCountryCode();
+				zip = addr.getPostalCode();
+				state = addr.getAdminArea();
 				city = addr.getLocality();
 				street = addr.getThoroughfare();
+				
 				/*
 				Address address = addresses.get(0);
 				juso.append(addr.getCountryName()).append("\n");
@@ -524,10 +576,9 @@ public class CreateEvent extends Activity implements LocationListener {
                 juso.append(addr.getLocality()).append("\n");
                 juso.append(addr.getThoroughfare()).append("\n");
                 juso.append(addr.getFeatureName()).append("\n");
-                */				
+                */			
 			}
-			jusoText.setText(street + ", " + city + ", " + country);
-			Log.d("location", "set jusotext");
+			editLoc.setHint(street + ", " + city + ", " + state + ", " + zip);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -548,12 +599,10 @@ public class CreateEvent extends Activity implements LocationListener {
 	@Override
 	public void onProviderEnabled(String provider) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		// TODO Auto-generated method stub
-
 	}
 }
