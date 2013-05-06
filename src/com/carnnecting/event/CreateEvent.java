@@ -451,7 +451,7 @@ public class CreateEvent extends Activity implements LocationListener {
 
 				updateDisplayS();
 
-				Toast.makeText(CreateEvent.this, "Start time is " + fmStime,
+				Toast.makeText(CreateEvent.this, "Start time is " + fmStime.substring(0, 5),
 						Toast.LENGTH_SHORT).show();
 			}
 		};
@@ -490,7 +490,7 @@ public class CreateEvent extends Activity implements LocationListener {
 
 				updateDisplayE();
 
-				Toast.makeText(CreateEvent.this, "End time is " + fmEtime,
+				Toast.makeText(CreateEvent.this, "End time is " + fmEtime.substring(0, 5),
 						Toast.LENGTH_SHORT).show();
 			}
 		};
@@ -558,11 +558,11 @@ public class CreateEvent extends Activity implements LocationListener {
 	}
 
 	private void updateDisplayS() {
-		showStime.setText(new StringBuilder().append(fmStime));
+		showStime.setText(new StringBuilder().append(fmStime.substring(0, 5)));
 	}
 
 	private void updateDisplayE() {
-		showEtime.setText(new StringBuilder().append(fmEtime));
+		showEtime.setText(new StringBuilder().append(fmEtime.substring(0, 5)));
 	}
 
 	private void updateDisplayC() {
